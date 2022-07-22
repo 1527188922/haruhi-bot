@@ -46,6 +46,11 @@ public class CheckinHandler extends AbstractCommandHandler {
         return false;
     }
 
+    /**
+     * 注意：如果再处理类中注入bean，在run方法中会为null
+     * 原因：当run()执行时，表示调用了getSubclass()方法，既又new了一个当前类对象，
+     * 而这个重新new的对象不在spring容器中
+     */
     @Override
     public void run() {
         try {

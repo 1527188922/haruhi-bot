@@ -3,7 +3,7 @@ package com.haruhi.bot.service;
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidDataSourceProperties;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig;
 import com.haruhi.bot.config.DataSourceConfig;
 import com.haruhi.bot.mapper.DataBaseInitMapper;
 import com.haruhi.bot.mapper.TableInitMapper;
@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 
 @Slf4j
 @Component
@@ -23,8 +24,9 @@ public class DataBaseService {
     private TableInitMapper tableInitMapper;
     @Autowired
     private DynamicDataSourceProperties dynamicDataSourceProperties;
-    @Autowired
+    @Resource
     private DynamicRoutingDataSource dynamicRoutingDataSource;
+
     @PostConstruct
     private void init(){
         log.info("开始初始化数据库...");
@@ -37,8 +39,8 @@ public class DataBaseService {
                 log.info("数据库不存在,开始创建...");
                 dataBaseInitMapper.createDataBase(DataSourceConfig.DATA_BASE_BOT);
             }
-            log.info("建库成功,开始创建数据源...");
-            createBotDataSource();
+            log.info("建库成功,开始重新加载数据源...");
+            reloadDatabaseSource();
 
             if(dataBaseInitMapper.isTableExist(DataSourceConfig.DATA_BASE_BOT,DataSourceConfig.BOT_T_CHECKIN) == 0){
                 tableInitMapper.createCheckin();
@@ -53,14 +55,19 @@ public class DataBaseService {
     /**
      * 创建bot数据源
      */
-    private void createBotDataSource(){
+    private void reloadDatabaseSource(){
         DataSourceProperty dataSourceProperty = new DataSourceProperty();
         dataSourceProperty.setUsername(DataSourceConfig.DATA_BASE_BOT_USERNAME);
         dataSourceProperty.setPassword(DataSourceConfig.DATA_BASE_BOT_PASSWORD);
         dataSourceProperty.setUrl(DataSourceConfig.DATA_BASE_BOT_URL);
         dataSourceProperty.setDriverClassName(DataSourceConfig.DATA_BASE_MASTER_DRIVERCLASSNAME);
-        dataSourceProperty.setDruid(new DruidDataSourceProperties());
+        dataSourceProperty.setDruid(new DruidConfig());
         dynamicDataSourceProperties.getDatasource().put(DataSourceConfig.DATA_SOURCE_BOT_NAME,dataSourceProperty);
-        dynamicRoutingDataSource.afterPropertiesSet();
+        try {
+            dynamicRoutingDataSource.afterPropertiesSet();
+        } catch (Exception e) {
+            log.error("重新加载数据源失败",e);
+            System.exit(0);
+        }
     }
 }

@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Configuration;
 /**
  * 不需要在这里进行配置数据库（配置了不会生效）
  * 这个类会自己读取配置文件
+ *
+ * 之所以这样写，是为了让静态变量能够读到配置文件
  */
 @Configuration
 public class DataSourceConfig {
