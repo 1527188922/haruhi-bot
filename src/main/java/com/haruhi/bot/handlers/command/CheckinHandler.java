@@ -2,39 +2,49 @@ package com.haruhi.bot.handlers.command;
 
 import com.alibaba.fastjson.JSONObject;
 import com.haruhi.bot.constant.GocqActionEnum;
+import com.haruhi.bot.constant.MessageTypeConstant;
 import com.haruhi.bot.constant.RegexEnum;
 import com.haruhi.bot.dto.response.Answer;
 import com.haruhi.bot.dto.response.AnswerBox;
 import com.haruhi.bot.dto.request.Message;
+import com.haruhi.bot.factory.ServiceFactory;
+import com.haruhi.bot.service.checkin.CheckinService;
 import com.haruhi.bot.ws.Client;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class SignInHandler extends AbstractCommandHandler {
+public class CheckinHandler extends AbstractCommandHandler {
     private JSONObject json;
-    public SignInHandler(){
+    private String command;
+    public CheckinHandler(){
         log.info("签到处理类初始化...");
     }
-    public SignInHandler(JSONObject json){
+    public CheckinHandler(JSONObject json){
         this.json = json;
     }
     @Override
     public RegexEnum getRegex() {
-        return RegexEnum.SIGNIN;
+        return null;
     }
 
     @Override
-    public SignInHandler getSubclass(JSONObject json){
-        return new SignInHandler(json);
+    public CheckinHandler getSubclass(JSONObject json){
+        return new CheckinHandler(json);
     }
 
     @Override
     protected boolean customMatches(JSONObject json,String command) {
+        if(command.matches(RegexEnum.SIGNIN.getValue())){
+            if(MessageTypeConstant.group.equals(json.getString("message_type"))){
+                this.command = command;
+                return true;
+            }
+        }
         return false;
     }
-
 
     @Override
     public void run() {
@@ -46,12 +56,12 @@ public class SignInHandler extends AbstractCommandHandler {
             answer.setGroup_id(message.getGroup_id());
             answer.setMessage_type(message.getMessage_type());
             answer.setUser_id(message.getUser_id());
-            answer.setMessage("签到成功");
+            ServiceFactory.checkinService.checkin(answer);
             answerBox.setParams(answer);
             answerBox.setAction(GocqActionEnum.SEND_MSG.getAction());
             Client.sendMessage(JSONObject.toJSONString(answerBox));
         }catch (Exception e){
-            log.error("处理命令:[{}]时异常:{}",getRegex().getValue(),e);
+            log.error("处理命令:[{}]时异常:{}",getRegex() != null ? getRegex().getValue() : this.command,e);
         }
     }
 }

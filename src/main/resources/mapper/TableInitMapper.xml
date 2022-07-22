@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.haruhi.bot.mapper.TableInitMapper">
+
+    <update id="createCheckin">
+        CREATE TABLE `t_checkin` (
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `user_qq` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+            `group_id` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+            `day_count` int(11) DEFAULT '0',
+            `favorability` int(11) DEFAULT '0',
+            `first_date` datetime DEFAULT CURRENT_TIMESTAMP,
+            `last_date` datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    </update>
+</mapper>

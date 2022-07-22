@@ -25,7 +25,7 @@ public class SystemCommandLineRunner implements CommandLineRunner {
             Subject.attach(value);
         }
         log.info("加载了{}个命令处理类",handlerMap.size());
-        log.info("开始连接go-cqhppt...");
+        log.info("开始连接go-cqhttp...");
         Client instance = Client.getInstance();
         if(instance == null){
             Client.reConnection();

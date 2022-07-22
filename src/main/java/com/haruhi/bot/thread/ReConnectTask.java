@@ -1,7 +1,7 @@
 package com.haruhi.bot.thread;
 
 
-import com.haruhi.bot.constant.WebSocketConstant;
+import com.haruhi.bot.config.WebSocketConfig;
 import com.haruhi.bot.ws.Client;
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,7 +14,7 @@ public class ReConnectTask implements Runnable {
     public void run() {
         while (true){
             if(Client.getInstance() != null){
-                log.info("连接成功:{}", WebSocketConstant.server_url);
+                log.info("连接成功:{}", WebSocketConfig.GOCQ_WS);
                 break;
             }else{
                 try {

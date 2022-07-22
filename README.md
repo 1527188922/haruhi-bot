@@ -1,12 +1,18 @@
 # haruhi-bot
 
 #### 介绍
-基本框架maven; spring boot; mybatis-plus;
-依赖于go-cqhttp 正向ws代理
-数据库mysql (可配置多数据源)
+这是一个java bot...
+基于go-cqhppt 正向ws
+mysql 5.7
+jdk 1.8
 
 #### 软件架构
-软件架构说明
+1. spring boot
+2. spring mvc
+3. mybatis-push
+4. dynamic-datasource
+5. maven
+6. ...
 
 
 #### 安装教程

@@ -1,8 +1,8 @@
 package com.haruhi.bot.ws;
 
 import com.alibaba.fastjson.JSONObject;
+import com.haruhi.bot.config.WebSocketConfig;
 import com.haruhi.bot.constant.PostTypeEnum;
-import com.haruhi.bot.constant.WebSocketConstant;
 import com.haruhi.bot.handlers.command.Subject;
 import com.haruhi.bot.thread.ReConnectTask;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +29,7 @@ public class Client {
     public static Client getInstance() {
         try {
             if(instance == null){
-                instance = new Client(WebSocketConstant.server_url);
+                instance = new Client(WebSocketConfig.GOCQ_WS);
             }
             return instance;
         }catch (Exception e){

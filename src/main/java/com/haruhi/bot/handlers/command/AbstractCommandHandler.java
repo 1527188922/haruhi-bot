@@ -25,6 +25,8 @@ public abstract class AbstractCommandHandler implements Runnable{
 
     /**
      * 自定义匹配
+     * 若getRegex()返回null
+     * 则通过这个方法进行匹配
      * @param json
      * @return
      */
