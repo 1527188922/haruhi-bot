@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
 import java.util.Date;
 import java.util.Random;
 
@@ -35,24 +36,26 @@ public class CheckinServiceImpl extends ServiceImpl<CheckinMapper, Checkin> impl
                 param.setFavorability(favorability);
                 param.setDayCount(1);
                 checkinMapper.insert(param);
-                answer.setMessage("签到成功~，好感度+"+favorability);
+                answer.setMessage(MessageFormat.format("签到成功~，好感度+{0}\n已签到1天",favorability));
             }else{
-                Date today = new Date();
-                boolean sameDay = DateTimeUtil.isSameDay(res.getLastDate(), today);
-                if(!sameDay){
+                Date current = new Date();
+                boolean today = DateTimeUtil.isSameDay(res.getLastDate(), current);
+                if(!today){
                     int favorability = randomFavorability(3, 5);
                     param.setFavorability(res.getFavorability() + favorability);
                     param.setDayCount(res.getDayCount() + 1);
-                    param.setLastDate(today);
+                    param.setLastDate(current);
                     checkinMapper.update(param,queryWrapper);
-                    answer.setMessage("签到成功~，好感度+"+favorability);
+                    answer.setMessage(MessageFormat.format("签到成功~，好感度+{0}，当前好感度{1}\n已签到{2}天",
+                            favorability,param.getFavorability(),param.getDayCount()));
                 }else{
-                    answer.setMessage("今天已经签过到啦~当前好感度"+res.getFavorability());
+                    answer.setMessage(MessageFormat.format("今天已经签过到啦~当前好感度{0}\n已签到{1}天",
+                            res.getFavorability(),res.getDayCount()));
                 }
             }
         }catch (Exception e){
             answer.setMessage("呜呜签到失败了...");
-            log.error("处理签到发生异常",e);
+            log.error("签到业务处理发生异常",e);
         }
     }
 

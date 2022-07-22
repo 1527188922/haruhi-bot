@@ -5,6 +5,12 @@ import java.util.Date;
 
 public class DateTimeUtil {
 
+    /**
+     * 两个Date对象是否为同一天
+     * @param var1
+     * @param var2
+     * @return
+     */
     public static boolean isSameDay(Date var1, Date var2){
         Calendar cal1 = Calendar.getInstance();
         Calendar cal2 = Calendar.getInstance();

@@ -8,10 +8,8 @@ import com.haruhi.bot.dto.response.Answer;
 import com.haruhi.bot.dto.response.AnswerBox;
 import com.haruhi.bot.dto.request.Message;
 import com.haruhi.bot.factory.ServiceFactory;
-import com.haruhi.bot.service.checkin.CheckinService;
 import com.haruhi.bot.ws.Client;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -37,7 +35,7 @@ public class CheckinHandler extends AbstractCommandHandler {
 
     @Override
     protected boolean customMatches(JSONObject json,String command) {
-        if(command.matches(RegexEnum.SIGNIN.getValue())){
+        if(command.matches(RegexEnum.CHECKIN.getValue())){
             if(MessageTypeConstant.group.equals(json.getString("message_type"))){
                 this.command = command;
                 return true;
@@ -47,7 +45,7 @@ public class CheckinHandler extends AbstractCommandHandler {
     }
 
     /**
-     * 注意：如果再处理类中注入bean，在run方法中会为null
+     * 注意：如果在处理类中注入bean，在run方法中会为null
      * 原因：当run()执行时，表示调用了getSubclass()方法，既又new了一个当前类对象，
      * 而这个重新new的对象不在spring容器中
      */
