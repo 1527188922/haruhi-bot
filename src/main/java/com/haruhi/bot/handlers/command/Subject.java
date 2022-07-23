@@ -17,14 +17,10 @@ public class Subject {
         container.remove(handler);
     }
 
-    public static void update(JSONObject json){
-        String command = json.getString("message");
-        if(command != null){
-            for (AbstractCommandHandler handler : container) {
-                handler.matches(json,command);
-            }
+    public static void update(JSONObject json,String command){
+        for (AbstractCommandHandler handler : container) {
+            handler.matches(json,command);
         }
-
     }
 
 }

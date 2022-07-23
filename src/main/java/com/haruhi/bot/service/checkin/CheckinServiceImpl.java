@@ -1,11 +1,14 @@
 package com.haruhi.bot.service.checkin;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.haruhi.bot.dto.request.Message;
 import com.haruhi.bot.dto.response.Answer;
 import com.haruhi.bot.entity.Checkin;
 import com.haruhi.bot.mapper.CheckinMapper;
 import com.haruhi.bot.utils.DateTimeUtil;
+import com.simplerobot.modules.utils.KQCodeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,16 +25,16 @@ public class CheckinServiceImpl extends ServiceImpl<CheckinMapper, Checkin> impl
     private CheckinMapper checkinMapper;
 
     @Override
-    public void checkin(Answer answer) {
+    public void checkin(Answer answer, Message message) {
         try {
             QueryWrapper<Checkin> queryWrapper = new QueryWrapper<>();
-            queryWrapper.lambda().eq(Checkin::getGroupId,answer.getGroup_id()).eq(Checkin::getUserQq,answer.getUser_id());
+            queryWrapper.lambda().eq(Checkin::getGroupId,message.getGroup_id()).eq(Checkin::getUserQq,message.getUser_id());
             Checkin res = checkinMapper.selectOne(queryWrapper);
             Checkin param = new Checkin();
             if(res == null){
                 // 第一次签到
-                param.setGroupId(answer.getGroup_id());
-                param.setUserQq(answer.getUser_id());
+                param.setGroupId(message.getGroup_id());
+                param.setUserQq(message.getUser_id());
                 int favorability = randomFavorability(3, 5);
                 param.setFavorability(favorability);
                 param.setDayCount(1);
@@ -57,6 +60,29 @@ public class CheckinServiceImpl extends ServiceImpl<CheckinMapper, Checkin> impl
             answer.setMessage("呜呜签到失败了...");
             log.error("签到业务处理发生异常",e);
         }
+    }
+
+    @Override
+    public void seeFavorability(Answer answer,Message message) {
+        try {
+            LambdaQueryWrapper<Checkin> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(Checkin::getGroupId,message.getGroup_id()).eq(Checkin::getUserQq,message.getUser_id());
+            Checkin checkin = checkinMapper.selectOne(queryWrapper);
+            if(checkin == null){
+                answer.setAuto_escape(true);
+                answer.setMessage("你还没有签到过呢~");
+            }else{
+                KQCodeUtils instance = KQCodeUtils.getInstance();
+                String at = instance.toCq("at", "qq=" + message.getUser_id());
+                answer.setMessage(MessageFormat.format("{0}当前好感度：{1}，已签到{2}天",at,checkin.getFavorability(),checkin.getDayCount()));
+                answer.setAuto_escape(false);
+            }
+        }catch (Exception e){
+            answer.setMessage("呜呜签到失败了...");
+            answer.setAuto_escape(true);
+            log.error("查看好感度业务处理发生异常",e);
+        }
+
     }
 
     int randomFavorability(int start,int end){

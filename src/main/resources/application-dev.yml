@@ -21,7 +21,6 @@ bot:
     host: 127.0.0.1
     port: 3306
     dbName: haruhibot
-    url: jdbc:mysql://${bot.mysql.host}:${bot.mysql.port}/${bot.mysql.dbName}?useUnicode=true&characterEncoding=utf-8&useSSL=false
   gocq:
     ws: ws://127.0.0.1:9909
 server:

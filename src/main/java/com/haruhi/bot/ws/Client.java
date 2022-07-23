@@ -2,9 +2,15 @@ package com.haruhi.bot.ws;
 
 import com.alibaba.fastjson.JSONObject;
 import com.haruhi.bot.config.WebSocketConfig;
+import com.haruhi.bot.constant.GocqActionEnum;
+import com.haruhi.bot.constant.MessageTypeEnum;
 import com.haruhi.bot.constant.PostTypeEnum;
+import com.haruhi.bot.dto.response.Answer;
+import com.haruhi.bot.dto.response.AnswerBox;
+import com.haruhi.bot.extend.PluginSubject;
 import com.haruhi.bot.handlers.command.Subject;
 import com.haruhi.bot.thread.ReConnectTask;
+import com.simplerobot.modules.utils.KQCodeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 
@@ -49,7 +55,13 @@ public class Client {
             String postType = msgBody.getString(PostTypeEnum.post_type.toString());
             if(PostTypeEnum.message.toString().equals(postType)){
                 // 普通消息
-                Subject.update(msgBody);
+                String command = msgBody.getString("message");
+                if(command != null){
+                    Subject.update(msgBody,command);
+                    PluginSubject.update(msgBody,command);
+                    log.info("收到消息==>{}",message);
+                }
+
             }else if(PostTypeEnum.notice.toString().equals(postType)){
                 // bot通知
             } else if(PostTypeEnum.meta_event.toString().equals(postType)){
@@ -61,17 +73,37 @@ public class Client {
             log.error("收到消息时发生异常:",e);
         }
 
-
-
     }
 
-    public static void sendMessage(String msg){
 
+    private static void sendMessage(String msg){
         try {
             Client.getInstance().session.getAsyncRemote().sendText(msg);
         } catch (Exception e){
             log.info("发送消息时异常:{}",e.getMessage());
         }
+    }
+    public static <T> void sendMessage(AnswerBox<T> box){
+        sendMessage(JSONObject.toJSONString(box));
+    }
+    /**
+     * @param target to
+     * @param type 群聊 or 私聊
+     * @param message 消息
+     * @param action 动作类型 详见gocq文档 https://docs.go-cqhttp.org/api
+     * @param autoEscape 是否不解析cq码 true:不解析 false:解析
+     */
+    public static void sendMessage(String target, MessageTypeEnum type, String message,GocqActionEnum action, boolean autoEscape){
+
+        AnswerBox<Answer> box = new AnswerBox<>();
+        Answer answer = new Answer();
+        answer.setMessage(message);
+        answer.setMessage_type(type.getType());
+        answer.setUser_id(target);
+        answer.setAuto_escape(autoEscape);
+        box.setParams(answer);
+        box.setAction(action.getAction());
+        sendMessage(JSONObject.toJSONString(box));
     }
 
     @OnClose

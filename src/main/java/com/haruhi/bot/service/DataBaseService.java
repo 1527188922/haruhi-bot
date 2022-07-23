@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import java.text.MessageFormat;
 
 @Slf4j
 @Component
@@ -59,8 +60,9 @@ public class DataBaseService {
         DataSourceProperty dataSourceProperty = new DataSourceProperty();
         dataSourceProperty.setUsername(DataSourceConfig.DATA_BASE_BOT_USERNAME);
         dataSourceProperty.setPassword(DataSourceConfig.DATA_BASE_BOT_PASSWORD);
-        dataSourceProperty.setUrl(DataSourceConfig.DATA_BASE_BOT_URL);
         dataSourceProperty.setDriverClassName(DataSourceConfig.DATA_BASE_MASTER_DRIVERCLASSNAME);
+        dataSourceProperty.setUrl(MessageFormat.format(DataSourceConfig.jdbcUrlTemplate,
+                DataSourceConfig.DATA_BASE_BOT_HOST,DataSourceConfig.DATA_BASE_BOT_PORT,DataSourceConfig.DATA_BASE_BOT));
         dataSourceProperty.setDruid(new DruidConfig());
         dynamicDataSourceProperties.getDatasource().put(DataSourceConfig.DATA_SOURCE_BOT_NAME,dataSourceProperty);
         try {

@@ -11,7 +11,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.6.3</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -61,6 +61,12 @@
             <groupId>com.baomidou</groupId>
             <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
             <version>2.5.4</version>
+        </dependency>
+        <!--cqUtil文档 https://www.kancloud.cn/forte-scarlet/simple-coolq-doc/1934839 -->
+        <dependency>
+            <groupId>io.github.ForteScarlet.simple-robot-module</groupId>
+            <artifactId>mod-cqcodeutils</artifactId>
+            <version>1.5.0-1.15</version>
         </dependency>
     </dependencies>
     <build>

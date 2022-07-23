@@ -21,6 +21,7 @@ public class DataSourceConfig {
     public static String DATA_BASE_MASTER_DRIVERCLASSNAME = "";
 
 
+    public static String jdbcUrlTemplate = "jdbc:mysql://{0}:{1}/{2}?useUnicode=true&characterEncoding=utf-8&useSSL=false";
     // bot数据源名称
     public final static String DATA_SOURCE_BOT_NAME = "bot";
     // bot数据库名称
@@ -31,6 +32,10 @@ public class DataSourceConfig {
     public static String DATA_BASE_BOT_USERNAME = "";
     // 数据库密码
     public static String DATA_BASE_BOT_PASSWORD = "";
+    //  数据库 host
+    public static String DATA_BASE_BOT_HOST = "";
+    // 数据库 port
+    public static String DATA_BASE_BOT_PORT = "";
 
     // 签到表
     public final static String BOT_T_CHECKIN = "t_checkin";
@@ -50,10 +55,7 @@ public class DataSourceConfig {
     public void setBotDbname(@Value("${bot.mysql.dbName}") String dbName) {
         DATA_BASE_BOT = dbName;
     }
-    @Autowired
-    public void setUrl(@Value("${bot.mysql.url}") String url) {
-        DATA_BASE_BOT_URL = url;
-    }
+
     @Autowired
     public void setUsername(@Value("${bot.mysql.username}") String username) {
         DATA_BASE_BOT_USERNAME = username;
@@ -62,4 +64,13 @@ public class DataSourceConfig {
     public void setPassword(@Value("${bot.mysql.password}") String password) {
         DATA_BASE_BOT_PASSWORD = password;
     }
+    @Autowired
+    public void setHost(@Value("${bot.mysql.host}") String host) {
+        DATA_BASE_BOT_HOST = host;
+    }
+    @Autowired
+    public void setPort(@Value("${bot.mysql.port}") String port) {
+        DATA_BASE_BOT_PORT = port;
+    }
+
 }
