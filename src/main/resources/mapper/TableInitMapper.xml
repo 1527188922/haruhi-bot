@@ -3,7 +3,7 @@
 <mapper namespace="com.haruhi.bot.mapper.TableInitMapper">
 
     <update id="createCheckin">
-        CREATE TABLE `t_checkin` (
+        CREATE TABLE `${tableName}` (
             `id` int(11) NOT NULL AUTO_INCREMENT,
             `user_qq` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
             `group_id` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -12,6 +12,15 @@
             `first_date` datetime DEFAULT CURRENT_TIMESTAMP,
             `last_date` datetime DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (`id`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='签到表';
+    </update>
+    <update id="createDisableHandler">
+        CREATE TABLE `${tableName}` (
+           `id` INT auto_increment NOT NULL,
+           `class_name` varchar(100) NOT NULL,
+           `regex` varchar(100) NULL,
+           `disable_time` datetime DEFAULT CURRENT_TIMESTAMP,
+           PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='禁用的消息处理类表(就是禁用的命令/功能)';
     </update>
 </mapper>

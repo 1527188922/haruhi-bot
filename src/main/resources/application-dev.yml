@@ -15,6 +15,8 @@ mybatis-plus:
 
 ##################  以下配置项的值可改,上面不要动  ##################
 bot:
+  # 超级用户/管理员qq 只能填一个
+  super-user: 1527188922
   mysql:
     # mysql用户名
     username: root
@@ -27,8 +29,8 @@ bot:
     # 数据库名称(不用手动建,程序会自动建立)
     dbName: haruhibot
   gocq:
-    # go-cqhttp正向ws代理地址,于go-cqhttp配置中的保持一致
+    # go-cqhttp正向ws代理地址,与go-cqhttp配置中的保持一致
     ws: ws://127.0.0.1:9909
 server:
   # bot程序端口
-  port: 9900
+  port: 8081

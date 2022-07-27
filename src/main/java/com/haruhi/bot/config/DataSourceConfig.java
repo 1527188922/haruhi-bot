@@ -39,7 +39,8 @@ public class DataSourceConfig {
 
     // 签到表
     public final static String BOT_T_CHECKIN = "t_checkin";
-
+    // 禁用功能表
+    public final static String BOT_T_DISABLE_HANDLER = "t_disable_handler";
 
     @Autowired
     public void setSystemDbname(@Value("${spring.datasource.dynamic.datasource.master.dbName}") String dbName) {

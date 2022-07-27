@@ -7,10 +7,8 @@ import com.haruhi.bot.constant.MessageTypeEnum;
 import com.haruhi.bot.constant.PostTypeEnum;
 import com.haruhi.bot.dto.response.Answer;
 import com.haruhi.bot.dto.response.AnswerBox;
-import com.haruhi.bot.extend.PluginSubject;
-import com.haruhi.bot.handlers.command.Subject;
+import com.haruhi.bot.handlers.dispenser.MessageDispenser;
 import com.haruhi.bot.thread.ReConnectTask;
-import com.simplerobot.modules.utils.KQCodeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 
@@ -31,7 +29,7 @@ public class Client {
     private Client(String url) throws DeploymentException, IOException {
         session = ContainerProvider.getWebSocketContainer().connectToServer(this, URI.create(url));
     }
-    public static Client instance = null;
+    private static Client instance = null;
     public static Client getInstance() {
         try {
             if(instance == null){
@@ -51,15 +49,14 @@ public class Client {
             return;
         }
         try {
-            JSONObject msgBody = JSONObject.parseObject(message);
-            String postType = msgBody.getString(PostTypeEnum.post_type.toString());
+            JSONObject msgJson = JSONObject.parseObject(message);
+            String postType = msgJson.getString(PostTypeEnum.post_type.toString());
             if(PostTypeEnum.message.toString().equals(postType)){
                 // 普通消息
-                String command = msgBody.getString("message");
+                String command = msgJson.getString("message");
                 if(command != null){
-                    Subject.update(msgBody,command);
-                    PluginSubject.update(msgBody,command);
                     log.info("收到消息==>{}",message);
+                    MessageDispenser.onEvent(message,command);
                 }
 
             }else if(PostTypeEnum.notice.toString().equals(postType)){
@@ -105,6 +102,19 @@ public class Client {
         box.setAction(action.getAction());
         sendMessage(JSONObject.toJSONString(box));
     }
+    public static void sendMessage(String target, String type, String message,GocqActionEnum action, boolean autoEscape){
+
+        AnswerBox<Answer> box = new AnswerBox<>();
+        Answer answer = new Answer();
+        answer.setMessage(message);
+        answer.setMessage_type(type);
+        answer.setUser_id(target);
+        answer.setAuto_escape(autoEscape);
+        box.setParams(answer);
+        box.setAction(action.getAction());
+        sendMessage(JSONObject.toJSONString(box));
+    }
+
 
     @OnClose
     public void onClose(Session session){

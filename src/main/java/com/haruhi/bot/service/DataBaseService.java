@@ -44,8 +44,12 @@ public class DataBaseService {
             reloadDatabaseSource();
 
             if(dataBaseInitMapper.isTableExist(DataSourceConfig.DATA_BASE_BOT,DataSourceConfig.BOT_T_CHECKIN) == 0){
-                tableInitMapper.createCheckin();
+                tableInitMapper.createCheckin(DataSourceConfig.BOT_T_CHECKIN);
             }
+            if(dataBaseInitMapper.isTableExist(DataSourceConfig.DATA_BASE_BOT,DataSourceConfig.BOT_T_DISABLE_HANDLER) == 0){
+                tableInitMapper.createDisableHandler(DataSourceConfig.BOT_T_DISABLE_HANDLER);
+            }
+
             log.info("初始化数据库完成");
         }catch (Exception e){
             log.error("初始化数据库异常",e);
