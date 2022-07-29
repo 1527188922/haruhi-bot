@@ -3,8 +3,9 @@ package com.haruhi.bot.service.checkin;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.haruhi.bot.dto.request.Message;
-import com.haruhi.bot.dto.response.Answer;
+import com.haruhi.bot.constant.CqCodeTypeEnum;
+import com.haruhi.bot.dto.gocq.request.Message;
+import com.haruhi.bot.dto.gocq.response.Answer;
 import com.haruhi.bot.entity.Checkin;
 import com.haruhi.bot.mapper.CheckinMapper;
 import com.haruhi.bot.utils.DateTimeUtil;
@@ -73,7 +74,7 @@ public class CheckinServiceImpl extends ServiceImpl<CheckinMapper, Checkin> impl
                 answer.setMessage("你还没有签到过呢~");
             }else{
                 KQCodeUtils instance = KQCodeUtils.getInstance();
-                String at = instance.toCq("at", "qq=" + message.getUser_id());
+                String at = instance.toCq(CqCodeTypeEnum.at.getType(), "qq=" + message.getUser_id());
                 answer.setMessage(MessageFormat.format("{0}当前好感度：{1}，已签到{2}天",at,checkin.getFavorability(),checkin.getDayCount()));
                 answer.setAuto_escape(false);
             }

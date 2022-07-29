@@ -1,0 +1,1 @@
+java -jar haruhiBot-server.jar

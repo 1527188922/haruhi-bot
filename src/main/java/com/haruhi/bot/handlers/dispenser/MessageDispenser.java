@@ -2,7 +2,7 @@ package com.haruhi.bot.handlers.dispenser;
 
 import com.alibaba.fastjson.JSONObject;
 import com.haruhi.bot.constant.MessageTypeEnum;
-import com.haruhi.bot.dto.request.Message;
+import com.haruhi.bot.dto.gocq.request.Message;
 import com.haruhi.bot.handlers.event.IMessageEventType;
 import com.haruhi.bot.handlers.event.IOnGroupMessageEvent;
 import com.haruhi.bot.handlers.event.IOnMessageEvent;
@@ -13,9 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Component
@@ -26,26 +25,7 @@ public class MessageDispenser {
     public void setMessageEventTypeMap(Map<String, IMessageEventType> messageEventTypeMap){
         MessageDispenser.messageEventTypeMap = messageEventTypeMap;
     }
-    private static Set<IMessageEventType> container;
-    /**
-     * 所有私聊事件处理类
-     */
-    private static Set<IOnPrivateMessageEvent> privateMessageEventSet;
-    /**
-     * 所有群聊天事件处理类
-     */
-    private static Set<IOnGroupMessageEvent> groupMessageEventSet;
-    /**
-     * 群聊和私聊事件处理
-     */
-    private static Set<IOnMessageEvent> messageEventSet;
-
-    static {
-        container = new HashSet<>();
-        privateMessageEventSet = new HashSet<>();
-        groupMessageEventSet = new HashSet<>();
-        messageEventSet = new HashSet<>();
-    }
+    private static List<IMessageEventType> container = new ArrayList<>();
 
     /**
      * 虽没被引用
@@ -58,18 +38,33 @@ public class MessageDispenser {
         log.info("加载消息处理类...");
         for (IMessageEventType value : messageEventTypeMap.values()) {
             MessageDispenser.attach(value);
-            if(value instanceof IOnPrivateMessageEvent){
-                privateMessageEventSet.add((IOnPrivateMessageEvent)value);
+        }
+        int size = sortByWeight();
+        log.info("加载了{}个消息处理类",size);
+
+    }
+
+    /**
+     * 根据权重排序
+     * @return
+     */
+    private int sortByWeight(){
+        int size = container.size();
+        for (int i = 0; i < size - 1; i++) {
+            boolean flag = false;
+            for (int j = 0; j < size - i - 1; j++) {
+                if(container.get(j).weight() < container.get(j + 1).weight()){
+                    IMessageEventType iMessageEventType = container.get(j);
+                    container.set(j,container.get(j + 1));
+                    container.set(j + 1,iMessageEventType);
+                    flag = true;
+                }
             }
-            if(value instanceof IOnGroupMessageEvent){
-                groupMessageEventSet.add((IOnGroupMessageEvent)value);
-            }
-            if(value instanceof IOnMessageEvent){
-                messageEventSet.add((IOnMessageEvent)value);
+            if(!flag){
+                break;
             }
         }
-        log.info("加载了{}个消息处理类",container.size());
-
+        return size;
     }
 
     public static void attach(IMessageEventType event){
@@ -91,24 +86,33 @@ public class MessageDispenser {
     }
 
     public static void onEvent(String json, String command){
-        Message message = JSONObject.parseObject(json, Message.class);
+        final Message message = JSONObject.parseObject(json, Message.class);
         String messageType = message.getMessage_type();
-
-        for (IOnMessageEvent element : MessageDispenser.messageEventSet) {
-            if(container.contains(element)){
-                element.onMessage(message,command);
-            }
-        }
-        if(MessageTypeEnum.group.getType().equals(messageType)){
-            for (IOnGroupMessageEvent element : MessageDispenser.groupMessageEventSet) {
-                if(container.contains(element)){
-                    element.onGroup(message,command);
+        AtomicInteger total = new AtomicInteger(0);
+        for (IMessageEventType element : container) {
+            if(element instanceof IOnMessageEvent){
+                IOnMessageEvent event = (IOnMessageEvent) element;
+                if(event.matches(message,command,total)){
+                    total.incrementAndGet();
+                    event.onMessage(message,command);
                 }
             }
-        } else if(MessageTypeEnum.privat.getType().equals(messageType)){
-            for (IOnPrivateMessageEvent element : MessageDispenser.privateMessageEventSet) {
-                if(container.contains(element)){
-                    element.onPrivate(message,command);
+            if(MessageTypeEnum.group.getType().equals(messageType)){
+                if(element instanceof IOnGroupMessageEvent){
+                    IOnGroupMessageEvent event = (IOnGroupMessageEvent) element;
+                    if(event.matches(message,command,total)){
+                        total.incrementAndGet();
+                        event.onGroup(message,command);
+                    }
+                }
+            }else if(MessageTypeEnum.privat.getType().equals(messageType)){
+                if(element instanceof IOnPrivateMessageEvent){
+                    IOnPrivateMessageEvent event = (IOnPrivateMessageEvent) element;
+                    if(event.matches(message,command,total)){
+                        total.incrementAndGet();
+                        event.onPrivate(message,command);
+                    }
+
                 }
             }
         }

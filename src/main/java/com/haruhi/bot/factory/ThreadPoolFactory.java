@@ -13,7 +13,7 @@ public class ThreadPoolFactory {
 
     public static Executor getCommandHandlerThreadPool(){
         if(commandHandlerThreadPool == null){
-            commandHandlerThreadPool =  new ThreadPoolExecutor(4,4,1, TimeUnit.HOURS,new ArrayBlockingQueue(50),new CustomizableThreadFactory("-command-handler-"),new ThreadPoolExecutor.CallerRunsPolicy());
+            commandHandlerThreadPool =  new ThreadPoolExecutor(4,4,1, TimeUnit.HOURS,new ArrayBlockingQueue(50),new CustomizableThreadFactory("command-handler"),new ThreadPoolExecutor.CallerRunsPolicy());
         }
         return commandHandlerThreadPool;
     }
@@ -21,13 +21,13 @@ public class ThreadPoolFactory {
 
     public static Executor getPluginThreadPool(){
         if(pluginThreadPool == null){
-            pluginThreadPool =  new ThreadPoolExecutor(4,4,1, TimeUnit.HOURS,new ArrayBlockingQueue(50),new CustomizableThreadFactory("-plugin-"),new ThreadPoolExecutor.CallerRunsPolicy());
+            pluginThreadPool =  new ThreadPoolExecutor(4,4,1, TimeUnit.HOURS,new ArrayBlockingQueue(50),new CustomizableThreadFactory("plugin"),new ThreadPoolExecutor.CallerRunsPolicy());
         }
         return pluginThreadPool;
     }
     public static ScheduledThreadPoolExecutor getScheduledThreadPool(){
         if(scheduledThreadPool == null){
-            scheduledThreadPool =  new ScheduledThreadPoolExecutor(2, new CustomizableThreadFactory("-scheduled-"));
+            scheduledThreadPool =  new ScheduledThreadPoolExecutor(2, new CustomizableThreadFactory("scheduled"));
         }
         return scheduledThreadPool;
     }

@@ -2,9 +2,9 @@ package com.haruhi.bot.handlers;
 
 import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.RegexEnum;
-import com.haruhi.bot.dto.request.Message;
-import com.haruhi.bot.dto.response.Answer;
-import com.haruhi.bot.dto.response.AnswerBox;
+import com.haruhi.bot.dto.gocq.request.Message;
+import com.haruhi.bot.dto.gocq.response.Answer;
+import com.haruhi.bot.dto.gocq.response.AnswerBox;
 import com.haruhi.bot.factory.ThreadPoolFactory;
 import com.haruhi.bot.handlers.event.IOnGroupMessageEvent;
 import com.haruhi.bot.service.checkin.CheckinService;
@@ -12,6 +12,8 @@ import com.haruhi.bot.ws.Client;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Component
@@ -21,15 +23,17 @@ public class CheckinHandler implements IOnGroupMessageEvent {
     private CheckinService checkinService;
 
     @Override
-    public RegexEnum getRegex() {
-        return RegexEnum.CHECKIN;
+    public boolean matches(Message message,String command, AtomicInteger total) {
+        return command.matches(RegexEnum.CHECKIN.getValue());
+    }
+
+    @Override
+    public int weight() {
+        return 99;
     }
 
     @Override
     public void onGroup(Message message, String command) {
-        if(!command.matches(getRegex().getValue())){
-            return;
-        }
 
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(()->{
             try {

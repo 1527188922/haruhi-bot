@@ -5,8 +5,8 @@ import com.haruhi.bot.config.WebSocketConfig;
 import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.MessageTypeEnum;
 import com.haruhi.bot.constant.PostTypeEnum;
-import com.haruhi.bot.dto.response.Answer;
-import com.haruhi.bot.dto.response.AnswerBox;
+import com.haruhi.bot.dto.gocq.response.Answer;
+import com.haruhi.bot.dto.gocq.response.AnswerBox;
 import com.haruhi.bot.handlers.dispenser.MessageDispenser;
 import com.haruhi.bot.thread.ReConnectTask;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +43,7 @@ public class Client {
     }
 
     @OnMessage
-    public void onMessage(String message){
+    public void onMessage(final String message){
         if(Strings.isBlank(message)){
             log.info("收到空消息");
             return;
@@ -53,7 +53,7 @@ public class Client {
             String postType = msgJson.getString(PostTypeEnum.post_type.toString());
             if(PostTypeEnum.message.toString().equals(postType)){
                 // 普通消息
-                String command = msgJson.getString("message");
+                final String command = msgJson.getString("message");
                 if(command != null){
                     log.info("收到消息==>{}",message);
                     MessageDispenser.onEvent(message,command);
@@ -64,7 +64,7 @@ public class Client {
             } else if(PostTypeEnum.meta_event.toString().equals(postType)){
                 // 系统消息 心跳包、
             }else{
-//                log.info("收到未知post_type消息:{}",message);
+                log.info("收到未知post_type消息:{}",message);
             }
         }catch (Exception e){
             log.error("收到消息时发生异常:",e);
@@ -76,6 +76,7 @@ public class Client {
     private static void sendMessage(String msg){
         try {
             Client.getInstance().session.getAsyncRemote().sendText(msg);
+            log.info("发送了消息:{}",msg);
         } catch (Exception e){
             log.info("发送消息时异常:{}",e.getMessage());
         }
@@ -85,12 +86,13 @@ public class Client {
     }
     /**
      * @param target to
+     * @param groupId 群号
      * @param type 群聊 or 私聊
      * @param message 消息
      * @param action 动作类型 详见gocq文档 https://docs.go-cqhttp.org/api
      * @param autoEscape 是否不解析cq码 true:不解析 false:解析
      */
-    public static void sendMessage(String target, MessageTypeEnum type, String message,GocqActionEnum action, boolean autoEscape){
+    public static void sendMessage(String target,String groupId ,MessageTypeEnum type, String message,GocqActionEnum action, boolean autoEscape){
 
         AnswerBox<Answer> box = new AnswerBox<>();
         Answer answer = new Answer();
@@ -98,17 +100,19 @@ public class Client {
         answer.setMessage_type(type.getType());
         answer.setUser_id(target);
         answer.setAuto_escape(autoEscape);
+        answer.setGroup_id(groupId);
         box.setParams(answer);
         box.setAction(action.getAction());
         sendMessage(JSONObject.toJSONString(box));
     }
-    public static void sendMessage(String target, String type, String message,GocqActionEnum action, boolean autoEscape){
+    public static void sendMessage(String target,String groupId ,String type, String message,GocqActionEnum action, boolean autoEscape){
 
         AnswerBox<Answer> box = new AnswerBox<>();
         Answer answer = new Answer();
         answer.setMessage(message);
         answer.setMessage_type(type);
         answer.setUser_id(target);
+        answer.setGroup_id(groupId);
         answer.setAuto_escape(autoEscape);
         box.setParams(answer);
         box.setAction(action.getAction());
@@ -118,7 +122,7 @@ public class Client {
 
     @OnClose
     public void onClose(Session session){
-        log.info("连接断开,gocq可能宕机,开始重连...");
+        log.info("连接断开,请检查go-cqhttp是否正常启动;检查go-cqhttp ws配置是否与bot一致;开始重连...");
         reConnection();
     }
 
