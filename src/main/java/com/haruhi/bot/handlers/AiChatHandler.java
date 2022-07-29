@@ -1,6 +1,5 @@
 package com.haruhi.bot.handlers;
 
-import com.alibaba.fastjson.JSONObject;
 import com.haruhi.bot.constant.CqCodeTypeEnum;
 import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.MessageTypeEnum;
@@ -12,11 +11,14 @@ import com.haruhi.bot.utils.RestUtil;
 import com.haruhi.bot.ws.Client;
 import com.simplerobot.modules.utils.KQCodeUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 任何命令都没有匹配到
@@ -88,5 +90,26 @@ public class AiChatHandler implements IOnMessageEvent {
 
             }
         });
+    }
+
+    private static String reg ="(?<=\\{face:)[0-9]*(?=\\})";
+    private static String regex = ".*\\{face:.*\\}.*";
+    private String f(String content){
+        if(!content.matches(regex)){
+            return content;
+        }
+        Pattern pattern = Pattern.compile(reg);
+        Matcher matcher = pattern.matcher(content);
+        List<String> matchStrs = new ArrayList<>();
+
+        while (matcher.find()) {
+            matchStrs.add(matcher.group());
+        }
+
+        for (int i = 0; i < matchStrs.size(); i++) {
+
+            content.replace("{face:"+matchStrs.get(i)+"}","");
+        }
+        return content;
     }
 }
