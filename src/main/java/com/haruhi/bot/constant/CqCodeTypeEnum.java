@@ -2,7 +2,8 @@ package com.haruhi.bot.constant;
 
 public enum CqCodeTypeEnum {
     at("at"),
-    image("image");
+    image("image"),
+    face("face");
 
 
     private String type;

@@ -16,7 +16,7 @@ public class WebSocketConfig {
         return new ServerEndpointExporter();
     }
     @Autowired
-    public void setGocqWs(@Value("${bot.gocq.ws}") String dbName) {
+    public void setGocqWs(@Value("${gocq.ws}") String dbName) {
         GOCQ_WS = dbName;
     }
 }

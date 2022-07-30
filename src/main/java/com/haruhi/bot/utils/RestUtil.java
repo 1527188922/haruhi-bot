@@ -6,6 +6,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
@@ -47,6 +48,21 @@ public class RestUtil {
         }
     }
 
+    /**
+     * form提交
+     * 可发送文件
+     * @param restTemplate
+     * @param url
+     * @param param
+     * @param type
+     * @param <T>
+     * @return
+     */
+    public static <T> T sendPostForm(RestTemplate restTemplate, String url, LinkedMultiValueMap<String,Object> param,Class<T> type){
+        ResponseEntity<String> response = restTemplate.postForEntity(url, param, String.class, (Object) null);
+        return processResponse(response,type);
+    }
+
     private static <T> T processResponse(ResponseEntity<String> response,Class<T> tClass){
         if(response == null ){
             log.info("http请求响应结果为空 ResponseEntity == null");
@@ -56,12 +72,17 @@ public class RestUtil {
             log.info("http请求响应状态码异常:{}\n{}",response.getStatusCode().value(),response);
             return null;
         }
-        if(response.getBody() == null){
+        String body = response.getBody();
+        if(body == null){
             log.info("接口响应结果为null");
             return null;
         }
+
+        if(tClass == String.class){
+            return (T)body;
+        }
         try {
-            return JSONObject.parseObject(response.getBody(), tClass);
+            return JSONObject.parseObject(body, tClass);
         }catch (Exception e){
             log.error("请求结果(json串)转javabean异常",e);
             return null;

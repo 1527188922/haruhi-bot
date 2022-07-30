@@ -1,8 +1,10 @@
 package com.haruhi.bot.handlers;
 
+import com.haruhi.bot.config.BotConfig;
 import com.haruhi.bot.constant.CqCodeTypeEnum;
 import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.MessageTypeEnum;
+import com.haruhi.bot.constant.RegexEnum;
 import com.haruhi.bot.dto.aiChat.response.ChatResp;
 import com.haruhi.bot.dto.gocq.request.Message;
 import com.haruhi.bot.factory.ThreadPoolFactory;
@@ -37,10 +39,13 @@ public class AiChatHandler implements IOnMessageEvent {
     private String[] cqs;
 
     @Override
-    public boolean matches(Message message,String command, AtomicInteger total) {
+    public boolean matches(final Message message,final String command,final AtomicInteger total) {
         if(total.get() == 0){
             if(MessageTypeEnum.privat.getType().equals(message.getMessage_type())){
                 // 私聊了机器人
+                if(command.matches(RegexEnum.CQ_CODE.getValue())){
+                    return false;
+                }
                 this.cqs = null;
                 return true;
             }
@@ -67,9 +72,9 @@ public class AiChatHandler implements IOnMessageEvent {
     }
 
     @Override
-    public void onMessage(Message message, String command) {
+    public void onMessage(Message message,String command) {
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(()->{
-            String s = new String(command);
+            String s = command;
             if(this.cqs != null){
                 for (String cq : this.cqs) {
                     s = s.replace(cq,"");
@@ -84,17 +89,16 @@ public class AiChatHandler implements IOnMessageEvent {
             if(chatResp != null){
                 String content = chatResp.getContent();
                 if(content != null){
-                    String replace = content.replace("{br}", "\n");
-                    Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),replace,GocqActionEnum.SEND_MSG,true);
+                    Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),processContent(content),GocqActionEnum.SEND_MSG,false);
                 }
-
             }
         });
     }
 
     private static String reg ="(?<=\\{face:)[0-9]*(?=\\})";
     private static String regex = ".*\\{face:.*\\}.*";
-    private String f(String content){
+    private String processContent(String content){
+        content = content.replace("{br}", "\n").replace("菲菲", BotConfig.NAME).replace("&quot;","“");
         if(!content.matches(regex)){
             return content;
         }
@@ -105,10 +109,11 @@ public class AiChatHandler implements IOnMessageEvent {
         while (matcher.find()) {
             matchStrs.add(matcher.group());
         }
-
+        KQCodeUtils instance = KQCodeUtils.getInstance();
         for (int i = 0; i < matchStrs.size(); i++) {
-
-            content.replace("{face:"+matchStrs.get(i)+"}","");
+            String id = matchStrs.get(i);
+            String face = instance.toCq(CqCodeTypeEnum.face.getType(), "id="+id);
+            content = content.replace("{face:" + id + "}", face);
         }
         return content;
     }

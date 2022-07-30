@@ -23,7 +23,7 @@ public class CheckinHandler implements IOnGroupMessageEvent {
     private CheckinService checkinService;
 
     @Override
-    public boolean matches(Message message,String command, AtomicInteger total) {
+    public boolean matches(final Message message,final String command,final AtomicInteger total) {
         return command.matches(RegexEnum.CHECKIN.getValue());
     }
 

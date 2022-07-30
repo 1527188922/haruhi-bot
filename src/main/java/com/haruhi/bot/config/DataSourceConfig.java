@@ -2,7 +2,7 @@ package com.haruhi.bot.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 /**
  * 不需要在这里进行配置数据库（配置了不会生效）
@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
  *
  * 之所以这样写，是为了让静态变量能够读到配置文件
  */
-@Configuration
+@Component
 public class DataSourceConfig {
 
     // 主数据库 数据源名称
@@ -26,8 +26,6 @@ public class DataSourceConfig {
     public final static String DATA_SOURCE_BOT_NAME = "bot";
     // bot数据库名称
     public static String DATA_BASE_BOT = "";
-    // jdbc url
-    public static String DATA_BASE_BOT_URL = "";
     // 数据库用户名
     public static String DATA_BASE_BOT_USERNAME = "";
     // 数据库密码
@@ -53,24 +51,24 @@ public class DataSourceConfig {
     }
 
     @Autowired
-    public void setBotDbname(@Value("${bot.mysql.dbName}") String dbName) {
+    public void setBotDbname(@Value("${mysql.dbName}") String dbName) {
         DATA_BASE_BOT = dbName;
     }
 
     @Autowired
-    public void setUsername(@Value("${bot.mysql.username}") String username) {
+    public void setUsername(@Value("${mysql.username}") String username) {
         DATA_BASE_BOT_USERNAME = username;
     }
     @Autowired
-    public void setPassword(@Value("${bot.mysql.password}") String password) {
+    public void setPassword(@Value("${mysql.password}") String password) {
         DATA_BASE_BOT_PASSWORD = password;
     }
     @Autowired
-    public void setHost(@Value("${bot.mysql.host}") String host) {
+    public void setHost(@Value("${mysql.host}") String host) {
         DATA_BASE_BOT_HOST = host;
     }
     @Autowired
-    public void setPort(@Value("${bot.mysql.port}") String port) {
+    public void setPort(@Value("${mysql.port}") String port) {
         DATA_BASE_BOT_PORT = port;
     }
 

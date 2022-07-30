@@ -16,6 +16,8 @@ public interface IMessageEventType {
      * true:表示通过 将执行后续的处理逻辑
      * false 反之...
      * 当这个方法返回true之后,total才会+=1
+     * 重写该方法，参数final修饰，在该方法中，参数严谨修改
+     * 禁止修改是指 禁止改变内存指向
      * @return
      */
     boolean matches(Message message, String command, AtomicInteger total);

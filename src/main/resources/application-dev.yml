@@ -5,32 +5,38 @@ spring:
       datasource:
         master:
           dbName: mysql
-          username: ${bot.mysql.username}
-          password: ${bot.mysql.password}
-          url: jdbc:mysql://${bot.mysql.host}:${bot.mysql.port}/${spring.datasource.dynamic.datasource.master.dbName}?useUnicode=true&characterEncoding=utf-8&useSSL=false
+          username: ${mysql.username}
+          password: ${mysql.password}
+          url: jdbc:mysql://${mysql.host}:${mysql.port}/${spring.datasource.dynamic.datasource.master.dbName}?useUnicode=true&characterEncoding=utf-8&useSSL=false
           driver-class-name: com.mysql.cj.jdbc.Driver
 mybatis-plus:
   type-aliases-package: com.haruhi.bot.entity
   mapper-locations: classpath:/mapper/*.xml
 
 ##################  以下配置项的值可改,上面不要动  ##################
+
+mysql:
+  # mysql用户名
+  username: root
+  # mysql密码
+  password: 123456
+  # 主机
+  host: 127.0.0.1
+  # 端口 3306是mysql默认端口,一般不动
+  port: 3306
+  # 数据库名称(不用手动建,程序会自动建立)
+  dbName: haruhibot
+gocq:
+  # go-cqhttp正向ws代理地址,与go-cqhttp配置中的保持一致
+  ws: ws://127.0.0.1:9909
 bot:
   # 超级用户/管理员qq 只能填一个
-  super-user: 1527188922
-  mysql:
-    # mysql用户名
-    username: root
-    # mysql密码
-    password: 123456
-    # 主机
-    host: 127.0.0.1
-    # 端口 3306是mysql默认端口,一般不动
-    port: 3306
-    # 数据库名称(不用手动建,程序会自动建立)
-    dbName: haruhibot
-  gocq:
-    # go-cqhttp正向ws代理地址,与go-cqhttp配置中的保持一致
-    ws: ws://127.0.0.1:9909
+  super-user:
+  # bot的名字
+  name: 春日酱
+  # Saucenao的API_KEY，通过 https://saucenao.com/user.php?page=search-api 注册获取
+  search-image-key:
+
 server:
   # bot程序端口
   port: 8081
