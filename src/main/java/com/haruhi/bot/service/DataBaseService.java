@@ -25,7 +25,7 @@ public class DataBaseService {
     private TableInitMapper tableInitMapper;
     @Autowired
     private DynamicDataSourceProperties dynamicDataSourceProperties;
-    @Resource
+    @Autowired
     private DynamicRoutingDataSource dynamicRoutingDataSource;
 
     @PostConstruct
