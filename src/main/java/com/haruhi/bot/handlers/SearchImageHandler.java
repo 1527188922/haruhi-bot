@@ -179,7 +179,6 @@ public class SearchImageHandler implements IOnMessageEvent {
                 forwardMsgs.add(forwardMsgInner);
             }
 
-
             if(MessageTypeEnum.group.getType().equals(message.getMessage_type())){
                 // 使用合并消息
                 Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG.getAction(), message.getGroup_id(), forwardMsgs);
@@ -198,32 +197,32 @@ public class SearchImageHandler implements IOnMessageEvent {
         }
 
         private String getItemMsg(Results results){
-            String str = "";
+            StringBuilder strBui = new StringBuilder();
             if(results.getHeader().getSimilarity() != null){
-                str += MessageFormat.format("相似度：{0}\n",results.getHeader().getSimilarity()+"%");
+                strBui.append(MessageFormat.format("相似度：{0}\n",results.getHeader().getSimilarity()+"%"));
             }
             if(results.getData().getTitle() != null){
-                str += MessageFormat.format("标题：{0}\n",results.getData().getTitle());
+                strBui.append(MessageFormat.format("标题：{0}\n",results.getData().getTitle()));
             }
             if(results.getData().getPixiv_id() != null){
-                str += MessageFormat.format("pid：{0}\n",results.getData().getPixiv_id());
+                strBui.append(MessageFormat.format("pid：{0}\n",results.getData().getPixiv_id()));
             }
             if(results.getData().getMember_name() != null){
-                str += MessageFormat.format("作者：{0}\n",results.getData().getMember_name());
+                strBui.append(MessageFormat.format("作者：{0}\n",results.getData().getMember_name()));
             }
             if(results.getData().getTwitter_user_id() != null){
-                str += MessageFormat.format("twitter作者id：{0}\n",results.getData().getTwitter_user_id());
+                strBui.append(MessageFormat.format("twitter作者id：{0}\n",results.getData().getTwitter_user_id()));
             }
             String[] ext_urls = results.getData().getExt_urls();
             if(ext_urls != null && ext_urls.length > 0){
                 for (String ext_url : ext_urls) {
-                    str += MessageFormat.format("地址：{0}\n",ext_url);
+                    strBui.append(MessageFormat.format("地址：{0}\n",ext_url));
                 }
             }
             if(results.getHeader().getThumbnail() != null){
-                str += MessageFormat.format("略缩图：{0}\n",results.getHeader().getThumbnail());
+                strBui.append(MessageFormat.format("略缩图：{0}\n",results.getHeader().getThumbnail()));
             }
-            return str;
+            return strBui.toString();
         }
     }
 }

@@ -1,20 +1,3 @@
-
-spring:
-  datasource:
-    dynamic:
-      datasource:
-        master:
-          dbName: mysql
-          username: ${mysql.username}
-          password: ${mysql.password}
-          url: jdbc:mysql://${mysql.host}:${mysql.port}/${spring.datasource.dynamic.datasource.master.dbName}?useUnicode=true&characterEncoding=utf-8&useSSL=false
-          driver-class-name: com.mysql.cj.jdbc.Driver
-mybatis-plus:
-  type-aliases-package: com.haruhi.bot.entity
-  mapper-locations: classpath:/mapper/*.xml
-
-##################  以下配置项的值可改,上面不要动  ##################
-
 mysql:
   # mysql用户名
   username: root
@@ -30,6 +13,8 @@ gocq:
   # go-cqhttp正向ws代理地址,与go-cqhttp配置中的保持一致
   ws: ws://127.0.0.1:9909
 bot:
+  # bot程序端口
+  port: 8081
   # 超级用户/管理员qq 只能填一个
   super-user:
   # bot的名字
@@ -37,6 +22,25 @@ bot:
   # Saucenao的API_KEY，通过 https://saucenao.com/user.php?page=search-api 注册获取
   search-image-key:
 
+
+
+
+#########################  以下配置项勿改  #########################
+
 server:
-  # bot程序端口
-  port: 8081
+  port: ${bot.port}
+  servlet:
+    context-path: /haruhi
+spring:
+  datasource:
+    dynamic:
+      datasource:
+        master:
+          dbName: mysql
+          username: ${mysql.username}
+          password: ${mysql.password}
+          url: jdbc:mysql://${mysql.host}:${mysql.port}/${spring.datasource.dynamic.datasource.master.dbName}?useUnicode=true&characterEncoding=utf-8&useSSL=false
+          driver-class-name: com.mysql.cj.jdbc.Driver
+mybatis-plus:
+  type-aliases-package: com.haruhi.bot.entity
+  mapper-locations: classpath:/mapper/*.xml

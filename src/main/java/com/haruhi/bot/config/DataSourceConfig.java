@@ -39,6 +39,8 @@ public class DataSourceConfig {
     public final static String BOT_T_CHECKIN = "t_checkin";
     // 禁用功能表
     public final static String BOT_T_DISABLE_HANDLER = "t_disable_handler";
+    // pixiv 图库表
+    public final static String BOT_T_PIXIV = "t_pixiv";
 
     @Autowired
     public void setSystemDbname(@Value("${spring.datasource.dynamic.datasource.master.dbName}") String dbName) {

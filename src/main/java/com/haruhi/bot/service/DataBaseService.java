@@ -50,6 +50,10 @@ public class DataBaseService {
                 tableInitMapper.createDisableHandler(DataSourceConfig.BOT_T_DISABLE_HANDLER);
             }
 
+            if(dataBaseInitMapper.isTableExist(DataSourceConfig.DATA_BASE_BOT,DataSourceConfig.BOT_T_PIXIV) == 0){
+                tableInitMapper.createPixiv(DataSourceConfig.BOT_T_PIXIV);
+            }
+
             log.info("初始化数据库完成");
         }catch (Exception e){
             log.error("初始化数据库异常",e);

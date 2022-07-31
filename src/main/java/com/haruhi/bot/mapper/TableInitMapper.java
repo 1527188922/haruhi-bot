@@ -21,4 +21,6 @@ public interface TableInitMapper {
      */
     int createDisableHandler(@Param("tableName") String tableName);
 
+    int createPixiv(@Param("tableName") String tableName);
+
 }
