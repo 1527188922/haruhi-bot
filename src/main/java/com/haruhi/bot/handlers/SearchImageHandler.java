@@ -41,49 +41,51 @@ public class SearchImageHandler implements IOnMessageEvent {
     private Map<String,String> cqtMap = new ConcurrentHashMap<>(10);
     @Override
     public boolean matches(final Message message,final String command,final AtomicInteger total) {
-        if(total.get() == 0){
-            if(CommonUtil.isBlank(BotConfig.SEARCH_IMAGE_KEY)){
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"请配置aip_key。", GocqActionEnum.SEND_MSG,true);
-                total.incrementAndGet();
-                return false;
-            }
-            KQCodeUtils utils = KQCodeUtils.getInstance();
-            String cq = utils.getCq(command, CqCodeTypeEnum.image.getType(), 0);
-            String key = CommonUtil.getKey(message.getUser_id(), message.getGroup_id());
+        synchronized (total){
+            if(total.get() == 0){
+                if(CommonUtil.isBlank(BotConfig.SEARCH_IMAGE_KEY)){
+                    Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"请配置aip_key。", GocqActionEnum.SEND_MSG,true);
+                    total.incrementAndGet();
+                    return false;
+                }
+                KQCodeUtils utils = KQCodeUtils.getInstance();
+                String cq = utils.getCq(command, CqCodeTypeEnum.image.getType(), 0);
+                String key = CommonUtil.getKey(message.getUser_id(), message.getGroup_id());
 
-            if(timeoutMap.get(key) != null ){
-                if(System.currentTimeMillis() - timeoutMap.get(key) < timeout){
-                    if(cq != null){
-                        cqtMap.put(key,cq);
-                        return true;
+                if(timeoutMap.get(key) != null ){
+                    if(System.currentTimeMillis() - timeoutMap.get(key) < timeout){
+                        if(cq != null){
+                            cqtMap.put(key,cq);
+                            return true;
+                        }
+                    }else{
+                        timeoutMap.remove(key);
                     }
-                }else{
-                    timeoutMap.remove(key);
                 }
-            }
-            boolean matches = false;
-            String[] split = RegexEnum.SEARCH_IMAGE.getValue().split("\\|");
-            for (String s : split) {
-                if(command.startsWith(s)){
-                    matches = true;
-                    break;
+                boolean matches = false;
+                String[] split = RegexEnum.SEARCH_IMAGE.getValue().split("\\|");
+                for (String s : split) {
+                    if(command.startsWith(s)){
+                        matches = true;
+                        break;
+                    }
                 }
-            }
-            if(!matches){
-                return false;
-            }
+                if(!matches){
+                    return false;
+                }
 
-            if(cq != null){
-                cqtMap.put(key,cq);
-                return true;
-            }else{
-                timeoutMap.put(key,System.currentTimeMillis());
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"图呢！", GocqActionEnum.SEND_MSG,true);
-                total.incrementAndGet();
-                return false;
+                if(cq != null){
+                    cqtMap.put(key,cq);
+                    return true;
+                }else{
+                    timeoutMap.put(key,System.currentTimeMillis());
+                    Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"图呢！", GocqActionEnum.SEND_MSG,true);
+                    total.incrementAndGet();
+                    return false;
+                }
             }
+            return false;
         }
-        return false;
     }
 
     @Override

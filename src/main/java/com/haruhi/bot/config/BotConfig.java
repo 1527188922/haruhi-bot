@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class BotConfig {
+    public static boolean sleep = false;
     public static String SUPER_USER = "";
     public static String NAME = "";
     public static String SEARCH_IMAGE_KEY = "";

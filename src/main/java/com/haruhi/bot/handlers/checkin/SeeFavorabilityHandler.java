@@ -1,4 +1,4 @@
-package com.haruhi.bot.handlers;
+package com.haruhi.bot.handlers.checkin;
 
 import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.RegexEnum;
@@ -24,8 +24,9 @@ public class SeeFavorabilityHandler implements IOnGroupMessageEvent {
 
     @Override
     public boolean matches(final Message message,final String command,final AtomicInteger total) {
-
-        return command.matches(RegexEnum.SEE_FAVORABILITY.getValue());
+        synchronized (total){
+            return command.matches(RegexEnum.SEE_FAVORABILITY.getValue());
+        }
     }
 
     @Override
