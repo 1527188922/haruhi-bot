@@ -44,7 +44,7 @@ public class SearchImageHandler implements IOnMessageEvent {
         synchronized (total){
             if(total.get() == 0){
                 if(CommonUtil.isBlank(BotConfig.SEARCH_IMAGE_KEY)){
-                    Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"请配置aip_key。", GocqActionEnum.SEND_MSG,true);
+                    Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"请配置api_key。", GocqActionEnum.SEND_MSG,true);
                     total.incrementAndGet();
                     return false;
                 }
