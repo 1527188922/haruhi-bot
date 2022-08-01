@@ -1,4 +1,4 @@
-package com.haruhi.bot.handlers.event;
+package com.haruhi.bot.event.message;
 
 import com.haruhi.bot.dto.gocq.request.Message;
 

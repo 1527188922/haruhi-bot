@@ -8,7 +8,8 @@ public enum RegexEnum {
     COLLECTION_SPLIT("添加收藏|新增收藏|增加收藏"),
     COLLECTION_CANCEL("取消|算了|取消收藏"),
     SEARCH_IMAGE("识图|搜图"),
-    PIXIV("pix|PIX");
+    PIXIV("pix|PIX"),
+    FRIEND_SAID("朋友说|我朋友说|我朋友都说|朋友都说|朋友说过|我朋友说过|我朋友老说|我朋友总说|我朋友老是说|我朋友总是说");
 
 
     private String value;

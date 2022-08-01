@@ -1,4 +1,4 @@
-package com.haruhi.bot.handlers;
+package com.haruhi.bot.handlers.message;
 
 import com.alibaba.fastjson.JSONObject;
 import com.haruhi.bot.config.BotConfig;
@@ -10,7 +10,7 @@ import com.haruhi.bot.dto.gocq.request.Message;
 import com.haruhi.bot.dto.gocq.response.ForwardMsg;
 import com.haruhi.bot.dto.searchImage.response.Results;
 import com.haruhi.bot.factory.ThreadPoolFactory;
-import com.haruhi.bot.handlers.event.IOnMessageEvent;
+import com.haruhi.bot.event.message.IOnMessageEvent;
 import com.haruhi.bot.utils.CommonUtil;
 import com.haruhi.bot.utils.RestUtil;
 import com.haruhi.bot.ws.Client;
@@ -183,7 +183,7 @@ public class SearchImageHandler implements IOnMessageEvent {
 
             if(MessageTypeEnum.group.getType().equals(message.getMessage_type())){
                 // 使用合并消息
-                Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG.getAction(), message.getGroup_id(), forwardMsgs);
+                Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG, message.getGroup_id(), forwardMsgs);
 
             }else if(MessageTypeEnum.privat.getType().equals(message.getMessage_type())){
                 // 私聊

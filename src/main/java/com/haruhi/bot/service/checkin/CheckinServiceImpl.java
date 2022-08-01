@@ -8,6 +8,7 @@ import com.haruhi.bot.dto.gocq.request.Message;
 import com.haruhi.bot.dto.gocq.response.Answer;
 import com.haruhi.bot.entity.Checkin;
 import com.haruhi.bot.mapper.CheckinMapper;
+import com.haruhi.bot.utils.CommonUtil;
 import com.haruhi.bot.utils.DateTimeUtil;
 import com.simplerobot.modules.utils.KQCodeUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +37,7 @@ public class CheckinServiceImpl extends ServiceImpl<CheckinMapper, Checkin> impl
                 // 第一次签到
                 param.setGroupId(message.getGroup_id());
                 param.setUserQq(message.getUser_id());
-                int favorability = randomFavorability(3, 5);
+                int favorability = CommonUtil.randomInt(3, 5);
                 param.setFavorability(favorability);
                 param.setDayCount(1);
                 checkinMapper.insert(param);
@@ -45,16 +46,14 @@ public class CheckinServiceImpl extends ServiceImpl<CheckinMapper, Checkin> impl
                 Date current = new Date();
                 boolean today = DateTimeUtil.isSameDay(res.getLastDate(), current);
                 if(!today){
-                    int favorability = randomFavorability(3, 5);
+                    int favorability = CommonUtil.randomInt(3, 5);
                     param.setFavorability(res.getFavorability() + favorability);
                     param.setDayCount(res.getDayCount() + 1);
                     param.setLastDate(current);
                     checkinMapper.update(param,queryWrapper);
-                    answer.setMessage(MessageFormat.format("签到成功~，好感度+{0}，当前好感度{1}\n已签到{2}天",
-                            favorability,param.getFavorability(),param.getDayCount()));
+                    answer.setMessage(MessageFormat.format("签到成功~，好感度+{0}，当前好感度{1}\n已签到{2}天",favorability,param.getFavorability(),param.getDayCount()));
                 }else{
-                    answer.setMessage(MessageFormat.format("今天已经签过到啦~当前好感度{0}\n已签到{1}天",
-                            res.getFavorability(),res.getDayCount()));
+                    answer.setMessage(MessageFormat.format("今天已经签过到啦~当前好感度{0}\n已签到{1}天",res.getFavorability(),res.getDayCount()));
                 }
             }
         }catch (Exception e){
@@ -84,10 +83,5 @@ public class CheckinServiceImpl extends ServiceImpl<CheckinMapper, Checkin> impl
             log.error("查看好感度业务处理发生异常",e);
         }
 
-    }
-
-    int randomFavorability(int start,int end){
-        Random random = new Random();
-        return random.nextInt(end - start + 1) + start;
     }
 }
