@@ -25,7 +25,7 @@ public class DataSourceConfig {
     // bot数据源名称
     public final static String DATA_SOURCE_BOT_NAME = "bot";
     // bot数据库名称
-    public static String DATA_BASE_BOT = "";
+    public static String DATA_BASE_BOT = "haruhibot";
     // 数据库用户名
     public static String DATA_BASE_BOT_USERNAME = "";
     // 数据库密码
@@ -52,10 +52,6 @@ public class DataSourceConfig {
         DATA_BASE_MASTER_DRIVERCLASSNAME = driverClassName;
     }
 
-    @Autowired
-    public void setBotDbname(@Value("${mysql.dbName}") String dbName) {
-        DATA_BASE_BOT = dbName;
-    }
 
     @Autowired
     public void setUsername(@Value("${mysql.username}") String username) {
