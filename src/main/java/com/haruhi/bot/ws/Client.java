@@ -8,7 +8,7 @@ import com.haruhi.bot.constant.PostTypeEnum;
 import com.haruhi.bot.dto.gocq.response.Answer;
 import com.haruhi.bot.dto.gocq.response.AnswerBox;
 import com.haruhi.bot.dto.gocq.response.ForwardMsg;
-import com.haruhi.bot.handlers.dispenser.MessageDispenser;
+import com.haruhi.bot.dispenser.message.MessageDispenser;
 import com.haruhi.bot.thread.ReConnectTask;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
@@ -16,7 +16,6 @@ import org.apache.logging.log4j.util.Strings;
 import javax.websocket.*;
 import java.io.IOException;
 import java.net.URI;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -108,10 +107,10 @@ public class Client {
         box.setAction(action.getAction());
         sendMessage(JSONObject.toJSONString(box));
     }
-    public static void sendMessage(String action,String groupId, List<ForwardMsg> params){
+    public static void sendMessage(GocqActionEnum action,String groupId, List<ForwardMsg> params){
         AnswerBox<Answer> collectionAnswerBox = new AnswerBox<>();
 
-        collectionAnswerBox.setAction(action);
+        collectionAnswerBox.setAction(action.getAction());
 
         Answer answer = new Answer();
         answer.setGroup_id(groupId);

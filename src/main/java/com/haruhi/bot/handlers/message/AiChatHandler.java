@@ -1,4 +1,4 @@
-package com.haruhi.bot.handlers;
+package com.haruhi.bot.handlers.message;
 
 import com.haruhi.bot.config.BotConfig;
 import com.haruhi.bot.constant.CqCodeTypeEnum;
@@ -8,7 +8,7 @@ import com.haruhi.bot.constant.RegexEnum;
 import com.haruhi.bot.dto.aiChat.response.ChatResp;
 import com.haruhi.bot.dto.gocq.request.Message;
 import com.haruhi.bot.factory.ThreadPoolFactory;
-import com.haruhi.bot.handlers.event.IOnMessageEvent;
+import com.haruhi.bot.event.message.IOnMessageEvent;
 import com.haruhi.bot.utils.RestUtil;
 import com.haruhi.bot.ws.Client;
 import com.simplerobot.modules.utils.KQCodeUtils;

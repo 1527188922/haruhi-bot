@@ -1,4 +1,4 @@
-package com.haruhi.bot.handlers;
+package com.haruhi.bot.handlers.message;
 
 import com.haruhi.bot.constant.CqCodeTypeEnum;
 import com.haruhi.bot.constant.GocqActionEnum;
@@ -6,7 +6,7 @@ import com.haruhi.bot.constant.RegexEnum;
 import com.haruhi.bot.dto.gocq.request.Message;
 import com.haruhi.bot.entity.Pixiv;
 import com.haruhi.bot.factory.ThreadPoolFactory;
-import com.haruhi.bot.handlers.event.IOnMessageEvent;
+import com.haruhi.bot.event.message.IOnMessageEvent;
 import com.haruhi.bot.service.pixiv.PixivService;
 import com.haruhi.bot.utils.CommonUtil;
 import com.haruhi.bot.ws.Client;

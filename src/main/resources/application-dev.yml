@@ -10,8 +10,10 @@ mysql:
   # 数据库名称(不用手动建,程序会自动建立)
   dbName: haruhibot
 gocq:
-  # go-cqhttp正向ws代理地址,与go-cqhttp配置中的保持一致
+  # go-cqhttp正向ws代理地址,与go-cqhttp配置中的保持一致 必要
   ws: ws://127.0.0.1:9909
+  # go-cqhttp正向http代理地址,与go-cqhttp配置中的保持一致 后面不要带斜杠 必要
+  http: http://127.0.0.1:5700
 bot:
   # bot程序端口
   port: 8081
@@ -21,9 +23,6 @@ bot:
   name: 春日酱
   # Saucenao的API_KEY，通过 https://saucenao.com/user.php?page=search-api 注册获取
   search-image-key:
-
-
-
 
 #########################  以下配置项勿改  #########################
 

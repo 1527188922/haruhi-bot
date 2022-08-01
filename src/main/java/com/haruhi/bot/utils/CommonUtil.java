@@ -1,5 +1,7 @@
 package com.haruhi.bot.utils;
 
+import java.util.Random;
+
 public class CommonUtil {
 
     private static String separator = "-";
@@ -15,9 +17,16 @@ public class CommonUtil {
     }
 
     public static boolean isBlank(final CharSequence cs){
-        if(cs == null || cs.toString().trim() == ""){
+        if(cs == null || "".equals(cs.toString().trim())){
             return true;
         }
         return false;
+    }
+    private static Random random;
+    public static int randomInt(int start,int end){
+        if(random == null){
+            random = new Random();
+        }
+        return random.nextInt(end - start + 1) + start;
     }
 }

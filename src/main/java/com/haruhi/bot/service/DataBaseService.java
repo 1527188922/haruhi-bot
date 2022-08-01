@@ -11,8 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import java.text.MessageFormat;
 
 @Slf4j
@@ -28,19 +26,16 @@ public class DataBaseService {
     @Autowired
     private DynamicRoutingDataSource dynamicRoutingDataSource;
 
-    @PostConstruct
-    private void init(){
-        log.info("开始初始化数据库...");
-        dataBaseInit();
-    }
 
     public void dataBaseInit(){
+        log.info("开始初始化数据库...");
         try {
             if(dataBaseInitMapper.isDataBaseExist(DataSourceConfig.DATA_BASE_BOT) == 0){
                 log.info("数据库不存在,开始创建...");
                 dataBaseInitMapper.createDataBase(DataSourceConfig.DATA_BASE_BOT);
+                log.info("数据库创建成功");
             }
-            log.info("建库成功,开始重新加载数据源...");
+            log.info("开始重新加载数据源...");
             reloadDatabaseSource();
 
             if(dataBaseInitMapper.isTableExist(DataSourceConfig.DATA_BASE_BOT,DataSourceConfig.BOT_T_CHECKIN) == 0){

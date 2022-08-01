@@ -10,6 +10,7 @@ public class BotConfig {
     public static String SUPER_USER = "";
     public static String NAME = "";
     public static String SEARCH_IMAGE_KEY = "";
+    public static String HTTP_URL = "";
 
     @Autowired
     public void setSuperUser(@Value("${bot.super-user}") String superUser) {
@@ -22,5 +23,9 @@ public class BotConfig {
     @Autowired
     public void setSearchImageKey(@Value("${bot.search-image-key}") String searchImageKey){
         SEARCH_IMAGE_KEY = searchImageKey;
+    }
+    @Autowired
+    public void setHttpUrl(@Value("${gocq.http}") String httpUrl){
+        HTTP_URL = httpUrl;
     }
 }

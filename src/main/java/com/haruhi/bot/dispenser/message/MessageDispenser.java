@@ -1,12 +1,12 @@
-package com.haruhi.bot.handlers.dispenser;
+package com.haruhi.bot.dispenser.message;
 
 import com.alibaba.fastjson.JSONObject;
 import com.haruhi.bot.constant.MessageTypeEnum;
 import com.haruhi.bot.dto.gocq.request.Message;
-import com.haruhi.bot.handlers.event.IMessageEventType;
-import com.haruhi.bot.handlers.event.IOnGroupMessageEvent;
-import com.haruhi.bot.handlers.event.IOnMessageEvent;
-import com.haruhi.bot.handlers.event.IOnPrivateMessageEvent;
+import com.haruhi.bot.event.message.IMessageEventType;
+import com.haruhi.bot.event.message.IOnGroupMessageEvent;
+import com.haruhi.bot.event.message.IOnMessageEvent;
+import com.haruhi.bot.event.message.IOnPrivateMessageEvent;
 import com.haruhi.bot.utils.ApplicationContextProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
