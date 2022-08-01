@@ -3,7 +3,7 @@
 <mapper namespace="com.haruhi.bot.mapper.DataBaseInitMapper">
 
     <select id="isDataBaseExist" resultType="java.lang.Integer">
-        SELECT COUNT(1) FROM information_schema.SCHEMATA WHERE SCHEMA_NAME = #{dbName}
+        SELECT COUNT(1) FROM information_schema.SCHEMATA WHERE SCHEMA_NAME = ${dbName}
     </select>
     <update id="createDataBase">
         CREATE DATABASE ${dbName} DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
