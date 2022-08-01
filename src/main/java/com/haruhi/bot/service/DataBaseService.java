@@ -25,8 +25,7 @@ public class DataBaseService {
     private DynamicDataSourceProperties dynamicDataSourceProperties;
     @Autowired
     private DynamicRoutingDataSource dynamicRoutingDataSource;
-    @Autowired
-    private DataSourceConfig dataSourceConfig;
+
 
     public void dataBaseInit(){
         log.info("开始初始化数据库...");
