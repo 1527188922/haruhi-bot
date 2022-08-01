@@ -43,11 +43,7 @@ public class SearchImageHandler implements IOnMessageEvent {
     public boolean matches(final Message message,final String command,final AtomicInteger total) {
         synchronized (total){
             if(total.get() == 0){
-                if(CommonUtil.isBlank(BotConfig.SEARCH_IMAGE_KEY)){
-                    Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"请配置api_key。", GocqActionEnum.SEND_MSG,true);
-                    total.incrementAndGet();
-                    return false;
-                }
+
                 KQCodeUtils utils = KQCodeUtils.getInstance();
                 String cq = utils.getCq(command, CqCodeTypeEnum.image.getType(), 0);
                 String key = CommonUtil.getKey(message.getUser_id(), message.getGroup_id());

@@ -21,6 +21,18 @@ public interface TableInitMapper {
      */
     int createDisableHandler(@Param("tableName") String tableName);
 
+    /**
+     * pixiv图库表
+     * @param tableName
+     * @return
+     */
     int createPixiv(@Param("tableName") String tableName);
+
+    /**
+     * 词条表
+     * @param tableName
+     * @return
+     */
+    int createWordStrip(@Param("tableName") String tableName);
 
 }

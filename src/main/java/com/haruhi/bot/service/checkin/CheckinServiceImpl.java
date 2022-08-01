@@ -30,13 +30,13 @@ public class CheckinServiceImpl extends ServiceImpl<CheckinMapper, Checkin> impl
     public void checkin(Answer answer, Message message) {
         try {
             QueryWrapper<Checkin> queryWrapper = new QueryWrapper<>();
-            queryWrapper.lambda().eq(Checkin::getGroupId,message.getGroup_id()).eq(Checkin::getUserQq,message.getUser_id());
+            queryWrapper.lambda().eq(Checkin::getGroupId,message.getGroup_id()).eq(Checkin::getUserId,message.getUser_id());
             Checkin res = checkinMapper.selectOne(queryWrapper);
             Checkin param = new Checkin();
             if(res == null){
                 // 第一次签到
                 param.setGroupId(message.getGroup_id());
-                param.setUserQq(message.getUser_id());
+                param.setUserId(message.getUser_id());
                 int favorability = CommonUtil.randomInt(3, 5);
                 param.setFavorability(favorability);
                 param.setDayCount(1);
@@ -66,7 +66,7 @@ public class CheckinServiceImpl extends ServiceImpl<CheckinMapper, Checkin> impl
     public void seeFavorability(Answer answer,Message message) {
         try {
             LambdaQueryWrapper<Checkin> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(Checkin::getGroupId,message.getGroup_id()).eq(Checkin::getUserQq,message.getUser_id());
+            queryWrapper.eq(Checkin::getGroupId,message.getGroup_id()).eq(Checkin::getUserId,message.getUser_id());
             Checkin checkin = checkinMapper.selectOne(queryWrapper);
             if(checkin == null){
                 answer.setAuto_escape(true);

@@ -5,7 +5,7 @@
     <update id="createCheckin">
         CREATE TABLE `${tableName}` (
             `id` int(11) NOT NULL AUTO_INCREMENT,
-            `user_qq` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+            `user_id` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
             `group_id` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
             `day_count` int(11) DEFAULT '0',
             `favorability` int(11) DEFAULT '0',
@@ -40,5 +40,15 @@
         `tags` text NOT NULL,
         PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='pixiv图库（数据通过程序从真寻库（pgsql）搬来的）';
+    </update>
+    <update id="createWordStrip">
+        CREATE TABLE `${tableName}` (
+            `id` INT auto_increment NOT NULL,
+            `user_id` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+            `group_id` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+            `key_word` varchar(255) NOT NULL,
+            `answer` text NOT NULL,
+            PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='词条表';
     </update>
 </mapper>

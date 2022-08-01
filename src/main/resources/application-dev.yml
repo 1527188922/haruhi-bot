@@ -19,7 +19,7 @@ bot:
   port: 8081
   # 超级用户/管理员qq 只能填一个
   super-user:
-  # bot的名字
+  # bot的名字 只能填一个
   name: 春日酱
   # Saucenao的API_KEY，通过 https://saucenao.com/user.php?page=search-api 注册获取
   search-image-key:
