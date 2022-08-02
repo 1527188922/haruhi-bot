@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Component
@@ -39,57 +38,55 @@ public class SearchImageHandler implements IOnMessageEvent {
 
     private Map<String,Long> timeoutMap = new ConcurrentHashMap<>(10);
     private Map<String,String> cqtMap = new ConcurrentHashMap<>(10);
-    @Override
-    public synchronized boolean matches(final Message message,final String command,final AtomicInteger total) {
-        if(total.get() == 0){
+    public boolean matches(final Message message,final String command) {
+        KQCodeUtils utils = KQCodeUtils.getInstance();
+        String cq = utils.getCq(command, CqCodeTypeEnum.image.getType(), 0);
+        String key = CommonUtil.getKey(message.getUser_id(), message.getGroup_id());
 
-            KQCodeUtils utils = KQCodeUtils.getInstance();
-            String cq = utils.getCq(command, CqCodeTypeEnum.image.getType(), 0);
-            String key = CommonUtil.getKey(message.getUser_id(), message.getGroup_id());
-
-            if(timeoutMap.get(key) != null ){
-                if(System.currentTimeMillis() - timeoutMap.get(key) < timeout){
-                    if(cq != null){
-                        cqtMap.put(key,cq);
-                        return true;
-                    }
-                }else{
-                    timeoutMap.remove(key);
+        if(timeoutMap.get(key) != null ){
+            if(System.currentTimeMillis() - timeoutMap.get(key) < timeout){
+                if(cq != null){
+                    cqtMap.put(key,cq);
+                    return true;
                 }
-            }
-            boolean matches = false;
-            String[] split = RegexEnum.SEARCH_IMAGE.getValue().split("\\|");
-            for (String s : split) {
-                if(command.startsWith(s)){
-                    matches = true;
-                    break;
-                }
-            }
-            if(!matches){
-                return false;
-            }
-
-            if(cq != null){
-                cqtMap.put(key,cq);
-                return true;
             }else{
-                timeoutMap.put(key,System.currentTimeMillis());
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"图呢！", GocqActionEnum.SEND_MSG,true);
-                total.incrementAndGet();
-                return false;
+                timeoutMap.remove(key);
             }
         }
-        return false;
+        boolean matches = false;
+        String[] split = RegexEnum.SEARCH_IMAGE.getValue().split("\\|");
+        for (String s : split) {
+            if(command.startsWith(s)){
+                matches = true;
+                break;
+            }
+        }
+        if(!matches){
+            return false;
+        }
+
+        if(cq != null){
+            cqtMap.put(key,cq);
+            return true;
+        }else{
+            timeoutMap.put(key,System.currentTimeMillis());
+            Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"图呢！", GocqActionEnum.SEND_MSG,true);
+            return false;
+        }
     }
 
     @Override
-    public void onMessage(Message message, String command) {
+    public boolean onMessage(Message message, String command) {
+        if (!matches(message,command)){
+            return false;
+        }
         String key = CommonUtil.getKey(message.getUser_id(), message.getGroup_id());
         if(key != null){
             Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"开始搜图...",GocqActionEnum.SEND_MSG,true);
             ThreadPoolFactory.getCommandHandlerThreadPool().execute(new SearchImageHandler.searchImageTask(message,cqtMap.get(key)));
             after(key);
         }
+        return true;
     }
 
     private void after(String key){

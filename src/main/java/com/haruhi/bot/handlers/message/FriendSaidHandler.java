@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -32,8 +31,8 @@ public class FriendSaidHandler implements IOnGroupMessageEvent {
         return 99;
     }
     private String say;
-    @Override
-    public synchronized boolean matches(final Message message,final String command,final AtomicInteger total) {
+
+    public boolean matches(final Message message,final String command) {
         String[] split = RegexEnum.FRIEND_SAID.getValue().split("\\|");
         for (String s : split) {
             if (command.startsWith(s)) {
@@ -50,9 +49,13 @@ public class FriendSaidHandler implements IOnGroupMessageEvent {
     }
 
     @Override
-    public void onGroup(Message message, String command) {
+    public boolean onGroup(Message message, String command) {
+        if(!matches(message,command)){
+            return false;
+        }
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(new FriendSaidHandler.SayTask(message,this.say));
         this.say = null;
+        return true;
     }
 
     public static class SayTask implements Runnable{

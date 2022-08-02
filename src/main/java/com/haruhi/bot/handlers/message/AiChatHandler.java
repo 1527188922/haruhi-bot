@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,32 +37,29 @@ public class AiChatHandler implements IOnMessageEvent {
     }
     private String[] cqs;
 
-    @Override
-    public synchronized boolean matches(final Message message,final String command,final AtomicInteger total) {
-        if(total.get() == 0){
-            if(MessageTypeEnum.privat.getType().equals(message.getMessage_type())){
-                // 私聊了机器人
-                if(command.matches(RegexEnum.CQ_CODE.getValue())){
-                    return false;
-                }
-                this.cqs = null;
-                return true;
+    public boolean matches(final Message message,final String command) {
+        if(MessageTypeEnum.privat.getType().equals(message.getMessage_type())){
+            // 私聊了机器人
+            if(command.matches(RegexEnum.CQ_CODE.getValue())){
+                return false;
             }
-            if(MessageTypeEnum.group.getType().equals(message.getMessage_type())){
-                KQCodeUtils utils = KQCodeUtils.getInstance();
-                String[] cqs = utils.getCqs(command, CqCodeTypeEnum.at.getType());
-                if(cqs == null || cqs.length == 0){
-                    // 没有at机器人
-                    this.cqs = null;
-                    return false;
-                }
-                for (String cq : cqs) {
-                    String qq = utils.getParam(cq, "qq", CqCodeTypeEnum.at.getType());
-                    if(qq != null && qq.equals(message.getSelf_id())){
-                        // 表示at了机器人
-                        this.cqs = cqs;
-                        return true;
-                    }
+            this.cqs = null;
+            return true;
+        }
+        if(MessageTypeEnum.group.getType().equals(message.getMessage_type())){
+            KQCodeUtils utils = KQCodeUtils.getInstance();
+            String[] cqs = utils.getCqs(command, CqCodeTypeEnum.at.getType());
+            if(cqs == null || cqs.length == 0){
+                // 没有at机器人
+                this.cqs = null;
+                return false;
+            }
+            for (String cq : cqs) {
+                String qq = utils.getParam(cq, "qq", CqCodeTypeEnum.at.getType());
+                if(qq != null && qq.equals(message.getSelf_id())){
+                    // 表示at了机器人
+                    this.cqs = cqs;
+                    return true;
                 }
             }
         }
@@ -72,7 +68,10 @@ public class AiChatHandler implements IOnMessageEvent {
     }
 
     @Override
-    public void onMessage(Message message,String command) {
+    public boolean onMessage(Message message,String command) {
+        if(!matches(message,command)){
+            return false;
+        }
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(()->{
             String s = command;
             if(this.cqs != null){
@@ -93,6 +92,7 @@ public class AiChatHandler implements IOnMessageEvent {
                 }
             }
         });
+        return true;
     }
 
     private static String reg ="(?<=\\{face:)[0-9]*(?=\\})";

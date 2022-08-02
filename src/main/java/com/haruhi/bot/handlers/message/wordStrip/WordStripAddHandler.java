@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,8 +32,7 @@ public class WordStripAddHandler implements IOnGroupMessageEvent {
     @Autowired
     private WordStripService wordStripService;
 
-    @Override
-    public synchronized boolean matches(final Message message,final String command,final AtomicInteger total) {
+    public boolean matches(final Message message,final String command) {
         Pattern compile = Pattern.compile(RegexEnum.WORD_STRIP_ADD.getValue());
         Matcher matcher = compile.matcher(command);
         if(matcher.find()){
@@ -52,7 +50,10 @@ public class WordStripAddHandler implements IOnGroupMessageEvent {
     }
 
     @Override
-    public void onGroup(Message message, String command) {
+    public boolean onGroup(Message message, String command) {
+        if (!matches(message,command)) {
+            return false;
+        }
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(()->{
             LambdaQueryWrapper<WordStrip> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(WordStrip::getGroupId,message.getGroup_id()).eq(WordStrip::getKeyWord,this.keyWord);
@@ -78,5 +79,6 @@ public class WordStripAddHandler implements IOnGroupMessageEvent {
             }
 
         });
+        return true;
     }
 }

@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Component
@@ -28,8 +27,9 @@ public class WordStripDeleteHandler implements IOnGroupMessageEvent {
     private String keyWord;
     @Autowired
     private WordStripService wordStripService;
-    @Override
-    public synchronized boolean matches(final Message message,final String command,final AtomicInteger total) {
+
+
+    public boolean matches(final Message message,final String command) {
         if(command.startsWith(RegexEnum.WORD_STRIP_DELETE.getValue())){
             String keyWord = command.replace(RegexEnum.WORD_STRIP_DELETE.getValue(),"");
             if(Strings.isNotBlank(keyWord)){
@@ -42,7 +42,10 @@ public class WordStripDeleteHandler implements IOnGroupMessageEvent {
     }
 
     @Override
-    public void onGroup(Message message, String command) {
+    public boolean onGroup(Message message, String command) {
+        if (!matches(message,command)) {
+            return false;
+        }
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(()->{
             LambdaQueryWrapper<WordStrip> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(WordStrip::getGroupId,message.getGroup_id()).eq(WordStrip::getKeyWord,this.keyWord);
@@ -66,5 +69,6 @@ public class WordStripDeleteHandler implements IOnGroupMessageEvent {
             }
 
         });
+        return true;
     }
 }

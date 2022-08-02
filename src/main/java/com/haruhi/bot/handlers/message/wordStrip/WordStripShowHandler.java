@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Component
@@ -28,13 +27,15 @@ public class WordStripShowHandler implements IOnGroupMessageEvent {
 
     @Autowired
     private WordStripService wordStripService;
-    @Override
-    public synchronized boolean matches(final Message message,final String command,final AtomicInteger total) {
+    public boolean matches(final Message message,final String command) {
         return command.matches(RegexEnum.WORD_STRIP_SHOW.getValue());
     }
 
     @Override
-    public void onGroup(Message message, String command) {
+    public boolean onGroup(Message message, String command) {
+        if (!matches(message,command)) {
+            return false;
+        }
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(()->{
             LambdaQueryWrapper<WordStrip> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(WordStrip::getGroupId,message.getGroup_id());
@@ -45,6 +46,7 @@ public class WordStripShowHandler implements IOnGroupMessageEvent {
             }
             Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageTypeEnum.group, processWordStrip(list), GocqActionEnum.SEND_MSG,false);
         });
+        return true;
     }
 
     private String processWordStrip(List<WordStrip> list){

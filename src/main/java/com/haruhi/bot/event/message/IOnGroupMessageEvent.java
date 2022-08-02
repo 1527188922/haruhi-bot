@@ -8,5 +8,5 @@ public interface IOnGroupMessageEvent extends IMessageEventType {
      * @param message
      * @param command
      */
-    void onGroup(Message message, String command);
+    boolean onGroup(Message message, String command);
 }
