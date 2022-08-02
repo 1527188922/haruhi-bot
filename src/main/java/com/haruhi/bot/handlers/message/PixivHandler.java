@@ -35,6 +35,7 @@ public class PixivHandler implements IOnMessageEvent {
             KQCodeUtils instance = KQCodeUtils.getInstance();
             String cq = instance.getCq(command, 0);
             if(cq != null){
+                after();
                 return false;
             }
             String[] split = RegexEnum.PIXIV.getValue().split("\\|");
@@ -45,23 +46,23 @@ public class PixivHandler implements IOnMessageEvent {
                 }
             }
         }
+        after();
         return false;
     }
 
     @Override
     public void onMessage(Message message, String command) {
-        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new PixivHandler.PixicTask(pixivService,tag,message));
-        after();
+        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new PixivTask(pixivService,tag,message));
     }
     private void after(){
         this.tag = null;
     }
 
-    public static class PixicTask implements Runnable{
+    public static class PixivTask implements Runnable{
         private PixivService pixivService;
         private String tag;
         private Message message;
-        public PixicTask(PixivService pixivService,String tag,Message message){
+        public PixivTask(PixivService pixivService, String tag, Message message){
             // 重新new 一个字符串，防止后续tag发生改变会影响线程内的tag
             this.tag = new String(tag == null ? "" : tag);
             this.pixivService = pixivService;

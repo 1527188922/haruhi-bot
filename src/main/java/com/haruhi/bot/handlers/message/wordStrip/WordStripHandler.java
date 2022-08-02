@@ -9,15 +9,15 @@ import com.haruhi.bot.ws.Client;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Component
 public class WordStripHandler implements IOnGroupMessageEvent {
 
-    public static Map<String,String> cache = new HashMap<>(10);
+    public static Map<String,String> cache = new ConcurrentHashMap<>(10);
 
     @Override
     public int weight() {
