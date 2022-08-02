@@ -23,7 +23,7 @@ public class WordStripServiceImpl extends ServiceImpl<WordStripMapper, WordStrip
         List<WordStrip> wordStrips = wordStripMapper.selectList(null);
         if (wordStrips != null && wordStrips.size() > 0){
             for (WordStrip element : wordStrips) {
-                WordStripHandler.cache.put(element.getGroupId()+"-"+element.getKeyWord(),element.getAnswer());
+                WordStripHandler.cache.put(element.getGroupId() + "-" + element.getKeyWord(),element.getAnswer());
             }
         }
     }

@@ -30,24 +30,22 @@ public class PixivHandler implements IOnMessageEvent {
     private String tag;
 
     @Override
-    public boolean matches(final Message message,final String command,final AtomicInteger total) {
-        synchronized (total){
-            if(total.get() == 0){
-                KQCodeUtils instance = KQCodeUtils.getInstance();
-                String cq = instance.getCq(command, 0);
-                if(cq != null){
-                    return false;
-                }
-                String[] split = RegexEnum.PIXIV.getValue().split("\\|");
-                for (String s : split) {
-                    if (command.startsWith(s)) {
-                        tag = command.replace(s,"");
-                        return true;
-                    }
+    public synchronized boolean matches(final Message message,final String command,final AtomicInteger total) {
+        if(total.get() == 0){
+            KQCodeUtils instance = KQCodeUtils.getInstance();
+            String cq = instance.getCq(command, 0);
+            if(cq != null){
+                return false;
+            }
+            String[] split = RegexEnum.PIXIV.getValue().split("\\|");
+            for (String s : split) {
+                if (command.startsWith(s)) {
+                    tag = command.replace(s,"");
+                    return true;
                 }
             }
-            return false;
         }
+        return false;
     }
 
     @Override

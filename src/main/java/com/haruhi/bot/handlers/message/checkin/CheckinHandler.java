@@ -23,10 +23,8 @@ public class CheckinHandler implements IOnGroupMessageEvent {
     private CheckinService checkinService;
 
     @Override
-    public boolean matches(final Message message,final String command,final AtomicInteger total) {
-        synchronized (total){
-            return command.matches(RegexEnum.CHECKIN.getValue());
-        }
+    public synchronized boolean matches(final Message message,final String command,final AtomicInteger total) {
+        return command.matches(RegexEnum.CHECKIN.getValue());
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.haruhi.bot.config.WebSocketConfig;
 import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.MessageTypeEnum;
 import com.haruhi.bot.constant.PostTypeEnum;
+import com.haruhi.bot.dto.gocq.request.Message;
 import com.haruhi.bot.dto.gocq.response.Answer;
 import com.haruhi.bot.dto.gocq.response.AnswerBox;
 import com.haruhi.bot.dto.gocq.response.ForwardMsg;
@@ -51,19 +52,19 @@ public class Client {
             return;
         }
         try {
-            JSONObject msgJson = JSONObject.parseObject(message);
-            String postType = msgJson.getString(PostTypeEnum.post_type.toString());
-            if(PostTypeEnum.message.toString().equals(postType)){
+            Message messageBean = JSONObject.parseObject(message, Message.class);
+
+            if(PostTypeEnum.message.toString().equals(messageBean.getPost_type())){
                 // 普通消息
-                final String command = msgJson.getString("message");
+                final String command = messageBean.getMessage();
                 if(command != null){
                     log.info("收到消息==>{}",message);
-                    MessageDispenser.onEvent(message,command);
+                    MessageDispenser.onEvent(messageBean,command);
                 }
 
-            }else if(PostTypeEnum.notice.toString().equals(postType)){
+            }else if(PostTypeEnum.notice.toString().equals(messageBean.getPost_type())){
                 // bot通知
-            } else if(PostTypeEnum.meta_event.toString().equals(postType)){
+            } else if(PostTypeEnum.meta_event.toString().equals(messageBean.getPost_type())){
                 // 系统消息 心跳包、
             }else{
                 log.info("收到未知post_type消息:{}",message);

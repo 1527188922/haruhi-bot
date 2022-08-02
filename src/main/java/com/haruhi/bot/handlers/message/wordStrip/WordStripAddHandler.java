@@ -1,5 +1,6 @@
 package com.haruhi.bot.handlers.message.wordStrip;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.MessageTypeEnum;
 import com.haruhi.bot.constant.RegexEnum;
@@ -33,28 +34,33 @@ public class WordStripAddHandler implements IOnGroupMessageEvent {
     private WordStripService wordStripService;
 
     @Override
-    public boolean matches(final Message message,final String command,final AtomicInteger total) {
-        synchronized (total){
-            Pattern compile = Pattern.compile(RegexEnum.WORD_STRIP_ADD.getValue());
-            Matcher matcher = compile.matcher(command);
-            if(matcher.find()){
-                String keyWord = matcher.group(1);
-                if(keyWord != null && !CommonUtil.isBlank(keyWord)){
-                    String answer = command.substring(command.indexOf("答") + 1);
-                    if(answer != null && !CommonUtil.isBlank(answer)){
-                        this.keyWord = keyWord;
-                        this.answer = answer;
-                        return true;
-                    }
+    public synchronized boolean matches(final Message message,final String command,final AtomicInteger total) {
+        Pattern compile = Pattern.compile(RegexEnum.WORD_STRIP_ADD.getValue());
+        Matcher matcher = compile.matcher(command);
+        if(matcher.find()){
+            String keyWord = matcher.group(1);
+            if(keyWord != null && !CommonUtil.isBlank(keyWord)){
+                String answer = command.substring(command.indexOf("答") + 1);
+                if(answer != null && !CommonUtil.isBlank(answer)){
+                    this.keyWord = keyWord;
+                    this.answer = answer;
+                    return true;
                 }
             }
-            return false;
         }
+        return false;
     }
 
     @Override
     public void onGroup(Message message, String command) {
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(()->{
+            LambdaQueryWrapper<WordStrip> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(WordStrip::getGroupId,message.getGroup_id()).eq(WordStrip::getKeyWord,this.keyWord);
+            WordStrip wordStrip = wordStripService.getOne(queryWrapper);
+            if(wordStrip != null){
+                Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageTypeEnum.group,MessageFormat.format("已存在词条：{0}",this.keyWord), GocqActionEnum.SEND_MSG,true);
+                return;
+            }
             try {
                 WordStrip param = new WordStrip();
                 param.setKeyWord(this.keyWord);
@@ -62,7 +68,7 @@ public class WordStripAddHandler implements IOnGroupMessageEvent {
                 param.setGroupId(message.getGroup_id());
                 param.setUserId(message.getUser_id());
                 if(wordStripService.save(param)){
-                    WordStripHandler.cache.put(message.getGroup_id()+"-"+this.keyWord,this.answer);
+                    WordStripHandler.cache.put(message.getGroup_id() + "-" + this.keyWord,this.answer);
                     Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageTypeEnum.group,MessageFormat.format("词条添加成功：{0}",this.keyWord), GocqActionEnum.SEND_MSG,true);
                     return;
                 }
