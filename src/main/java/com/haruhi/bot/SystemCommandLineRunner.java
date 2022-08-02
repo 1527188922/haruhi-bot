@@ -1,6 +1,7 @@
 package com.haruhi.bot;
 
 import com.haruhi.bot.service.DataBaseService;
+import com.haruhi.bot.thread.FirstTask;
 import com.haruhi.bot.ws.Client;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +14,14 @@ public class SystemCommandLineRunner implements CommandLineRunner {
 
     @Autowired
     private DataBaseService dataBaseService;
+    @Autowired
+    private FirstTask firstTask;
     @Override
     public void run(String... args) throws Exception {
 
         dataBaseService.dataBaseInit();
+
+        firstTask.execute(firstTask);
 
         log.info("开始连接go-cqhttp...");
         Client instance = Client.getInstance();
