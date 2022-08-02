@@ -85,8 +85,7 @@ public class MessageDispenser {
         }
     }
 
-    public static void onEvent(String json,final String command){
-        final Message message = JSONObject.parseObject(json, Message.class);
+    public static void onEvent(final Message message,final String command){
         String messageType = message.getMessage_type();
         AtomicInteger total = new AtomicInteger(0);
         for (IMessageEventType element : container) {

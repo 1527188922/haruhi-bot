@@ -33,22 +33,20 @@ public class FriendSaidHandler implements IOnGroupMessageEvent {
     }
     private String say;
     @Override
-    public boolean matches(final Message message,final String command,final AtomicInteger total) {
-        synchronized (total){
-            String[] split = RegexEnum.FRIEND_SAID.getValue().split("\\|");
-            for (String s : split) {
-                if (command.startsWith(s)) {
-                    say = command.replace(s,"").trim();
-                    if("".equals(say)){
-                        return false;
-                    }
-                    say = say.replaceFirst("他|她|它","我");
-                    return true;
+    public synchronized boolean matches(final Message message,final String command,final AtomicInteger total) {
+        String[] split = RegexEnum.FRIEND_SAID.getValue().split("\\|");
+        for (String s : split) {
+            if (command.startsWith(s)) {
+                say = command.replace(s,"").trim();
+                if("".equals(say)){
+                    return false;
                 }
+                say = say.replaceFirst("他|她|它","我");
+                return true;
             }
-
-            return false;
         }
+
+        return false;
     }
 
     @Override

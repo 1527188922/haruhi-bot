@@ -39,38 +39,36 @@ public class AiChatHandler implements IOnMessageEvent {
     private String[] cqs;
 
     @Override
-    public boolean matches(final Message message,final String command,final AtomicInteger total) {
-        synchronized (total){
-            if(total.get() == 0){
-                if(MessageTypeEnum.privat.getType().equals(message.getMessage_type())){
-                    // 私聊了机器人
-                    if(command.matches(RegexEnum.CQ_CODE.getValue())){
-                        return false;
-                    }
-                    this.cqs = null;
-                    return true;
+    public synchronized boolean matches(final Message message,final String command,final AtomicInteger total) {
+        if(total.get() == 0){
+            if(MessageTypeEnum.privat.getType().equals(message.getMessage_type())){
+                // 私聊了机器人
+                if(command.matches(RegexEnum.CQ_CODE.getValue())){
+                    return false;
                 }
-                if(MessageTypeEnum.group.getType().equals(message.getMessage_type())){
-                    KQCodeUtils utils = KQCodeUtils.getInstance();
-                    String[] cqs = utils.getCqs(command, CqCodeTypeEnum.at.getType());
-                    if(cqs == null || cqs.length == 0){
-                        // 没有at机器人
-                        this.cqs = null;
-                        return false;
-                    }
-                    for (String cq : cqs) {
-                        String qq = utils.getParam(cq, "qq", CqCodeTypeEnum.at.getType());
-                        if(qq != null && qq.equals(message.getSelf_id())){
-                            // 表示at了机器人
-                            this.cqs = cqs;
-                            return true;
-                        }
+                this.cqs = null;
+                return true;
+            }
+            if(MessageTypeEnum.group.getType().equals(message.getMessage_type())){
+                KQCodeUtils utils = KQCodeUtils.getInstance();
+                String[] cqs = utils.getCqs(command, CqCodeTypeEnum.at.getType());
+                if(cqs == null || cqs.length == 0){
+                    // 没有at机器人
+                    this.cqs = null;
+                    return false;
+                }
+                for (String cq : cqs) {
+                    String qq = utils.getParam(cq, "qq", CqCodeTypeEnum.at.getType());
+                    if(qq != null && qq.equals(message.getSelf_id())){
+                        // 表示at了机器人
+                        this.cqs = cqs;
+                        return true;
                     }
                 }
             }
-            this.cqs = null;
-            return false;
         }
+        this.cqs = null;
+        return false;
     }
 
     @Override

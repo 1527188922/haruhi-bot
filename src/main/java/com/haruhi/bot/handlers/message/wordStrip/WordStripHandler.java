@@ -25,16 +25,14 @@ public class WordStripHandler implements IOnGroupMessageEvent {
     }
     private String answer;
     @Override
-    public boolean matches(Message message, String command, AtomicInteger total) {
-        synchronized (total){
-            String answer = cache.get(message.getGroup_id() + "-" + command);
-            if(answer != null){
-                this.answer = answer;
-                return true;
-            }
-            this.answer = null;
-            return false;
+    public synchronized boolean matches(final Message message,final String command,final AtomicInteger total) {
+        String answer = cache.get(message.getGroup_id() + "-" + command);
+        if(answer != null){
+            this.answer = answer;
+            return true;
         }
+        this.answer = null;
+        return false;
     }
 
     @Override
