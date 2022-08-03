@@ -1,4 +1,4 @@
-package com.haruhi.bot.handlers.message;
+package com.haruhi.bot.handlers.message.pixiv;
 
 import com.haruhi.bot.constant.CqCodeTypeEnum;
 import com.haruhi.bot.constant.GocqActionEnum;
