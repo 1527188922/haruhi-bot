@@ -34,7 +34,7 @@ public class SearchImageHandler implements IOnMessageEvent {
         return 98;
     }
 
-    private static Long timeout = 10L* 1000L;
+    private static Long timeout = 25L* 1000L;
 
     private Map<String,Long> timeoutMap = new ConcurrentHashMap<>(10);
     private Map<String,String> cqtMap = new ConcurrentHashMap<>(10);
@@ -81,11 +81,9 @@ public class SearchImageHandler implements IOnMessageEvent {
             return false;
         }
         String key = CommonUtil.getKey(message.getUser_id(), message.getGroup_id());
-        if(key != null){
-            Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"开始搜图...",GocqActionEnum.SEND_MSG,true);
-            ThreadPoolFactory.getCommandHandlerThreadPool().execute(new SearchImageHandler.searchImageTask(message,cqtMap.get(key)));
-            after(key);
-        }
+        Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"开始搜图...",GocqActionEnum.SEND_MSG,true);
+        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new searchImageTask(message,cqtMap.get(key)));
+        after(key);
         return true;
     }
 

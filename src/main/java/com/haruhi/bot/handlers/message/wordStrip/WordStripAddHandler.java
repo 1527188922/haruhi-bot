@@ -32,7 +32,7 @@ public class WordStripAddHandler implements IOnGroupMessageEvent {
     @Autowired
     private WordStripService wordStripService;
 
-    public boolean matches(final Message message,final String command) {
+    public boolean matches(final String command) {
         Pattern compile = Pattern.compile(RegexEnum.WORD_STRIP_ADD.getValue());
         Matcher matcher = compile.matcher(command);
         if(matcher.find()){
@@ -51,7 +51,7 @@ public class WordStripAddHandler implements IOnGroupMessageEvent {
 
     @Override
     public boolean onGroup(Message message, String command) {
-        if (!matches(message,command)) {
+        if (!matches(command)) {
             return false;
         }
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(()->{

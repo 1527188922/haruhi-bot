@@ -103,7 +103,6 @@ public class FriendSaidHandler implements IOnGroupMessageEvent {
             item.setData(data);
             params.add(item);
             Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,friend.getGroup_id(),params);
-            Client.sendMessage(null,message.getGroup_id(),"",null,GocqActionEnum.GET_GROUP_MEMBER_LIST,true);
         }
     }
 }

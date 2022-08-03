@@ -21,7 +21,7 @@ public class SeeFavorabilityHandler implements IOnGroupMessageEvent {
     @Autowired
     private CheckinService checkinService;
 
-    public boolean matches(final Message message,final String command) {
+    public boolean matches(final String command) {
         return command.matches(RegexEnum.SEE_FAVORABILITY.getValue());
     }
 
@@ -32,7 +32,7 @@ public class SeeFavorabilityHandler implements IOnGroupMessageEvent {
 
     @Override
     public boolean onGroup(final Message message,final String command) {
-        if(!matches(message,command)){
+        if(!matches(command)){
             return false;
         }
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(()->{

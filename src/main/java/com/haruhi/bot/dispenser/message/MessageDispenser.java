@@ -1,6 +1,5 @@
 package com.haruhi.bot.dispenser.message;
 
-import com.alibaba.fastjson.JSONObject;
 import com.haruhi.bot.constant.MessageTypeEnum;
 import com.haruhi.bot.dto.gocq.request.Message;
 import com.haruhi.bot.event.message.IMessageEventType;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Component

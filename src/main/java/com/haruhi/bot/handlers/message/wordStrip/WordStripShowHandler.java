@@ -27,13 +27,13 @@ public class WordStripShowHandler implements IOnGroupMessageEvent {
 
     @Autowired
     private WordStripService wordStripService;
-    public boolean matches(final Message message,final String command) {
+    public boolean matches(final String command) {
         return command.matches(RegexEnum.WORD_STRIP_SHOW.getValue());
     }
 
     @Override
     public boolean onGroup(Message message, String command) {
-        if (!matches(message,command)) {
+        if (!matches(command)) {
             return false;
         }
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(()->{
