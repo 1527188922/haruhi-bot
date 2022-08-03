@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Component
@@ -22,8 +21,7 @@ public class SeeFavorabilityHandler implements IOnGroupMessageEvent {
     @Autowired
     private CheckinService checkinService;
 
-    @Override
-    public synchronized boolean matches(final Message message,final String command,final AtomicInteger total) {
+    public boolean matches(final String command) {
         return command.matches(RegexEnum.SEE_FAVORABILITY.getValue());
     }
 
@@ -33,8 +31,10 @@ public class SeeFavorabilityHandler implements IOnGroupMessageEvent {
     }
 
     @Override
-    public void onGroup(Message message, String command) {
-
+    public boolean onGroup(final Message message,final String command) {
+        if(!matches(command)){
+            return false;
+        }
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(()->{
             try {
                 AnswerBox<Answer> box = new AnswerBox<>();
@@ -50,5 +50,6 @@ public class SeeFavorabilityHandler implements IOnGroupMessageEvent {
                 log.error("处理命令:[{}]时异常:{}",command,e);
             }
         });
+        return true;
     }
 }

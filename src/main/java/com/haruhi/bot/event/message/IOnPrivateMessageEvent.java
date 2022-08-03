@@ -8,5 +8,5 @@ public interface IOnPrivateMessageEvent extends IMessageEventType {
      * @param message
      * @param command
      */
-    void onPrivate(Message message, String command);
+    boolean onPrivate(Message message, String command);
 }

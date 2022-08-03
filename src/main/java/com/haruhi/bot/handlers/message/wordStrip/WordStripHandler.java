@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Component
@@ -24,8 +23,7 @@ public class WordStripHandler implements IOnGroupMessageEvent {
         return 95;
     }
     private String answer;
-    @Override
-    public synchronized boolean matches(final Message message,final String command,final AtomicInteger total) {
+    public boolean matches(final Message message,final String command) {
         String answer = cache.get(message.getGroup_id() + "-" + command);
         if(answer != null){
             this.answer = answer;
@@ -36,9 +34,13 @@ public class WordStripHandler implements IOnGroupMessageEvent {
     }
 
     @Override
-    public void onGroup(Message message, String command) {
+    public boolean onGroup(Message message, String command) {
+        if(!matches(message,command)){
+            return false;
+        }
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(()->{
             Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageTypeEnum.group,this.answer, GocqActionEnum.SEND_MSG,false);
         });
+        return true;
     }
 }

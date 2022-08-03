@@ -1,6 +1,5 @@
 package com.haruhi.bot.dispenser.message;
 
-import com.alibaba.fastjson.JSONObject;
 import com.haruhi.bot.constant.MessageTypeEnum;
 import com.haruhi.bot.dto.gocq.request.Message;
 import com.haruhi.bot.event.message.IMessageEventType;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Component
@@ -87,31 +85,27 @@ public class MessageDispenser {
 
     public static void onEvent(final Message message,final String command){
         String messageType = message.getMessage_type();
-        AtomicInteger total = new AtomicInteger(0);
+
         for (IMessageEventType element : container) {
             if(element instanceof IOnMessageEvent){
                 IOnMessageEvent event = (IOnMessageEvent) element;
-                if(event.matches(message,command,total)){
-                    total.incrementAndGet();
-                    event.onMessage(message,command);
+                if(event.onMessage(message,command)){
+                    break;
                 }
             }
             if(MessageTypeEnum.group.getType().equals(messageType)){
                 if(element instanceof IOnGroupMessageEvent){
                     IOnGroupMessageEvent event = (IOnGroupMessageEvent) element;
-                    if(event.matches(message,command,total)){
-                        total.incrementAndGet();
-                        event.onGroup(message,command);
+                    if(event.onGroup(message,command)){
+                        break;
                     }
                 }
             }else if(MessageTypeEnum.privat.getType().equals(messageType)){
                 if(element instanceof IOnPrivateMessageEvent){
                     IOnPrivateMessageEvent event = (IOnPrivateMessageEvent) element;
-                    if(event.matches(message,command,total)){
-                        total.incrementAndGet();
-                        event.onPrivate(message,command);
+                    if(event.onPrivate(message,command)){
+                        break;
                     }
-
                 }
             }
         }

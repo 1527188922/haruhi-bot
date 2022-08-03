@@ -23,7 +23,8 @@ bot:
   name: 春日酱
   # Saucenao的API_KEY，通过 https://saucenao.com/user.php?page=search-api 注册获取
   search-image-key:
-
+cron:
+  downloadPixivJob: 0/15 * * * * ?
 #########################  以下配置项勿改  #########################
 
 server:

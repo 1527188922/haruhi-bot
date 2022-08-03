@@ -60,6 +60,11 @@
             <artifactId>mod-cqcodeutils</artifactId>
             <version>1.5.0-1.15</version>
         </dependency>
+        <!--  定时任务 job  -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-quartz</artifactId>
+        </dependency>
     </dependencies>
     <profiles>
         <profile>

@@ -1,5 +1,6 @@
 package com.haruhi.bot;
 
+import com.haruhi.bot.job.schedule.JobManage;
 import com.haruhi.bot.service.DataBaseService;
 import com.haruhi.bot.thread.FirstTask;
 import com.haruhi.bot.ws.Client;
@@ -16,13 +17,15 @@ public class SystemCommandLineRunner implements CommandLineRunner {
     private DataBaseService dataBaseService;
     @Autowired
     private FirstTask firstTask;
+    @Autowired
+    private JobManage jobManage;
     @Override
     public void run(String... args) throws Exception {
 
         dataBaseService.dataBaseInit();
 
         firstTask.execute(firstTask);
-
+        jobManage.startAllJob();
         log.info("开始连接go-cqhttp...");
         Client instance = Client.getInstance();
         if(instance == null){
