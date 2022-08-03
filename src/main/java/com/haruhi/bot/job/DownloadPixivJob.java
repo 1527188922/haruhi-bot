@@ -47,6 +47,7 @@ public class DownloadPixivJob extends AbstractJob {
         if(param == null){
             param = new HashMap<>();
             param.put("num",20);
+            param.put("r18",2);
         }
         for (int i = 0; i < 2; i++) {
             ThreadPoolFactory.getDownloadThreadPool().execute(new DownloadPixivJob.downloadTask(pixivService,param));
