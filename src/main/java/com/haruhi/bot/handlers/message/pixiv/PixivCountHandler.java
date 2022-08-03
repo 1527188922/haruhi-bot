@@ -20,7 +20,7 @@ import java.text.MessageFormat;
 public class PixivCountHandler implements IOnMessageEvent {
     @Override
     public int weight() {
-        return 92;
+        return 101;
     }
 
     @Autowired
