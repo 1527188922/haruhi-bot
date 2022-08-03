@@ -40,7 +40,7 @@ public class DownloadPixivJob extends AbstractJob {
     private PixivService pixivService;
 
     private static Map<String,Object> param;
-
+    private static Map<String,Object> paramR18;
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -52,6 +52,12 @@ public class DownloadPixivJob extends AbstractJob {
         for (int i = 0; i < 2; i++) {
             ThreadPoolFactory.getDownloadThreadPool().execute(new DownloadPixivJob.downloadTask(pixivService,param));
         }
+        if(paramR18 == null){
+            paramR18 = new HashMap<>();
+            paramR18.put("num",20);
+            paramR18.put("r18",1);
+        }
+        ThreadPoolFactory.getDownloadThreadPool().execute(new DownloadPixivJob.downloadTask(pixivService,paramR18));
     }
     private static String url = "https://api.lolicon.app/setu/v2";
     public static class downloadTask implements Runnable{

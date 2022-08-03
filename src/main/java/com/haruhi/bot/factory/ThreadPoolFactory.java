@@ -35,7 +35,7 @@ public class ThreadPoolFactory {
 
     public static Executor getDownloadThreadPool(){
         if(commandHandlerThreadPool == null){
-            commandHandlerThreadPool =  new ThreadPoolExecutor(3,3,60, TimeUnit.SECONDS,new ArrayBlockingQueue(3),new CustomizableThreadFactory("pool-download-"),new ThreadPoolExecutor.CallerRunsPolicy());
+            commandHandlerThreadPool =  new ThreadPoolExecutor(4,4,60, TimeUnit.SECONDS,new ArrayBlockingQueue(3),new CustomizableThreadFactory("pool-download-"),new ThreadPoolExecutor.CallerRunsPolicy());
         }
         return commandHandlerThreadPool;
     }
