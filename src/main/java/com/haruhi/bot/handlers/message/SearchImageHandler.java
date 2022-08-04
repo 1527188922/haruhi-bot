@@ -76,7 +76,7 @@ public class SearchImageHandler implements IOnMessageEvent {
     }
 
     @Override
-    public boolean onMessage(Message message, String command) {
+    public boolean onMessage(final Message message,final String command) {
         if (!matches(message,command)){
             return false;
         }
@@ -153,21 +153,9 @@ public class SearchImageHandler implements IOnMessageEvent {
         }
         private void sendResult(List<Results> resultList){
             ArrayList<ForwardMsg> forwardMsgs = new ArrayList<>();
-            ForwardMsg forwardMsg = new ForwardMsg();
-            ForwardMsg.Data data = new ForwardMsg.Data();
-            data.setContent(cq);
-            data.setName(BotConfig.NAME);
-            data.setUin(message.getSelf_id());
-            forwardMsg.setData(data);
-            forwardMsgs.add(forwardMsg);
+            forwardMsgs.add(CommonUtil.createForwardMsgItem(cq,message.getSelf_id(), BotConfig.NAME));
             for (Results results : resultList) {
-                ForwardMsg forwardMsgInner = new ForwardMsg();
-                ForwardMsg.Data dataInner = new ForwardMsg.Data();
-                dataInner.setContent(getItemMsg(results));
-                dataInner.setName(BotConfig.NAME);
-                dataInner.setUin(message.getSelf_id());
-                forwardMsgInner.setData(dataInner);
-                forwardMsgs.add(forwardMsgInner);
+                forwardMsgs.add(CommonUtil.createForwardMsgItem(getItemMsg(results),message.getSelf_id(), BotConfig.NAME));
             }
 
             if(MessageTypeEnum.group.getType().equals(message.getMessage_type())){
