@@ -25,10 +25,10 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-@Component
+//@Component
 public class DownloadPixivJob extends AbstractJob {
 
-    @Value("${cron.downloadPixivJob}")
+//    @Value("${cron.downloadPixivJob}")
     private String cron;
 
     @Override
