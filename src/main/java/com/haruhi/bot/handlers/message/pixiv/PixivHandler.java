@@ -68,8 +68,6 @@ public class PixivHandler implements IOnMessageEvent {
             this.pixivService = pixivService;
             this.message = message;
         }
-        private static String proxy = "i.pixiv.re";
-        private static String host = "i.pximg.net";
 
         @Override
         public void run() {
@@ -83,15 +81,11 @@ public class PixivHandler implements IOnMessageEvent {
                 Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), MessageFormat.format("没有[{0}]的图片，换一个tag试试吧~",this.tag), GocqActionEnum.SEND_MSG,true);
                 return;
             }
-            proxyUrl(pixiv);
             KQCodeUtils instance = KQCodeUtils.getInstance();
             String cqImage = instance.toCq(CqCodeTypeEnum.image.getType(), "file=" + pixiv.getImgUrl(),"url=" + pixiv.getImgUrl());
             Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),MessageFormat.format("标题：{0}\n作者：{1}\npid：{2}\n原图：{3}\n{4}\n{5}",pixiv.getTitle(),pixiv.getAuthor(),String.valueOf(pixiv.getPid()),pixiv.getImgUrl(),cqImage,"※↑若文件很小，可能是略缩图，原画质请点击原图链接"), GocqActionEnum.SEND_MSG,false);
         }
-        private void proxyUrl(Pixiv pixiv){
-            pixiv.setImgUrl(pixiv.getImgUrl().replace(host,proxy));
-        }
-    }
 
+    }
 
 }
