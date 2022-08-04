@@ -20,7 +20,7 @@ import java.text.MessageFormat;
 public class PixivCountHandler implements IOnMessageEvent {
     @Override
     public int weight() {
-        return 92;
+        return 101;
     }
 
     @Autowired
@@ -35,7 +35,7 @@ public class PixivCountHandler implements IOnMessageEvent {
             QueryWrapper<Pixiv> queryWrapper = new QueryWrapper<>();
             queryWrapper.lambda().eq(Pixiv::getIsR18,false);
             QueryWrapper<Pixiv> queryWrapperR18 = new QueryWrapper<>();
-            queryWrapper.lambda().eq(Pixiv::getIsR18,true);
+            queryWrapperR18.lambda().eq(Pixiv::getIsR18,true);
             int count = pixivService.count(queryWrapper);
             int countR18 = pixivService.count(queryWrapperR18);
             Client.sendMessage(message.getUser_id(), message.getGroup_id(),message.getMessage_type(), MessageFormat.format("pixiv库：\n非r18：{0}\nr18：{1}\n总计：{2}",count,countR18,count + countR18), GocqActionEnum.SEND_MSG,true);
