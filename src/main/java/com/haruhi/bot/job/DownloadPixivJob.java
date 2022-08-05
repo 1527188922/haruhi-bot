@@ -124,9 +124,9 @@ public class DownloadPixivJob extends AbstractJob {
     }
     @Data
     public static class PixivItem implements Serializable {
-        private Integer pid;
+        private String pid;
         private String p;
-        private Integer uid;
+        private String uid;
         private String title;
         private String author;
         private Boolean r18;

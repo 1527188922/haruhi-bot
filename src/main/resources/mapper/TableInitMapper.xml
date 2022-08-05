@@ -38,7 +38,8 @@
         `author` varchar(100) NULL,
         `is_r18` bit NOT NULL,
         `tags` text NOT NULL,
-        PRIMARY KEY (`id`)
+        PRIMARY KEY (`id`),
+        KEY `index_tags` (`tags`(767))
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='pixiv图库（数据通过程序从真寻库（pgsql）搬来的）';
     </update>
     <update id="createWordStrip">

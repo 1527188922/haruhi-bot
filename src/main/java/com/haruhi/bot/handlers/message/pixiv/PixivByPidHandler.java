@@ -45,23 +45,24 @@ public class PixivByPidHandler implements IOnMessageEvent {
         if(Strings.isBlank(pid)){
             return false;
         }
-        Integer intPid;
+        String trim = "";
         try {
-            intPid = Integer.valueOf(pid.trim());
+            trim = pid.trim();
+            Integer.valueOf(trim);
         }catch (Exception e){
             Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"请输入正确的pid...", GocqActionEnum.SEND_MSG,true);
             return true;
         }
-        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new PixivByPidHandler.Task(pixivService,intPid,message));
+        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new PixivByPidHandler.Task(pixivService,trim,message));
 
         return true;
     }
 
     public static class Task implements Runnable{
         private PixivService pixivService;
-        private Integer pid;
+        private String pid;
         private Message message;
-        Task(PixivService pixivService,Integer pid,Message message){
+        Task(PixivService pixivService,String pid,Message message){
             this.pixivService = pixivService;
             this.pid = pid;
             this.message = message;
@@ -73,26 +74,15 @@ public class PixivByPidHandler implements IOnMessageEvent {
             List<Pixiv> list = pixivService.list(queryWrapper);
             if(list != null && list.size() > 0){
                 if(MessageTypeEnum.group.getType().equals(message.getMessage_type())){
-                    groupSend(list,message);
+                    List<ForwardMsg> params = new ArrayList<>();
+                    params.add(CommonUtil.createForwardMsgItem(MessageFormat.format("pid：{0}\n※原图链接不需要翻墙，直接点击",pid),message.getSelf_id(), BotConfig.NAME));
+                    pixivService.groupSend(list,params,message);
                 }else if(MessageTypeEnum.privat.getType().equals(message.getMessage_type())){
-                    privateSend(list,message);
+                    pixivService.privateSend(list,message);
                 }
             }else {
                 Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), MessageFormat.format("没找到该pid[{0}]的图片。",pid), GocqActionEnum.SEND_MSG,true);
             }
-        }
-        private void privateSend(List<Pixiv> list,Message message){
-            for (Pixiv pixiv : list) {
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), MessageFormat.format("标题：{0}\n作者：{1}\nuid：{2}\npid：{3}\nr18：{4}\n原图：{5}", pixiv.getTitle(), pixiv.getAuthor(),pixiv.getUid(), pixiv.getPid(), pixiv.getIsR18() ? "是" : "否", pixiv.getImgUrl()), GocqActionEnum.SEND_MSG,true);
-            }
-        }
-        private void groupSend(List<Pixiv> list,Message message){
-            List<ForwardMsg> params = new ArrayList<>();
-            params.add(CommonUtil.createForwardMsgItem(MessageFormat.format("pid：{0}\n※原图链接不需要翻墙，直接点击",pid),message.getSelf_id(), BotConfig.NAME));
-            for (Pixiv pixiv : list) {
-                params.add(CommonUtil.createForwardMsgItem(MessageFormat.format("标题：{0}\n作者：{1}\nuid：{2}\npid：{3}\nr18：{4}\n原图：{5}", pixiv.getTitle(), pixiv.getAuthor(),pixiv.getUid(), pixiv.getPid(), pixiv.getIsR18() ? "是" : "否", pixiv.getImgUrl()),message.getSelf_id(), BotConfig.NAME));
-            }
-            Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,message.getGroup_id(),params);
         }
 
     }
