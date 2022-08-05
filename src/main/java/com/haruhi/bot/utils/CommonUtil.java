@@ -1,5 +1,7 @@
 package com.haruhi.bot.utils;
 
+import com.haruhi.bot.dto.gocq.response.ForwardMsg;
+
 import java.util.Random;
 
 public class CommonUtil {
@@ -29,4 +31,14 @@ public class CommonUtil {
         }
         return random.nextInt(end - start + 1) + start;
     }
+    public static ForwardMsg createForwardMsgItem(String context,String uin,String name){
+        ForwardMsg item = new ForwardMsg();
+        ForwardMsg.Data data = new ForwardMsg.Data();
+        data.setUin(uin);
+        data.setName(name);
+        data.setContent(context);
+        item.setData(data);
+        return item;
+    }
+
 }

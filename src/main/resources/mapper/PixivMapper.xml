@@ -6,7 +6,7 @@
         t.id,t.pid,t.title,t.width,t.height,t.`view`,t.bookmarks,t.img_url,t.img_p,t.uid,t.author,t.is_r18,t.tags
     </sql>
 
-    <select id="roundOneByTag" resultType="com.haruhi.bot.entity.Pixiv">
+    <select id="roundByTag" resultType="com.haruhi.bot.entity.Pixiv">
         SELECT <include refid="baseCol"/>
         FROM `t_pixiv` AS t JOIN (SELECT ROUND(RAND() * ((SELECT MAX(id) FROM `t_pixiv`)-(SELECT MIN(id) FROM `t_pixiv`))+(SELECT MIN(id) FROM `t_pixiv`)) AS id) AS t2
         WHERE t.id >= t2.id
@@ -16,6 +16,6 @@
         <if test="tag != null and tag != ''">
             AND t.tags LIKE CONCAT('%',CONCAT(#{tag},'%'))
         </if>
-        ORDER BY t.id LIMIT 1
+        ORDER BY t.id LIMIT #{num}
     </select>
 </mapper>
