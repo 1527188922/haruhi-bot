@@ -11,6 +11,7 @@ public enum RegexEnum {
     PIXIV("pix|PIX"),
     PIXIV_R("pixr|PIXR"),
     PIXIV_PID("ppid|PPID"),
+    PIXIV_UID("puid|PUID"),
     PIXIV_COUNT("pix统计|PIX统计"),
     FRIEND_SAID("朋友说|我朋友说|我朋友都说|朋友都说|朋友说过|我朋友说过|我朋友老说|我朋友总说|我朋友老是说|我朋友总是说"),
     WORD_STRIP_ADD("添加词条(.*?)答"),

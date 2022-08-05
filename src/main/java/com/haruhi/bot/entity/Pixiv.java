@@ -11,8 +11,8 @@ import lombok.Data;
 @TableName(value = DataSourceConfig.BOT_T_PIXIV)
 public class Pixiv {
     @TableId(value = "id",type = IdType.AUTO)
-    private String id;
-    private Integer pid;
+    private Integer id;
+    private String pid;
     private String title;
     private Integer width;
     private Integer height;
@@ -22,7 +22,7 @@ public class Pixiv {
     private String imgUrl;
     // 图片md5 haruhi库来的
     private String imgP;
-    private Integer uid;
+    private String uid;
     private String author;
     private Boolean isR18;
     private String tags;
