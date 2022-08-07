@@ -14,9 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class PixivServiceImpl extends ServiceImpl<PixivMapper, Pixiv> implements PixivService{
@@ -27,22 +25,39 @@ public class PixivServiceImpl extends ServiceImpl<PixivMapper, Pixiv> implements
     @Override
     public void roundSend(int num, Boolean isR18, String tag, Message message) {
         List<Pixiv> pixivs = null;
+        HashSet<Pixiv> pixivHashSet = null;
         if (CommonUtil.isBlank(tag)) {
-            pixivs = pixivMapper.roundByTag(num, isR18, null);
+            pixivs = pixivMapper.roundByTagLimit(num, isR18, null);
         } else {
-            pixivs = pixivMapper.roundByTag(num, isR18, tag.trim());
-        }
-        if (pixivs == null || pixivs.size() == 0) {
-            Client.sendMessage(message.getUser_id(), message.getGroup_id(), message.getMessage_type(), MessageFormat.format("没有[{0}]的图片，换一个tag试试吧~", tag), GocqActionEnum.SEND_MSG, true);
-            return;
+            pixivs = pixivMapper.roundByTagAll(isR18, tag.trim());
+            if (pixivs == null || pixivs.size() == 0) {
+                Client.sendMessage(message.getUser_id(), message.getGroup_id(), message.getMessage_type(), MessageFormat.format("没有[{0}]的图片，换一个tag试试吧~", tag), GocqActionEnum.SEND_MSG, true);
+                return;
+            }
+            int size = pixivs.size();
+            if(size > num){
+                pixivHashSet = new HashSet<>();
+                while (pixivHashSet.size() < num){
+                    pixivHashSet.add(pixivs.get(CommonUtil.randomInt(0,size - 1)));
+                }
+            }
         }
 
         if (MessageTypeEnum.group.getType().equals(message.getMessage_type())) {
             List<ForwardMsg> params = new ArrayList<>();
             params.add(CommonUtil.createForwardMsgItem(MessageFormat.format("tag：{0}\n※原图链接不需要翻墙，直接点",tag),message.getSelf_id(), BotConfig.NAME));
-            groupSend(pixivs,params,message);
+            if(pixivHashSet != null && pixivHashSet.size() > 0){
+                groupSend(pixivHashSet,params,message);
+            }else{
+                groupSend(pixivs,params,message);
+            }
         } else if (MessageTypeEnum.privat.getType().equals(message.getMessage_type())) {
-            privateSend(pixivs,message);
+            if(pixivHashSet != null && pixivHashSet.size() > 0){
+                privateSend(pixivHashSet,message);
+            }else{
+                privateSend(pixivs,message);
+            }
+
         }
     }
 

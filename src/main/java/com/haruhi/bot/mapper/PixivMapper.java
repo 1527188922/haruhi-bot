@@ -19,5 +19,6 @@ public interface PixivMapper extends BaseMapper<Pixiv> {
      * @param tag
      * @return
      */
-    List<Pixiv> roundByTag(@Param("num")int num, @Param("isR18") Boolean isR18, @Param("tag") String tag);
+    List<Pixiv> roundByTagLimit(@Param("num")int num, @Param("isR18") Boolean isR18, @Param("tag") String tag);
+    List<Pixiv> roundByTagAll(@Param("isR18") Boolean isR18, @Param("tag") String tag);
 }
