@@ -35,4 +35,11 @@ public interface TableInitMapper {
      */
     int createWordStrip(@Param("tableName") String tableName);
 
+    /**
+     * 话术表
+     * @param tableName
+     * @return
+     */
+    int createVerbalTricks(@Param("tableName") String tableName);
+
 }
