@@ -1,5 +1,10 @@
 package com.haruhi.bot.utils;
 
+import com.haruhi.bot.constant.CqCodeTypeEnum;
+import com.haruhi.bot.dto.gocq.request.Message;
+import com.haruhi.bot.dto.gocq.response.ForwardMsg;
+import com.simplerobot.modules.utils.KQCodeUtils;
+
 import java.util.Random;
 
 public class CommonUtil {
@@ -28,5 +33,29 @@ public class CommonUtil {
             random = new Random();
         }
         return random.nextInt(end - start + 1) + start;
+    }
+    public static ForwardMsg createForwardMsgItem(String context,String uin,String name){
+        ForwardMsg item = new ForwardMsg();
+        ForwardMsg.Data data = new ForwardMsg.Data();
+        data.setUin(uin);
+        data.setName(name);
+        data.setContent(context);
+        item.setData(data);
+        return item;
+    }
+
+    public static boolean isAtSelf(String self,String context) {
+        KQCodeUtils instance = KQCodeUtils.getInstance();
+        String[] cqs = instance.getCqs(context, CqCodeTypeEnum.at.getType());
+        if (cqs == null || cqs.length == 0){
+            return false;
+        }
+        for (String cq : cqs) {
+            String qq = instance.getParam(cq, "qq");
+            if(self.equals(qq)){
+                return true;
+            }
+        }
+        return false;
     }
 }

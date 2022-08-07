@@ -1,20 +1,14 @@
 package com.haruhi.bot.handlers.message.pixiv;
 
-import com.haruhi.bot.constant.CqCodeTypeEnum;
-import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.RegexEnum;
 import com.haruhi.bot.dto.gocq.request.Message;
-import com.haruhi.bot.entity.Pixiv;
 import com.haruhi.bot.factory.ThreadPoolFactory;
 import com.haruhi.bot.event.message.IOnMessageEvent;
 import com.haruhi.bot.service.pixiv.PixivService;
-import com.haruhi.bot.utils.CommonUtil;
-import com.haruhi.bot.ws.Client;
 import com.simplerobot.modules.utils.KQCodeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.text.MessageFormat;
 
 @Component
 public class PixivHandler implements IOnMessageEvent {
@@ -28,7 +22,7 @@ public class PixivHandler implements IOnMessageEvent {
 
     private String tag;
 
-    public boolean matches(final Message message,final String command) {
+    public boolean matches(final String command) {
         KQCodeUtils instance = KQCodeUtils.getInstance();
         String cq = instance.getCq(command, 0);
         if(cq != null){
@@ -48,7 +42,7 @@ public class PixivHandler implements IOnMessageEvent {
 
     @Override
     public boolean onMessage(Message message, String command) {
-        if (!matches(message,command)){
+        if (!matches(command)){
             return false;
         }
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(new PixivTask(pixivService,tag,message));
@@ -68,30 +62,12 @@ public class PixivHandler implements IOnMessageEvent {
             this.pixivService = pixivService;
             this.message = message;
         }
-        private static String proxy = "i.pixiv.re";
-        private static String host = "i.pximg.net";
 
         @Override
         public void run() {
-            Pixiv pixiv = null;
-            if (CommonUtil.isBlank(this.tag)) {
-                pixiv = pixivService.roundOneByTag(false,null);
-            }else{
-                pixiv = pixivService.roundOneByTag(false,tag.trim());
-            }
-            if(pixiv == null){
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), MessageFormat.format("没有[{0}]的图片，换一个tag试试吧~",this.tag), GocqActionEnum.SEND_MSG,true);
-                return;
-            }
-            proxyUrl(pixiv);
-            KQCodeUtils instance = KQCodeUtils.getInstance();
-            String cqImage = instance.toCq(CqCodeTypeEnum.image.getType(), "file=" + pixiv.getImgUrl(),"url=" + pixiv.getImgUrl());
-            Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),MessageFormat.format("标题：{0}\n作者：{1}\npid：{2}\n原图：{3}\n{4}\n{5}",pixiv.getTitle(),pixiv.getAuthor(),String.valueOf(pixiv.getPid()),pixiv.getImgUrl(),cqImage,"※↑若文件很小，可能是略缩图，原画质请点击原图链接"), GocqActionEnum.SEND_MSG,false);
+            pixivService.roundSend(20,null,this.tag,message);
         }
-        private void proxyUrl(Pixiv pixiv){
-            pixiv.setImgUrl(pixiv.getImgUrl().replace(host,proxy));
-        }
-    }
 
+    }
 
 }

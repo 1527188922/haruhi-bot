@@ -38,7 +38,8 @@
         `author` varchar(100) NULL,
         `is_r18` bit NOT NULL,
         `tags` text NOT NULL,
-        PRIMARY KEY (`id`)
+        PRIMARY KEY (`id`),
+        KEY `index_tags` (`tags`(767))
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='pixiv图库（数据通过程序从真寻库（pgsql）搬来的）';
     </update>
     <update id="createWordStrip">
@@ -50,5 +51,13 @@
             `answer` text NOT NULL,
             PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='词条表';
+    </update>
+    <update id="createVerbalTricks">
+        CREATE TABLE `${tableName}` (
+            `id` INT auto_increment NOT NULL,
+            `regex` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+            `answer` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+            PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='话术表';
     </update>
 </mapper>
