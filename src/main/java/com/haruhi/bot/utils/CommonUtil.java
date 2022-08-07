@@ -1,7 +1,6 @@
 package com.haruhi.bot.utils;
 
 import com.haruhi.bot.constant.CqCodeTypeEnum;
-import com.haruhi.bot.dto.gocq.request.Message;
 import com.haruhi.bot.dto.gocq.response.ForwardMsg;
 import com.simplerobot.modules.utils.KQCodeUtils;
 
