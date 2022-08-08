@@ -53,6 +53,9 @@ public class DataBaseService {
             if(dataBaseInitMapper.isTableExist(DataSourceConfig.DATA_BASE_BOT,DataSourceConfig.BOT_T_VERBAL_TRICKS) == 0){
                 tableInitMapper.createVerbalTricks(DataSourceConfig.BOT_T_VERBAL_TRICKS);
             }
+            if(dataBaseInitMapper.isTableExist(DataSourceConfig.DATA_BASE_BOT,DataSourceConfig.BOT_T_GROUP_CHAT_HISTORY) == 0){
+                tableInitMapper.createGroupChatHistory(DataSourceConfig.BOT_T_GROUP_CHAT_HISTORY);
+            }
 
             log.info("初始化数据库完成");
         }catch (Exception e){

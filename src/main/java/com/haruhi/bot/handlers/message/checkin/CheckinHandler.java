@@ -21,7 +21,7 @@ public class CheckinHandler implements IOnGroupMessageEvent {
     @Autowired
     private CheckinService checkinService;
 
-    public boolean matches(final String command) {
+    public boolean matching(final String command) {
         return command.matches(RegexEnum.CHECKIN.getValue());
     }
 
@@ -32,7 +32,7 @@ public class CheckinHandler implements IOnGroupMessageEvent {
 
     @Override
     public boolean onGroup(Message message, String command) {
-        if (!matches(command)) {
+        if (!matching(command)) {
             return false;
         }
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(()->{

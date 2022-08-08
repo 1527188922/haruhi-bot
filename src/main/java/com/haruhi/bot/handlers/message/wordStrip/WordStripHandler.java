@@ -23,7 +23,7 @@ public class WordStripHandler implements IOnGroupMessageEvent {
         return 95;
     }
     private String answer;
-    public boolean matches(final Message message,final String command) {
+    public boolean matching(final Message message, final String command) {
         String answer = cache.get(message.getGroup_id() + "-" + command);
         if(answer != null){
             this.answer = answer;
@@ -35,7 +35,7 @@ public class WordStripHandler implements IOnGroupMessageEvent {
 
     @Override
     public boolean onGroup(Message message, String command) {
-        if(!matches(message,command)){
+        if(!matching(message,command)){
             return false;
         }
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(()->{

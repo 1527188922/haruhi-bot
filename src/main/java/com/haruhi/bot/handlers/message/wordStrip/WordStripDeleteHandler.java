@@ -29,7 +29,7 @@ public class WordStripDeleteHandler implements IOnGroupMessageEvent {
     private WordStripService wordStripService;
 
 
-    public boolean matches(final String command) {
+    public boolean matching(final String command) {
         if(command.startsWith(RegexEnum.WORD_STRIP_DELETE.getValue())){
             String keyWord = command.replace(RegexEnum.WORD_STRIP_DELETE.getValue(),"");
             if(Strings.isNotBlank(keyWord)){
@@ -43,7 +43,7 @@ public class WordStripDeleteHandler implements IOnGroupMessageEvent {
 
     @Override
     public boolean onGroup(Message message, String command) {
-        if (!matches(command)) {
+        if (!matching(command)) {
             return false;
         }
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(()->{

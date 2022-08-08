@@ -32,7 +32,7 @@ public class FriendSaidHandler implements IOnGroupMessageEvent {
     }
     private String say;
 
-    public boolean matches(final Message message,final String command) {
+    public boolean matching(final Message message, final String command) {
         String[] split = RegexEnum.FRIEND_SAID.getValue().split("\\|");
         for (String s : split) {
             if (command.startsWith(s)) {
@@ -50,7 +50,7 @@ public class FriendSaidHandler implements IOnGroupMessageEvent {
 
     @Override
     public boolean onGroup(Message message, String command) {
-        if(!matches(message,command)){
+        if(!matching(message,command)){
             return false;
         }
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(new FriendSaidHandler.SayTask(message,this.say));

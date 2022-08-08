@@ -60,4 +60,17 @@
             PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='话术表';
     </update>
+    <update id="createGroupChatHistory">
+        CREATE TABLE `${tableName}` (
+            `id` INT auto_increment NOT NULL,
+            `card` varchar(30) COMMENT '群昵称',
+            `nickname` varchar(30) COMMENT 'qq昵称',
+            `message_id` varchar(30) NOT NULL,
+            `group_id` varchar(20) NOT NULL,
+            `user_id` varchar(20) NOT NULL,
+            `content` TEXT COLLATE utf8mb4_unicode_ci,
+            create_time BIGINT NOT NULL,
+            PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='群聊历史聊天表';
+    </update>
 </mapper>

@@ -43,7 +43,7 @@ public class CommonUtil {
         return item;
     }
 
-    public static boolean isAtSelf(String self,String context) {
+    public static boolean isAt(String userId,String context) {
         KQCodeUtils instance = KQCodeUtils.getInstance();
         String[] cqs = instance.getCqs(context, CqCodeTypeEnum.at.getType());
         if (cqs == null || cqs.length == 0){
@@ -51,7 +51,7 @@ public class CommonUtil {
         }
         for (String cq : cqs) {
             String qq = instance.getParam(cq, "qq");
-            if(self.equals(qq)){
+            if(userId.equals(qq)){
                 return true;
             }
         }
