@@ -7,7 +7,7 @@ import com.simplerobot.modules.utils.KQCodeUtils;
 import java.util.Random;
 
 public class CommonUtil {
-
+    private CommonUtil(){}
     private static String separator = "-";
     public static String getKey(String userId,String groupId){
         return userId + separator + groupId;
@@ -20,7 +20,7 @@ public class CommonUtil {
         return key.split(separator)[1];
     }
     private static Random random;
-    public static int randomInt(int start,int end){
+    public synchronized static int randomInt(int start,int end){
         if(random == null){
             random = new Random();
         }

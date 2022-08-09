@@ -12,7 +12,6 @@ import com.haruhi.bot.dto.gocq.response.ForwardMsg;
 import com.haruhi.bot.dispenser.message.MessageDispenser;
 import com.haruhi.bot.thread.ReConnectTask;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.Strings;
 
 import javax.websocket.*;
 import java.io.IOException;
@@ -33,7 +32,7 @@ public class Client {
         session = ContainerProvider.getWebSocketContainer().connectToServer(this, URI.create(url));
     }
     private static Client instance = null;
-    public static Client getInstance() {
+    public synchronized static Client getInstance() {
         try {
             if(instance == null){
                 instance = new Client(WebSocketConfig.GOCQ_WS);

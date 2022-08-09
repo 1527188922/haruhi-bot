@@ -9,7 +9,7 @@ import java.util.Date;
 
 @Slf4j
 public class DateTimeUtil {
-
+    private DateTimeUtil(){}
     public enum FormatEnum{
         yyyyMMddHHmmssSSS("yyyy-MM-dd HH:mm:ss SSS"),
         yyyyMMddHHmmss("yyyy-MM-dd HH:mm:ss"),
