@@ -2,6 +2,7 @@ package com.haruhi.bot.constant;
 
 public enum RegexEnum {
     CQ_CODE(".*\\[CQ:.*\\].*"),
+    CQ_CODE_REPLACR("\\[CQ:.*\\]"),
     CHECKIN("签到|打卡"),
     SEE_FAVORABILITY("好感度|我的好感|我的好感度|查看好感|查看好感度|查看我的好感度"),
     COLLECTION("添加收藏.*|新增收藏.*|增加收藏.*"),

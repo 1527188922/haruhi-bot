@@ -2,6 +2,7 @@ package com.haruhi.bot.handlers.message;
 
 import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.MessageTypeEnum;
+import com.haruhi.bot.constant.RegexEnum;
 import com.haruhi.bot.dto.gocq.request.Message;
 import com.haruhi.bot.entity.VerbalTricks;
 import com.haruhi.bot.event.message.IOnMessageEvent;
@@ -46,7 +47,7 @@ public class VerbalTricksHandler implements IOnMessageEvent {
         }
         // 开始匹配
         String cmd = new String(command);
-        cmd = cmd.replaceAll("\\[CQ:.*\\]", "").trim();
+        cmd = cmd.replaceAll(RegexEnum.CQ_CODE_REPLACR.getValue(), "").trim();
 
         List<VerbalTricks> answerObj = null;
         for (Map.Entry<String, List<VerbalTricks>> item : this.cache.entrySet()) {
