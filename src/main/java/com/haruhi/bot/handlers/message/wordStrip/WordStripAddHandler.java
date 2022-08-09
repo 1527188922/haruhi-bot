@@ -12,6 +12,7 @@ import com.haruhi.bot.service.wordStrip.WordStripService;
 import com.haruhi.bot.utils.CommonUtil;
 import com.haruhi.bot.ws.Client;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -37,9 +38,9 @@ public class WordStripAddHandler implements IOnGroupMessageEvent {
         Matcher matcher = compile.matcher(command);
         if(matcher.find()){
             String keyWord = matcher.group(1);
-            if(keyWord != null && !CommonUtil.isBlank(keyWord)){
+            if(Strings.isNotBlank(keyWord)){
                 String answer = command.substring(command.indexOf("答") + 1);
-                if(answer != null && !CommonUtil.isBlank(answer)){
+                if(Strings.isNotBlank(answer)){
                     this.keyWord = keyWord;
                     this.answer = answer;
                     return true;

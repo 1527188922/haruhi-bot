@@ -16,6 +16,7 @@ import com.haruhi.bot.utils.RestUtil;
 import com.haruhi.bot.ws.Client;
 import com.simplerobot.modules.utils.KQCodeUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 
@@ -118,7 +119,7 @@ public class SearchImageHandler implements IOnMessageEvent {
                 if(response != null){
                     JSONObject jsonObject = JSONObject.parseObject(response);
                     String resultsStr = jsonObject.getString("results");
-                    if(CommonUtil.isBlank(resultsStr)){
+                    if(Strings.isBlank(resultsStr)){
                         Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), "搜索结果为空",GocqActionEnum.SEND_MSG,true);
                     }else{
                         List<Results> resultList = JSONObject.parseArray(resultsStr, Results.class);

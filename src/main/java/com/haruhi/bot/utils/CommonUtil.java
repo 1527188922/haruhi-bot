@@ -19,13 +19,6 @@ public class CommonUtil {
     public static String getGroupIdFromKey(String key){
         return key.split(separator)[1];
     }
-
-    public static boolean isBlank(final CharSequence cs){
-        if(cs == null || "".equals(cs.toString().trim())){
-            return true;
-        }
-        return false;
-    }
     private static Random random;
     public static int randomInt(int start,int end){
         if(random == null){

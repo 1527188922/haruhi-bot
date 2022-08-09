@@ -32,7 +32,7 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
     public void sendChatList(Message message, FindChatMessageHandler.Param param, String[] atCqs) {
         Date date = limitDate(param);
         LambdaQueryWrapper<GroupChatHistory> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(GroupChatHistory::getGroupId,message.getGroup_id()).and(e->e.gt(GroupChatHistory::getCreateTime,date.getTime()));
+        queryWrapper.eq(GroupChatHistory::getGroupId,message.getGroup_id()).gt(GroupChatHistory::getCreateTime,date.getTime());
         if(atCqs != null && atCqs.length > 0){
             // 根据群qq用户查找
             KQCodeUtils instance = KQCodeUtils.getInstance();
@@ -41,11 +41,11 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
                 String qq = instance.getParam(cq, "qq");
                 userIds.add(qq);
             }
-            queryWrapper.and(e->e.in(GroupChatHistory::getUserId,userIds));
+            queryWrapper.in(GroupChatHistory::getUserId,userIds);
         }
         if(FindChatMessageHandler.MessageType.IMAGE.equals(param.getMessageType())){
             // 仅查询图片类型
-            queryWrapper.and(e->e.like(GroupChatHistory::getContent,"[CQ:image"));
+            queryWrapper.like(GroupChatHistory::getContent,"[CQ:image").like(GroupChatHistory::getContent,"subType=0");
         }
         // 升序
         queryWrapper.orderByAsc(GroupChatHistory::getCreateTime);

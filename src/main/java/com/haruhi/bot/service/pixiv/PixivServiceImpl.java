@@ -10,6 +10,7 @@ import com.haruhi.bot.entity.Pixiv;
 import com.haruhi.bot.mapper.PixivMapper;
 import com.haruhi.bot.utils.CommonUtil;
 import com.haruhi.bot.ws.Client;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,7 @@ public class PixivServiceImpl extends ServiceImpl<PixivMapper, Pixiv> implements
     public void roundSend(int num, Boolean isR18, String tag, Message message) {
         List<Pixiv> pixivs = null;
         HashSet<Pixiv> pixivHashSet = null;
-        if (CommonUtil.isBlank(tag)) {
+        if (Strings.isBlank(tag)) {
             pixivs = pixivMapper.roundByTagLimit(num, isR18, null);
         } else {
             pixivs = pixivMapper.roundByTagAll(isR18, tag.trim());

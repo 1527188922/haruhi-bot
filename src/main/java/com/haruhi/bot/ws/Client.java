@@ -47,10 +47,6 @@ public class Client {
 
     @OnMessage
     public void onMessage(final String message){
-        if(Strings.isBlank(message)){
-            log.info("收到空消息");
-            return;
-        }
         try {
             Message messageBean = JSONObject.parseObject(message, Message.class);
 
@@ -58,7 +54,6 @@ public class Client {
                 // 普通消息
                 final String command = messageBean.getMessage();
                 if(command != null){
-                    log.info("收到消息==>{}",message);
                     MessageDispenser.onEvent(messageBean,command);
                 }
 
@@ -70,18 +65,15 @@ public class Client {
                 log.info("收到未知post_type消息:{}",message);
             }
         }catch (Exception e){
-            log.error("收到消息时发生异常:",e);
+            log.error("收到消息时发生异常",e);
         }
-
     }
-
 
     private static void sendMessage(String msg){
         try {
             Client.getInstance().session.getAsyncRemote().sendText(msg);
-            log.info("发送了消息:{}",msg);
         } catch (Exception e){
-            log.info("发送消息时异常:{}",e.getMessage());
+            log.error("发送消息时异常",e);
         }
     }
     public static <T> void sendMessage(AnswerBox<T> box){
@@ -133,7 +125,6 @@ public class Client {
         sendMessage(JSONObject.toJSONString(box));
     }
 
-
     @OnClose
     public void onClose(Session session){
         log.info("连接断开,请检查go-cqhttp是否正常启动;检查go-cqhttp ws配置是否与bot一致;开始重连...");
@@ -142,7 +133,7 @@ public class Client {
 
     @OnError
     public void onError(Session session,Throwable error){
-        log.info("连接发生异常:{}",error.getMessage());
+        log.error("连接发生异常",error);
         reConnection();
     }
 
