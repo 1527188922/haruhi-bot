@@ -9,7 +9,7 @@
         CREATE DATABASE ${dbName} DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
     </update>
     <select id="isTableExist" parameterType="java.lang.String" resultType="java.lang.Integer">
-        SELECT count(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = #{dbName} AND TABLE_NAME = #{tableName}
+        SELECT COUNT(1) FROM information_schema.TABLES WHERE TABLE_SCHEMA = #{dbName} AND TABLE_NAME = #{tableName}
     </select>
 
 </mapper>

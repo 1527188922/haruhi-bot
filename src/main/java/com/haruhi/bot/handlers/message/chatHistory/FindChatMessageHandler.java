@@ -58,7 +58,7 @@ public class FindChatMessageHandler implements IOnGroupMessageEvent {
         }
         @Override
         public void run() {
-            service.sendChatListByTime(message,param,cqs);
+            service.sendChatList(message,param,cqs);
         }
     }
 
@@ -76,7 +76,7 @@ public class FindChatMessageHandler implements IOnGroupMessageEvent {
                     Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageTypeEnum.group, MessageFormat.format("错误的参数[{0}],请输入整数...",args),GocqActionEnum.SEND_MSG,true);
                     return null;
                 }
-                return new Param(num,item.timeUnit);
+                return new Param(num,item.timeUnit,item.messageType);
             }
         }
         return null;
@@ -88,22 +88,30 @@ public class FindChatMessageHandler implements IOnGroupMessageEvent {
     public static class Param {
         private Integer num;
         private TimeUnit unit;
+        private MessageType messageType;
     }
 
     public enum Regex{
 
-        DAY("聊天记录(.*?)天",TimeUnit.DAY),
-        HOUR("聊天记录(.*?)时",TimeUnit.HOUR);
+        DAY_ALL("聊天记录(.*?)天",TimeUnit.DAY,MessageType.ALL),
+        HOUR_ALL("聊天记录(.*?)时",TimeUnit.HOUR,MessageType.ALL),
+        DAY_IMAGE("聊天图片(.*?)天",TimeUnit.DAY,MessageType.IMAGE),
+        HOUR_IMAGE("聊天图片(.*?)时",TimeUnit.HOUR,MessageType.IMAGE);
 
         private String value;
         private TimeUnit timeUnit;
-        Regex(String value,TimeUnit timeUnit){
+        private MessageType messageType;
+        Regex(String value,TimeUnit timeUnit, MessageType messageType){
             this.value = value;
             this.timeUnit = timeUnit;
+            this.messageType = messageType;
         }
     }
 
     public enum TimeUnit{
         DAY,HOUR
+    }
+    public enum MessageType{
+        ALL,IMAGE
     }
 }

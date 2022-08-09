@@ -12,5 +12,5 @@ public interface GroupChatHistoryService extends IService<GroupChatHistory> {
      * @param message
      * @param param
      */
-    void sendChatListByTime(Message message, FindChatMessageHandler.Param param,String[] cqs);
+    void sendChatList(Message message, FindChatMessageHandler.Param param, String[] atCqs);
 }
