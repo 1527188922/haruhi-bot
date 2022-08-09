@@ -26,7 +26,7 @@
     <update id="createPixiv">
         CREATE TABLE `${tableName}` (
         `id` INT auto_increment NOT NULL,
-        `pid` INT NOT NULL,
+        `pid` varchar(30) NOT NULL,
         `title` varchar(100) NOT NULL,
         `width` INT NULL,
         `height` INT NULL,
@@ -34,7 +34,7 @@
         `bookmarks` INT NULL,
         `img_url` varchar(255) NOT NULL,
         `img_p` varchar(100) NULL,
-        `uid` INT NULL,
+        `uid` varchar(30) NULL,
         `author` varchar(100) NULL,
         `is_r18` bit NOT NULL,
         `tags` text NOT NULL,
@@ -59,5 +59,18 @@
             `answer` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
             PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='话术表';
+    </update>
+    <update id="createGroupChatHistory">
+        CREATE TABLE `${tableName}` (
+            `id` INT auto_increment NOT NULL,
+            `card` varchar(30) COMMENT '群昵称',
+            `nickname` varchar(30) COMMENT 'qq昵称',
+            `message_id` varchar(30) NOT NULL,
+            `group_id` varchar(20) NOT NULL,
+            `user_id` varchar(20) NOT NULL,
+            `content` TEXT COLLATE utf8mb4_unicode_ci,
+            create_time BIGINT NOT NULL,
+            PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='群聊历史聊天表';
     </update>
 </mapper>

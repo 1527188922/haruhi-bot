@@ -38,7 +38,7 @@ public class SearchImageHandler implements IOnMessageEvent {
 
     private Map<String,Long> timeoutMap = new ConcurrentHashMap<>(10);
     private Map<String,String> cqtMap = new ConcurrentHashMap<>(10);
-    public boolean matches(final Message message,final String command) {
+    public boolean matching(final Message message, final String command) {
         KQCodeUtils utils = KQCodeUtils.getInstance();
         String cq = utils.getCq(command, CqCodeTypeEnum.image.getType(), 0);
         String key = CommonUtil.getKey(message.getUser_id(), message.getGroup_id());
@@ -77,7 +77,7 @@ public class SearchImageHandler implements IOnMessageEvent {
 
     @Override
     public boolean onMessage(final Message message,final String command) {
-        if (!matches(message,command)){
+        if (!matching(message,command)){
             return false;
         }
         String key = CommonUtil.getKey(message.getUser_id(), message.getGroup_id());

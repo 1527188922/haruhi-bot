@@ -22,7 +22,7 @@ public class PixivHandler implements IOnMessageEvent {
 
     private String tag;
 
-    public boolean matches(final String command) {
+    public boolean matching(final String command) {
         KQCodeUtils instance = KQCodeUtils.getInstance();
         String cq = instance.getCq(command, 0);
         if(cq != null){
@@ -42,7 +42,7 @@ public class PixivHandler implements IOnMessageEvent {
 
     @Override
     public boolean onMessage(Message message, String command) {
-        if (!matches(command)){
+        if (!matching(command)){
             return false;
         }
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(new PixivTask(pixivService,tag,message));

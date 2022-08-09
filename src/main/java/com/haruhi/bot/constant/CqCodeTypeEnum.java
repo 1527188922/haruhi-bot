@@ -3,7 +3,9 @@ package com.haruhi.bot.constant;
 public enum CqCodeTypeEnum {
     at("at"),
     image("image"),
-    face("face");
+    face("face"),
+    forward("forward"),
+    reply("reply");
 
 
     private String type;

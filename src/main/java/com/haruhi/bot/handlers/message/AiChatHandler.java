@@ -37,7 +37,7 @@ public class AiChatHandler implements IOnMessageEvent {
     }
     private String[] cqs;
 
-    public boolean matches(final Message message,final String command) {
+    public boolean matching(final Message message, final String command) {
         if(MessageTypeEnum.privat.getType().equals(message.getMessage_type())){
             // 私聊了机器人
             if(command.matches(RegexEnum.CQ_CODE.getValue())){
@@ -69,7 +69,7 @@ public class AiChatHandler implements IOnMessageEvent {
 
     @Override
     public boolean onMessage(Message message,String command) {
-        if(!matches(message,command)){
+        if(!matching(message,command)){
             return false;
         }
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(()->{

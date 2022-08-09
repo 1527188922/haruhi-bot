@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -78,11 +79,14 @@ public class PixivByUidHandler implements IOnMessageEvent {
                 return;
             }
             int size = list.size();
-            Set<Pixiv> pixivSet = new HashSet<>();
+            Set<Pixiv> pixivSet;
             if(size > 20){
+                pixivSet = new HashSet<>();
                 while (pixivSet.size() < 20){
                     pixivSet.add(list.get(CommonUtil.randomInt(0,size - 1)));
                 }
+            }else{
+                pixivSet = list.stream().collect(Collectors.toSet());
             }
             if(MessageTypeEnum.group.getType().equals(message.getMessage_type())){
                 ArrayList<ForwardMsg> params = new ArrayList<>();

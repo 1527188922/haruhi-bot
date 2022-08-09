@@ -42,4 +42,11 @@ public interface TableInitMapper {
      */
     int createVerbalTricks(@Param("tableName") String tableName);
 
+    /**
+     * 群聊天记录表
+     * @param tableName
+     * @return
+     */
+    int createGroupChatHistory(@Param("tableName") String tableName);
+
 }

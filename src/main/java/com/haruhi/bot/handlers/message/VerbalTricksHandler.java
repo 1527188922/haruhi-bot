@@ -1,16 +1,13 @@
 package com.haruhi.bot.handlers.message;
 
-import com.haruhi.bot.constant.CqCodeTypeEnum;
 import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.MessageTypeEnum;
-import com.haruhi.bot.constant.RegexEnum;
 import com.haruhi.bot.dto.gocq.request.Message;
 import com.haruhi.bot.entity.VerbalTricks;
 import com.haruhi.bot.event.message.IOnMessageEvent;
 import com.haruhi.bot.factory.ThreadPoolFactory;
 import com.haruhi.bot.utils.CommonUtil;
 import com.haruhi.bot.ws.Client;
-import com.simplerobot.modules.utils.KQCodeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -40,7 +37,7 @@ public class VerbalTricksHandler implements IOnMessageEvent {
         if(MessageTypeEnum.privat.getType().equals(message.getMessage_type())){
             flag = true;
         }else if(MessageTypeEnum.group.getType().equals(message.getMessage_type())){
-            if (CommonUtil.isAtSelf(message.getSelf_id(),command)) {
+            if (CommonUtil.isAt(message.getSelf_id(),command)) {
                 flag = true;
             }
         }
@@ -51,7 +48,7 @@ public class VerbalTricksHandler implements IOnMessageEvent {
         String cmd = new String(command);
         cmd = cmd.replaceAll("\\[CQ:.*\\]", "").trim();
 
-        List<VerbalTricks>  answerObj = null;
+        List<VerbalTricks> answerObj = null;
         for (Map.Entry<String, List<VerbalTricks>> item : this.cache.entrySet()) {
             if (cmd.matches(item.getKey())) {
                 answerObj = item.getValue();
