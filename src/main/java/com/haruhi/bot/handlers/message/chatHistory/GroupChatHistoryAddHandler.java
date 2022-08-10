@@ -16,7 +16,7 @@ public class GroupChatHistoryAddHandler implements IOnGroupMessageEvent {
     public int weight() {
         return 997;
     }
-    private static GroupChatHistory param;
+    private final static GroupChatHistory param = new GroupChatHistory();
     @Autowired
     private GroupChatHistoryService groupChatHistoryService;
 
@@ -29,9 +29,6 @@ public class GroupChatHistoryAddHandler implements IOnGroupMessageEvent {
      */
     @Override
     public boolean onGroup(final Message message,final String command) {
-        if(param == null){
-            param = new GroupChatHistory();
-        }
         ThreadPoolFactory.getChatHistoryThreadPool().execute(new GroupChatHistoryAddHandler.Task(groupChatHistoryService,message,param));
         return false;
     }
@@ -39,7 +36,7 @@ public class GroupChatHistoryAddHandler implements IOnGroupMessageEvent {
     public static class Task implements Runnable{
         private GroupChatHistoryService service;
         private GroupChatHistory param;
-        public Task(GroupChatHistoryService service,final Message message, GroupChatHistory param){
+        public Task(GroupChatHistoryService service,final Message message,final GroupChatHistory param){
             this.service = service;
             param.setId(null);
             param.setCard(message.getSender().getCard());

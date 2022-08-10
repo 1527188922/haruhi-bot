@@ -32,7 +32,7 @@ public class Client {
         session = ContainerProvider.getWebSocketContainer().connectToServer(this, URI.create(url));
     }
     private static Client instance = null;
-    public static Client getInstance() {
+    public synchronized static Client getInstance() {
         try {
             if(instance == null){
                 instance = new Client(WebSocketConfig.GOCQ_WS);
