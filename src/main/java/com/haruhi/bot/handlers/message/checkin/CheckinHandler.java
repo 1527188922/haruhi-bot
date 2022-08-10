@@ -2,9 +2,9 @@ package com.haruhi.bot.handlers.message.checkin;
 
 import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.RegexEnum;
-import com.haruhi.bot.dto.gocq.request.Message;
-import com.haruhi.bot.dto.gocq.response.Answer;
-import com.haruhi.bot.dto.gocq.response.AnswerBox;
+import com.haruhi.bot.dto.gocq.response.Message;
+import com.haruhi.bot.dto.gocq.request.Answer;
+import com.haruhi.bot.dto.gocq.request.AnswerBox;
 import com.haruhi.bot.factory.ThreadPoolFactory;
 import com.haruhi.bot.event.message.IOnGroupMessageEvent;
 import com.haruhi.bot.service.checkin.CheckinService;

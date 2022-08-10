@@ -1,4 +1,4 @@
-package com.haruhi.bot.dto.gocq.request;
+package com.haruhi.bot.dto.gocq.response;
 
 import lombok.Data;
 

@@ -2,7 +2,7 @@ package com.haruhi.bot.handlers.message.wordStrip;
 
 import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.MessageTypeEnum;
-import com.haruhi.bot.dto.gocq.request.Message;
+import com.haruhi.bot.dto.gocq.response.Message;
 import com.haruhi.bot.event.message.IOnGroupMessageEvent;
 import com.haruhi.bot.factory.ThreadPoolFactory;
 import com.haruhi.bot.ws.Client;

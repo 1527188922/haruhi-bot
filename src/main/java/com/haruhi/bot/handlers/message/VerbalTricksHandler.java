@@ -3,7 +3,7 @@ package com.haruhi.bot.handlers.message;
 import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.MessageTypeEnum;
 import com.haruhi.bot.constant.RegexEnum;
-import com.haruhi.bot.dto.gocq.request.Message;
+import com.haruhi.bot.dto.gocq.response.Message;
 import com.haruhi.bot.entity.VerbalTricks;
 import com.haruhi.bot.event.message.IOnMessageEvent;
 import com.haruhi.bot.factory.ThreadPoolFactory;

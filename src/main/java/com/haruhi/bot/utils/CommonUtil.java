@@ -1,9 +1,12 @@
 package com.haruhi.bot.utils;
 
 import com.haruhi.bot.constant.CqCodeTypeEnum;
-import com.haruhi.bot.dto.gocq.response.ForwardMsg;
+import com.haruhi.bot.dto.gocq.request.ForwardMsg;
 import com.simplerobot.modules.utils.KQCodeUtils;
+import org.apache.logging.log4j.util.Strings;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class CommonUtil {
@@ -49,5 +52,28 @@ public class CommonUtil {
             }
         }
         return false;
+    }
+
+    /**
+     * 根据cq码类型 参数类型 获取参数的值
+     * @param message
+     * @param typeEnum
+     * @param paramKey
+     * @return
+     */
+    public static List<String> getCqParams(String message,CqCodeTypeEnum typeEnum,String paramKey){
+        List<String> params = null;
+        KQCodeUtils instance = KQCodeUtils.getInstance();
+        String[] cqs = instance.getCqs(message, typeEnum.getType());
+        if (cqs != null && cqs.length > 0) {
+            params = new ArrayList<>();
+            for (String cq : cqs) {
+                String paramVal = instance.getParam(cq, paramKey);
+                if(Strings.isNotBlank(paramVal)){
+                    params.add(paramVal);
+                }
+            }
+        }
+        return params;
     }
 }

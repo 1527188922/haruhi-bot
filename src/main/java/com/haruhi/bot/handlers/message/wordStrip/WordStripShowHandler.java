@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.MessageTypeEnum;
 import com.haruhi.bot.constant.RegexEnum;
-import com.haruhi.bot.dto.gocq.request.Message;
+import com.haruhi.bot.dto.gocq.response.Message;
 import com.haruhi.bot.entity.WordStrip;
 import com.haruhi.bot.event.message.IOnGroupMessageEvent;
 import com.haruhi.bot.factory.ThreadPoolFactory;

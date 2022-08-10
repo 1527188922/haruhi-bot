@@ -1,5 +1,6 @@
 package com.haruhi.bot;
 
+import com.haruhi.bot.config.env.IEnvConfig;
 import com.haruhi.bot.job.schedule.JobManage;
 import com.haruhi.bot.service.DataBaseService;
 import com.haruhi.bot.thread.FirstTask;
@@ -19,6 +20,7 @@ public class SystemCommandLineRunner implements CommandLineRunner {
     private FirstTask firstTask;
     @Autowired
     private JobManage jobManage;
+
     @Override
     public void run(String... args) throws Exception {
 

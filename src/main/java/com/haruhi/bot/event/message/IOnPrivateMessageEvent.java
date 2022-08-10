@@ -1,6 +1,6 @@
 package com.haruhi.bot.event.message;
 
-import com.haruhi.bot.dto.gocq.request.Message;
+import com.haruhi.bot.dto.gocq.response.Message;
 
 public interface IOnPrivateMessageEvent extends IMessageEventType {
     /**

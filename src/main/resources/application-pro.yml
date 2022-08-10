@@ -48,4 +48,4 @@ logging:
   level:
     com.haruhi.bot.mapper: debug
 env:
-  active: dev
+  active: pro

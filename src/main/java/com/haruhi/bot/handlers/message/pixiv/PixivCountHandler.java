@@ -3,7 +3,7 @@ package com.haruhi.bot.handlers.message.pixiv;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.RegexEnum;
-import com.haruhi.bot.dto.gocq.request.Message;
+import com.haruhi.bot.dto.gocq.response.Message;
 import com.haruhi.bot.entity.Pixiv;
 import com.haruhi.bot.event.message.IOnMessageEvent;
 import com.haruhi.bot.factory.ThreadPoolFactory;

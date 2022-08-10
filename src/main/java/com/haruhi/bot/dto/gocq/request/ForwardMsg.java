@@ -1,4 +1,4 @@
-package com.haruhi.bot.dto.gocq.response;
+package com.haruhi.bot.dto.gocq.request;
 
 @lombok.Data
 public class ForwardMsg {

@@ -1,8 +1,9 @@
 package com.haruhi.bot.service.groupChatHistory;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.haruhi.bot.dto.gocq.request.Message;
+import com.haruhi.bot.dto.gocq.response.Message;
 import com.haruhi.bot.entity.GroupChatHistory;
+import com.haruhi.bot.handlers.message.WordCloudHandler;
 import com.haruhi.bot.handlers.message.chatHistory.FindChatMessageHandler;
 
 public interface GroupChatHistoryService extends IService<GroupChatHistory> {
@@ -12,5 +13,7 @@ public interface GroupChatHistoryService extends IService<GroupChatHistory> {
      * @param message
      * @param param
      */
-    void sendChatList(Message message, FindChatMessageHandler.Param param, String[] atCqs);
+    void sendChatList(Message message, FindChatMessageHandler.Param param);
+
+    void sendWordCloudImage(WordCloudHandler.RegexEnum regexEnum,Message message);
 }

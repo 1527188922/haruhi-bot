@@ -1,6 +1,6 @@
 package com.haruhi.bot.handlers.message.chatHistory;
 
-import com.haruhi.bot.dto.gocq.request.Message;
+import com.haruhi.bot.dto.gocq.response.Message;
 import com.haruhi.bot.entity.GroupChatHistory;
 import com.haruhi.bot.event.message.IOnGroupMessageEvent;
 import com.haruhi.bot.factory.ThreadPoolFactory;

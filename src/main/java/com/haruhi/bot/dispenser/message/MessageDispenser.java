@@ -1,7 +1,7 @@
 package com.haruhi.bot.dispenser.message;
 
 import com.haruhi.bot.constant.MessageTypeEnum;
-import com.haruhi.bot.dto.gocq.request.Message;
+import com.haruhi.bot.dto.gocq.response.Message;
 import com.haruhi.bot.event.message.IMessageEventType;
 import com.haruhi.bot.event.message.IOnGroupMessageEvent;
 import com.haruhi.bot.event.message.IOnMessageEvent;

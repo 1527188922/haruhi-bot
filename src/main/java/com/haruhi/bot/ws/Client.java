@@ -5,14 +5,13 @@ import com.haruhi.bot.config.WebSocketConfig;
 import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.MessageTypeEnum;
 import com.haruhi.bot.constant.PostTypeEnum;
-import com.haruhi.bot.dto.gocq.request.Message;
-import com.haruhi.bot.dto.gocq.response.Answer;
-import com.haruhi.bot.dto.gocq.response.AnswerBox;
-import com.haruhi.bot.dto.gocq.response.ForwardMsg;
+import com.haruhi.bot.dto.gocq.response.Message;
+import com.haruhi.bot.dto.gocq.request.Answer;
+import com.haruhi.bot.dto.gocq.request.AnswerBox;
+import com.haruhi.bot.dto.gocq.request.ForwardMsg;
 import com.haruhi.bot.dispenser.message.MessageDispenser;
 import com.haruhi.bot.thread.ReConnectTask;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.Strings;
 
 import javax.websocket.*;
 import java.io.IOException;
