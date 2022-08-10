@@ -17,25 +17,36 @@ public class DevEnvConfigImpl implements IEnvConfig{
     }
     private static String homePath;
     private static String imagePath;
+
+    static {
+        setHomePath();
+        setImagePath();
+    }
     @Override
     public synchronized String applicationHomePath() {
-        if(homePath == null){
-            ApplicationHome ah = new ApplicationHome(getClass());
-            homePath = ah.getSource().getParentFile().toString();
-        }
+
         return homePath;
+    }
+    private static void setHomePath(){
+        ApplicationHome ah = new ApplicationHome(DevEnvConfigImpl.class);
+        homePath = ah.getSource().getParentFile().toString();
+    }
+    private static void setImagePath(){
+        File directory = new File("src/main/resources");
+        try {
+            imagePath = directory.getCanonicalPath() + File.separator + "build\\image";
+            File file = new File(imagePath);
+            if(!file.exists()){
+                file.mkdirs();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public String resourcesImagePath() {
-        if(imagePath == null){
-            File directory = new File("src/main/resources");
-            try {
-                imagePath = directory.getCanonicalPath() + File.separator + "image";
-            } catch (IOException e) {
-                log.error("获取resources绝对路径异常,环境:dev",e);
-            }
-        }
+
         return imagePath;
     }
 }

@@ -1,10 +1,9 @@
 package com.haruhi.bot.service.groupChatHistory;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.haruhi.bot.config.BotConfig;
+import com.haruhi.bot.config.env.IEnvConfig;
 import com.haruhi.bot.constant.CqCodeTypeEnum;
 import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.MessageTypeEnum;
@@ -18,25 +17,26 @@ import com.haruhi.bot.handlers.message.chatHistory.FindChatMessageHandler;
 import com.haruhi.bot.mapper.GroupChatHistoryMapper;
 import com.haruhi.bot.utils.CommonUtil;
 import com.haruhi.bot.utils.DateTimeUtil;
+import com.haruhi.bot.utils.FileUtil;
 import com.haruhi.bot.utils.RestUtil;
 import com.haruhi.bot.ws.Client;
 import com.kennycason.kumo.CollisionMode;
 import com.kennycason.kumo.WordCloud;
 import com.kennycason.kumo.WordFrequency;
-import com.kennycason.kumo.bg.PixelBoundaryBackground;
 import com.kennycason.kumo.font.KumoFont;
 import com.kennycason.kumo.font.scale.SqrtFontScalar;
 import com.kennycason.kumo.image.AngleGenerator;
 import com.kennycason.kumo.palette.ColorPalette;
-import lombok.Data;
+import com.simplerobot.modules.utils.KQCodeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.text.StrBuilder;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.awt.*;
-import java.io.IOException;
+import java.io.File;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.List;
@@ -47,6 +47,20 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
 
     @Autowired
     private GroupChatHistoryMapper groupChatHistoryMapper;
+
+    @Autowired
+    private IEnvConfig envConfig;
+
+    private static String basePath;
+
+    @PostConstruct
+    private void mkdirs(){
+        basePath = envConfig.resourcesImagePath() + File.separator + "wordCloud";
+        File file = new File(basePath);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+    }
 
     /**
      * 发送聊天历史
@@ -75,7 +89,10 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
             for (GroupChatHistory e : chatList) {
                 params.add(CommonUtil.createForwardMsgItem(e.getContent(),e.getUserId(),getName(e)));
             }
-            Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,message.getGroup_id(),params);
+            HttpResponse response = Client.sendRestMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG, message.getGroup_id(), params);
+            if(response.getRetcode() != 0){
+                Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), "消息发送失败：\n可能被风控；\n消息可能包含敏感内容；",GocqActionEnum.SEND_MSG,true);
+            }
         }else{
             Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), "该条件下没有聊天记录。",GocqActionEnum.SEND_MSG,true);
         }
@@ -137,12 +154,27 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
         }
 
         Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageTypeEnum.group, MessageFormat.format("词云图片将从{0}条聊天记录中生成...",corpus.size()),GocqActionEnum.SEND_MSG,true);
-
-
-        Map<String, Integer> map = handleCorpus(wordSlices(corpus));
-
+        String outPutPath = null;
+        try{
+            Map<String, Integer> map = setFrequency(wordSlices(corpus));
+            String fileName = regexEnum.getUnit().toString() + "-" + message.getGroup_id() + ".png";
+            outPutPath = basePath + File.separator + fileName;
+            generateWordCloudImage(map,outPutPath);
+            KQCodeUtils instance = KQCodeUtils.getInstance();
+            String imageCq = instance.toCq(CqCodeTypeEnum.image.getType(), "file=file:///" + outPutPath);
+            Client.sendRestMessage(message.getUser_id(), message.getGroup_id(), MessageTypeEnum.group, imageCq, GocqActionEnum.SEND_MSG, false);
+        }catch (Exception e){
+            Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageTypeEnum.group, MessageFormat.format("生成失败：{0}",e.getMessage()),GocqActionEnum.SEND_MSG,true);
+            log.error("词云图片生产异常",e);
+        }finally {
+            generateComplete(message,outPutPath);
+        }
     }
-    private Map<String,Integer> handleCorpus(List<String> corpus){
+    private void generateComplete(Message message,String path){
+        WordCloudHandler.lock.remove(message.getGroup_id());
+        FileUtil.deleteFile(path);
+    }
+    private Map<String,Integer> setFrequency(List<String> corpus){
         Map<String, Integer> map = new HashMap<>();
         for (String e : corpus) {
 
@@ -158,22 +190,23 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
         }
         return map;
     }
-
+    private static String noSupport = "你的QQ暂不支持查看&#91;转发多条消息&#93;，请期待后续版本。";
     private List<String> wordSlices(List<GroupChatHistory> corpus){
         StrBuilder strBuilder = new StrBuilder();
         for (GroupChatHistory e : corpus) {
             String s = e.getContent();
             if(s.matches(RegexEnum.CQ_CODE.getValue())){
-                s = s.replaceAll(RegexEnum.CQ_CODE_REPLACR.getValue(), "");
+                s = s.replaceAll(RegexEnum.CQ_CODE_REPLACR.getValue(), "").replace(noSupport,"");
             }
             strBuilder.append(s);
         }
         Map<String, Object> req = new HashMap<>();
         req.put("content",strBuilder.toString());
-        String responseStr = RestUtil.sendPostRequest(RestUtil.getRestTemplate(10 * 1000), BotConfig.HTTP_URL + "/" + GocqActionEnum.GET_WORD_SLICES.getAction(), req, null, String.class);
-        if(Strings.isNotBlank(responseStr)){
-            JSONObject jsonObject = JSONObject.parseObject(responseStr);
-            return JSONArray.parseArray(jsonObject.getJSONObject("data").getString("slices"), String.class);
+        HttpResponse httpResponse = RestUtil.sendPostRequest(RestUtil.getRestTemplate(10 * 1000), BotConfig.HTTP_URL + "/" + GocqActionEnum.GET_WORD_SLICES.getAction(), req, null, HttpResponse.class);
+
+        if(httpResponse != null && httpResponse.getRetcode() == 0 ){
+            HttpResponse.RespData data = httpResponse.getData();
+            return data != null ? data.getSlices() : null;
         }
         return null;
     }
@@ -195,17 +228,15 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
         }
         return res;
     }
-    private static final String templateFileName = "wordCloudTemplate1.jpg";
+
     /**
      * 获取词云图片
      *
      * @param corpus
      * @param pngOutputPath 图片输出路径 png结尾
-     * @param shapePicPath 词云形状图片路径，其背景应为透明背景，格式为png
-     * @throws IOException
      */
-    private void generate(Map<String,Integer> corpus, String pngOutputPath, String shapePicPath) throws IOException {
-        final List<WordFrequency> wordFrequencies = new ArrayList<WordFrequency>();
+    private void generateWordCloudImage(Map<String,Integer> corpus, String pngOutputPath) {
+        final List<WordFrequency> wordFrequencies = new ArrayList<>();
         // 加载词云有两种方式，一种是在txt文件中统计词出现的个数，另一种是直接给出每个词出现的次数，这里使用第二种
         // 文件格式如下
         for (Map.Entry<String, Integer> item : corpus.entrySet()) {
@@ -220,10 +251,10 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
         //设置背景色
         wordCloud.setBackgroundColor(new Color(255,255,255));
         //设置背景图片
-        wordCloud.setBackground(new PixelBoundaryBackground(shapePicPath));
+//        wordCloud.setBackground(new PixelBoundaryBackground(shapePicPath));
 
         // 颜色模板，不同频率的颜色会不同
-        wordCloud.setColorPalette(new ColorPalette(new Color( 234,106,40), new Color(255,146,70), new Color(255,182,69), new Color(255,232,113), new Color(255,251,192), new Color(254,255,233)));
+        wordCloud.setColorPalette(new ColorPalette(new Color(234,106,40), new Color(255,146,70), new Color(255,182,69), new Color(255,232,113), new Color(255,251,192), new Color(254,255,233)));
         // 设置字体
         java.awt.Font font = new java.awt.Font("楷体", 0, 20);
         wordCloud.setKumoFont(new KumoFont(font));
@@ -231,7 +262,7 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
         // wordCloud.setAngleGenerator(new AngleGenerator(0, 90, 9));
         wordCloud.setAngleGenerator(new AngleGenerator(0));
         // 字体的大小范围，最小是多少，最大是多少
-        wordCloud.setFontScalar(new SqrtFontScalar(5, 40));
+        wordCloud.setFontScalar(new SqrtFontScalar(15, 80));
         wordCloud.build(wordFrequencies);
         wordCloud.writeToFile(pngOutputPath);
     }

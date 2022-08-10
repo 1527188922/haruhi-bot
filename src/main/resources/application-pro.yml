@@ -1,3 +1,6 @@
+env:
+  active: pro
+
 mysql:
   # mysql用户名
   username: root
@@ -47,5 +50,4 @@ mybatis-plus:
 logging:
   level:
     com.haruhi.bot.mapper: debug
-env:
-  active: pro
+

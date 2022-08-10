@@ -29,7 +29,10 @@
                 <include>*.sh</include>
             </includes>
         </fileSet>
-
+        <fileSet>
+            <directory>${project.basedir}/src/main/resources/build/image</directory>
+            <outputDirectory>image</outputDirectory>
+        </fileSet>
         <fileSet>
             <directory>${project.build.directory}</directory>
             <outputDirectory></outputDirectory>

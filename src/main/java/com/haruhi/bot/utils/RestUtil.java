@@ -15,6 +15,7 @@ import java.util.Map;
 @Slf4j
 public class RestUtil {
     private RestUtil(){}
+
     public static <T> T sendGetRequest(RestTemplate restTemplate, String url,Map<String, Object> urlRequestParam, Class<T> type){
         return RestUtil.sendRequest(restTemplate,url,HttpMethod.GET,null,urlRequestParam,type);
     }
@@ -87,6 +88,11 @@ public class RestUtil {
             log.error("请求结果(json串)转javabean异常",e);
             return null;
         }
+    }
+    private static RestTemplate restTemplate = new RestTemplate();
+
+    public static RestTemplate getRestTemplate(){
+        return restTemplate;
     }
 
     /**
