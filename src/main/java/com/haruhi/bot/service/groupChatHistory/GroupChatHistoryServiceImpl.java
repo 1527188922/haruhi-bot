@@ -192,10 +192,7 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
     private List<String> wordSlices(List<GroupChatHistory> corpus){
         StrBuilder strBuilder = new StrBuilder();
         for (GroupChatHistory e : corpus) {
-            String s = e.getContent();
-            if(s.matches(RegexEnum.CQ_CODE.getValue())){
-                s = s.replaceAll(RegexEnum.CQ_CODE_REPLACR.getValue(), "").replace(noSupport,"").replaceAll("\\s*|\r|\n|\t","");
-            }
+            String s = e.getContent().replaceAll(RegexEnum.CQ_CODE_REPLACR.getValue(), "").replace(noSupport,"").replaceAll("&#93;|&#91;","").replaceAll("\\s*|\r|\n|\t","");
             strBuilder.append(s);
         }
         Map<String, Object> req = new HashMap<>();
