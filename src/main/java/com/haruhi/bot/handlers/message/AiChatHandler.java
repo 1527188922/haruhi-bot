@@ -3,12 +3,12 @@ package com.haruhi.bot.handlers.message;
 import com.haruhi.bot.config.BotConfig;
 import com.haruhi.bot.constant.CqCodeTypeEnum;
 import com.haruhi.bot.constant.GocqActionEnum;
-import com.haruhi.bot.constant.MessageTypeEnum;
+import com.haruhi.bot.constant.event.MessageEventEnum;
 import com.haruhi.bot.constant.RegexEnum;
 import com.haruhi.bot.dto.aiChat.response.ChatResp;
 import com.haruhi.bot.dto.gocq.response.Message;
 import com.haruhi.bot.factory.ThreadPoolFactory;
-import com.haruhi.bot.event.message.IOnMessageEvent;
+import com.haruhi.bot.event.message.IMessageEvent;
 import com.haruhi.bot.utils.RestUtil;
 import com.haruhi.bot.ws.Client;
 import com.simplerobot.modules.utils.KQCodeUtils;
@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
  */
 @Slf4j
 @Component
-public class AiChatHandler implements IOnMessageEvent {
+public class AiChatHandler implements IMessageEvent {
 
     private static String url = "http://api.qingyunke.com/api.php";
 
@@ -38,7 +38,7 @@ public class AiChatHandler implements IOnMessageEvent {
     private String[] cqs;
 
     public boolean matching(final Message message, final String command) {
-        if(MessageTypeEnum.privat.getType().equals(message.getMessage_type())){
+        if(MessageEventEnum.privat.getType().equals(message.getMessage_type())){
             // 私聊了机器人
             if(command.matches(RegexEnum.CQ_CODE.getValue())){
                 return false;
@@ -46,7 +46,7 @@ public class AiChatHandler implements IOnMessageEvent {
             this.cqs = null;
             return true;
         }
-        if(MessageTypeEnum.group.getType().equals(message.getMessage_type())){
+        if(MessageEventEnum.group.getType().equals(message.getMessage_type())){
             KQCodeUtils utils = KQCodeUtils.getInstance();
             String[] cqs = utils.getCqs(command, CqCodeTypeEnum.at.getType());
             if(cqs == null || cqs.length == 0){

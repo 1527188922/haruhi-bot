@@ -3,12 +3,12 @@ package com.haruhi.bot.handlers.message.pixiv;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.haruhi.bot.config.BotConfig;
 import com.haruhi.bot.constant.GocqActionEnum;
-import com.haruhi.bot.constant.MessageTypeEnum;
+import com.haruhi.bot.constant.event.MessageEventEnum;
 import com.haruhi.bot.constant.RegexEnum;
 import com.haruhi.bot.dto.gocq.response.Message;
 import com.haruhi.bot.dto.gocq.request.ForwardMsg;
 import com.haruhi.bot.entity.Pixiv;
-import com.haruhi.bot.event.message.IOnMessageEvent;
+import com.haruhi.bot.event.message.IMessageEvent;
 import com.haruhi.bot.factory.ThreadPoolFactory;
 import com.haruhi.bot.service.pixiv.PixivService;
 import com.haruhi.bot.utils.CommonUtil;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class PixivByUidHandler implements IOnMessageEvent {
+public class PixivByUidHandler implements IMessageEvent {
     @Override
     public int weight() {
         return 103;
@@ -88,11 +88,11 @@ public class PixivByUidHandler implements IOnMessageEvent {
             }else{
                 pixivSet = list.stream().collect(Collectors.toSet());
             }
-            if(MessageTypeEnum.group.getType().equals(message.getMessage_type())){
+            if(MessageEventEnum.group.getType().equals(message.getMessage_type())){
                 ArrayList<ForwardMsg> params = new ArrayList<>();
                 params.add(CommonUtil.createForwardMsgItem(MessageFormat.format("uid：{0}\n※原图链接不需要翻墙，直接点",uid),message.getSelf_id(), BotConfig.NAME));
                 pixivService.groupSend(pixivSet,params,message);
-            }else if(MessageTypeEnum.privat.getType().equals(message.getMessage_type())){
+            }else if(MessageEventEnum.privat.getType().equals(message.getMessage_type())){
                 pixivService.privateSend(pixivSet,message);
             }
         }

@@ -4,14 +4,15 @@ import com.alibaba.fastjson.JSONObject;
 import com.haruhi.bot.config.BotConfig;
 import com.haruhi.bot.config.WebSocketConfig;
 import com.haruhi.bot.constant.GocqActionEnum;
-import com.haruhi.bot.constant.MessageTypeEnum;
+import com.haruhi.bot.constant.event.MessageEventEnum;
 import com.haruhi.bot.constant.PostTypeEnum;
+import com.haruhi.bot.dispenser.NoticeDispenser;
 import com.haruhi.bot.dto.gocq.response.HttpResponse;
 import com.haruhi.bot.dto.gocq.response.Message;
 import com.haruhi.bot.dto.gocq.request.Answer;
 import com.haruhi.bot.dto.gocq.request.AnswerBox;
 import com.haruhi.bot.dto.gocq.request.ForwardMsg;
-import com.haruhi.bot.dispenser.message.MessageDispenser;
+import com.haruhi.bot.dispenser.MessageDispenser;
 import com.haruhi.bot.thread.ReConnectTask;
 import com.haruhi.bot.utils.RestUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -61,6 +62,7 @@ public class Client {
 
             }else if(PostTypeEnum.notice.toString().equals(messageBean.getPost_type())){
                 // bot通知
+                NoticeDispenser.onEvent(messageBean);
             } else if(PostTypeEnum.meta_event.toString().equals(messageBean.getPost_type())){
                 // 系统消息 心跳包、
             }else{
@@ -89,7 +91,7 @@ public class Client {
      * @param action 动作类型 详见gocq文档 https://docs.go-cqhttp.org/api
      * @param autoEscape 是否不解析cq码 true:不解析 false:解析
      */
-    public static void sendMessage(String target,String groupId ,MessageTypeEnum type, String message,GocqActionEnum action, boolean autoEscape){
+    public static void sendMessage(String target, String groupId , MessageEventEnum type, String message, GocqActionEnum action, boolean autoEscape){
 
         AnswerBox<Answer> box = new AnswerBox<>();
         Answer answer = new Answer();
@@ -153,7 +155,7 @@ public class Client {
         answer.setAuto_escape(autoEscape);
         return RestUtil.sendPostRequest(RestUtil.getRestTemplate(), BotConfig.HTTP_URL + "/" + action.getAction(),answer,null, String.class);
     }
-    public static String sendRestMessage(String target,String groupId ,MessageTypeEnum type, String message,GocqActionEnum action, boolean autoEscape){
+    public static String sendRestMessage(String target, String groupId , MessageEventEnum type, String message, GocqActionEnum action, boolean autoEscape){
         Answer answer = new Answer();
         answer.setMessage(message);
         answer.setMessage_type(type.getType());

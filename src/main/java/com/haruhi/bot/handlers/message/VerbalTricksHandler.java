@@ -1,11 +1,11 @@
 package com.haruhi.bot.handlers.message;
 
 import com.haruhi.bot.constant.GocqActionEnum;
-import com.haruhi.bot.constant.MessageTypeEnum;
+import com.haruhi.bot.constant.event.MessageEventEnum;
 import com.haruhi.bot.constant.RegexEnum;
 import com.haruhi.bot.dto.gocq.response.Message;
 import com.haruhi.bot.entity.VerbalTricks;
-import com.haruhi.bot.event.message.IOnMessageEvent;
+import com.haruhi.bot.event.message.IMessageEvent;
 import com.haruhi.bot.factory.ThreadPoolFactory;
 import com.haruhi.bot.utils.CommonUtil;
 import com.haruhi.bot.ws.Client;
@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Component
-public class VerbalTricksHandler implements IOnMessageEvent {
+public class VerbalTricksHandler implements IMessageEvent {
     @Override
     public int weight() {
         return 2;
@@ -35,9 +35,9 @@ public class VerbalTricksHandler implements IOnMessageEvent {
         }
         // 群聊是否at了bot；是否私聊(私聊直接通过)
         boolean flag = false;
-        if(MessageTypeEnum.privat.getType().equals(message.getMessage_type())){
+        if(MessageEventEnum.privat.getType().equals(message.getMessage_type())){
             flag = true;
-        }else if(MessageTypeEnum.group.getType().equals(message.getMessage_type())){
+        }else if(MessageEventEnum.group.getType().equals(message.getMessage_type())){
             if (CommonUtil.isAt(message.getSelf_id(),command)) {
                 flag = true;
             }

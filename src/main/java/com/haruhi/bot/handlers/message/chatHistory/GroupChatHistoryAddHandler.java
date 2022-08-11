@@ -2,7 +2,7 @@ package com.haruhi.bot.handlers.message.chatHistory;
 
 import com.haruhi.bot.dto.gocq.response.Message;
 import com.haruhi.bot.entity.GroupChatHistory;
-import com.haruhi.bot.event.message.IOnGroupMessageEvent;
+import com.haruhi.bot.event.message.IGroupMessageEvent;
 import com.haruhi.bot.factory.ThreadPoolFactory;
 import com.haruhi.bot.service.groupChatHistory.GroupChatHistoryService;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class GroupChatHistoryAddHandler implements IOnGroupMessageEvent {
+public class GroupChatHistoryAddHandler implements IGroupMessageEvent {
     @Override
     public int weight() {
         return 997;

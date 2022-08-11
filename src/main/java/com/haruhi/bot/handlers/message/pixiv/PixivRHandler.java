@@ -2,7 +2,7 @@ package com.haruhi.bot.handlers.message.pixiv;
 
 import com.haruhi.bot.constant.RegexEnum;
 import com.haruhi.bot.dto.gocq.response.Message;
-import com.haruhi.bot.event.message.IOnMessageEvent;
+import com.haruhi.bot.event.message.IMessageEvent;
 import com.haruhi.bot.factory.ThreadPoolFactory;
 import com.haruhi.bot.service.pixiv.PixivService;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class PixivRHandler implements IOnMessageEvent {
+public class PixivRHandler implements IMessageEvent {
 
     @Autowired
     private PixivService pixivService;

@@ -2,11 +2,11 @@ package com.haruhi.bot.handlers.message.wordStrip;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.haruhi.bot.constant.GocqActionEnum;
-import com.haruhi.bot.constant.MessageTypeEnum;
+import com.haruhi.bot.constant.event.MessageEventEnum;
 import com.haruhi.bot.constant.RegexEnum;
 import com.haruhi.bot.dto.gocq.response.Message;
 import com.haruhi.bot.entity.WordStrip;
-import com.haruhi.bot.event.message.IOnGroupMessageEvent;
+import com.haruhi.bot.event.message.IGroupMessageEvent;
 import com.haruhi.bot.factory.ThreadPoolFactory;
 import com.haruhi.bot.service.wordStrip.WordStripService;
 import com.haruhi.bot.ws.Client;
@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 
 @Slf4j
 @Component
-public class WordStripAddHandler implements IOnGroupMessageEvent {
+public class WordStripAddHandler implements IGroupMessageEvent {
     @Override
     public int weight() {
         return 96;
@@ -59,7 +59,7 @@ public class WordStripAddHandler implements IOnGroupMessageEvent {
             queryWrapper.eq(WordStrip::getGroupId,message.getGroup_id()).eq(WordStrip::getKeyWord,this.keyWord);
             WordStrip wordStrip = wordStripService.getOne(queryWrapper);
             if(wordStrip != null){
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageTypeEnum.group,MessageFormat.format("已存在词条：{0}",this.keyWord), GocqActionEnum.SEND_MSG,true);
+                Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group,MessageFormat.format("已存在词条：{0}",this.keyWord), GocqActionEnum.SEND_MSG,true);
                 return;
             }
             try {
@@ -70,10 +70,10 @@ public class WordStripAddHandler implements IOnGroupMessageEvent {
                 param.setUserId(message.getUser_id());
                 if(wordStripService.save(param)){
                     WordStripHandler.cache.put(message.getGroup_id() + "-" + this.keyWord,this.answer);
-                    Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageTypeEnum.group,MessageFormat.format("词条添加成功：{0}",this.keyWord), GocqActionEnum.SEND_MSG,true);
+                    Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group,MessageFormat.format("词条添加成功：{0}",this.keyWord), GocqActionEnum.SEND_MSG,true);
                     return;
                 }
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageTypeEnum.group, MessageFormat.format("词条添加失败：{0}-->0",this.keyWord), GocqActionEnum.SEND_MSG,true);
+                Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("词条添加失败：{0}-->0",this.keyWord), GocqActionEnum.SEND_MSG,true);
             }catch (Exception e){
                 log.error("添加词条异常",e);
             }

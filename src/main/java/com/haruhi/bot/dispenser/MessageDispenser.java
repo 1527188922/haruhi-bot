@@ -1,11 +1,11 @@
-package com.haruhi.bot.dispenser.message;
+package com.haruhi.bot.dispenser;
 
-import com.haruhi.bot.constant.MessageTypeEnum;
+import com.haruhi.bot.constant.event.MessageEventEnum;
 import com.haruhi.bot.dto.gocq.response.Message;
 import com.haruhi.bot.event.message.IMessageEventType;
-import com.haruhi.bot.event.message.IOnGroupMessageEvent;
-import com.haruhi.bot.event.message.IOnMessageEvent;
-import com.haruhi.bot.event.message.IOnPrivateMessageEvent;
+import com.haruhi.bot.event.message.IGroupMessageEvent;
+import com.haruhi.bot.event.message.IMessageEvent;
+import com.haruhi.bot.event.message.IPrivateMessageEvent;
 import com.haruhi.bot.utils.ApplicationContextProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +14,11 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.*;
 
+/**
+ * 普通消息分发器
+ * 收到群聊 私聊消息时
+ * 消息将通过这个类分发给所有实现了接口 IMessageEventType 的类
+ */
 @Slf4j
 @Component
 public class MessageDispenser {
@@ -87,22 +92,22 @@ public class MessageDispenser {
         String messageType = message.getMessage_type();
 
         for (IMessageEventType element : container) {
-            if(element instanceof IOnMessageEvent){
-                IOnMessageEvent event = (IOnMessageEvent) element;
+            if(element instanceof IMessageEvent){
+                IMessageEvent event = (IMessageEvent) element;
                 if(event.onMessage(message,command)){
                     break;
                 }
             }
-            if(MessageTypeEnum.group.getType().equals(messageType)){
-                if(element instanceof IOnGroupMessageEvent){
-                    IOnGroupMessageEvent event = (IOnGroupMessageEvent) element;
+            if(MessageEventEnum.group.getType().equals(messageType)){
+                if(element instanceof IGroupMessageEvent){
+                    IGroupMessageEvent event = (IGroupMessageEvent) element;
                     if(event.onGroup(message,command)){
                         break;
                     }
                 }
-            }else if(MessageTypeEnum.privat.getType().equals(messageType)){
-                if(element instanceof IOnPrivateMessageEvent){
-                    IOnPrivateMessageEvent event = (IOnPrivateMessageEvent) element;
+            }else if(MessageEventEnum.privat.getType().equals(messageType)){
+                if(element instanceof IPrivateMessageEvent){
+                    IPrivateMessageEvent event = (IPrivateMessageEvent) element;
                     if(event.onPrivate(message,command)){
                         break;
                     }

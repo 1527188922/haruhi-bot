@@ -1,10 +1,10 @@
 package com.haruhi.bot.handlers.message;
 
 import com.haruhi.bot.constant.GocqActionEnum;
-import com.haruhi.bot.constant.MessageTypeEnum;
+import com.haruhi.bot.constant.event.MessageEventEnum;
 import com.haruhi.bot.constant.TimeUnitEnum;
 import com.haruhi.bot.dto.gocq.response.Message;
-import com.haruhi.bot.event.message.IOnGroupMessageEvent;
+import com.haruhi.bot.event.message.IGroupMessageEvent;
 
 import com.haruhi.bot.factory.ThreadPoolFactory;
 import com.haruhi.bot.service.groupChatHistory.GroupChatHistoryService;
@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Component
-public class WordCloudHandler implements IOnGroupMessageEvent {
+public class WordCloudHandler implements IGroupMessageEvent {
 
     @Override
     public int weight() {
@@ -46,7 +46,7 @@ public class WordCloudHandler implements IOnGroupMessageEvent {
             return false;
         }
         if(lock.containsKey(message.getGroup_id())){
-            Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageTypeEnum.group,"词云正在生成中...莫着急", GocqActionEnum.SEND_MSG,true);
+            Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group,"词云正在生成中...莫着急", GocqActionEnum.SEND_MSG,true);
             return true;
         }else{
             lock.put(message.getGroup_id(),1);

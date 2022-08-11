@@ -4,13 +4,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.haruhi.bot.config.BotConfig;
 import com.haruhi.bot.constant.CqCodeTypeEnum;
 import com.haruhi.bot.constant.GocqActionEnum;
-import com.haruhi.bot.constant.MessageTypeEnum;
+import com.haruhi.bot.constant.event.MessageEventEnum;
 import com.haruhi.bot.constant.RegexEnum;
 import com.haruhi.bot.dto.gocq.response.Message;
 import com.haruhi.bot.dto.gocq.request.ForwardMsg;
 import com.haruhi.bot.dto.searchImage.response.Results;
 import com.haruhi.bot.factory.ThreadPoolFactory;
-import com.haruhi.bot.event.message.IOnMessageEvent;
+import com.haruhi.bot.event.message.IMessageEvent;
 import com.haruhi.bot.utils.CommonUtil;
 import com.haruhi.bot.utils.RestUtil;
 import com.haruhi.bot.ws.Client;
@@ -28,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Component
-public class SearchImageHandler implements IOnMessageEvent {
+public class SearchImageHandler implements IMessageEvent {
 
     @Override
     public int weight() {
@@ -159,11 +159,11 @@ public class SearchImageHandler implements IOnMessageEvent {
                 forwardMsgs.add(CommonUtil.createForwardMsgItem(getItemMsg(results),message.getSelf_id(), BotConfig.NAME));
             }
 
-            if(MessageTypeEnum.group.getType().equals(message.getMessage_type())){
+            if(MessageEventEnum.group.getType().equals(message.getMessage_type())){
                 // 使用合并消息
                 Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG, message.getGroup_id(), forwardMsgs);
 
-            }else if(MessageTypeEnum.privat.getType().equals(message.getMessage_type())){
+            }else if(MessageEventEnum.privat.getType().equals(message.getMessage_type())){
                 // 私聊
                 for (int i = 1; i < forwardMsgs.size(); i++) {
                     try {
@@ -171,7 +171,7 @@ public class SearchImageHandler implements IOnMessageEvent {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    Client.sendMessage(message.getUser_id(), message.getGroup_id(), MessageTypeEnum.privat, forwardMsgs.get(i).getData().getContent(),GocqActionEnum.SEND_MSG,true);
+                    Client.sendMessage(message.getUser_id(), message.getGroup_id(), MessageEventEnum.privat, forwardMsgs.get(i).getData().getContent(),GocqActionEnum.SEND_MSG,true);
                 }
             }
         }

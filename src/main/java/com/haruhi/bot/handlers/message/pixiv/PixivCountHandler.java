@@ -5,7 +5,7 @@ import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.RegexEnum;
 import com.haruhi.bot.dto.gocq.response.Message;
 import com.haruhi.bot.entity.Pixiv;
-import com.haruhi.bot.event.message.IOnMessageEvent;
+import com.haruhi.bot.event.message.IMessageEvent;
 import com.haruhi.bot.factory.ThreadPoolFactory;
 import com.haruhi.bot.service.pixiv.PixivService;
 import com.haruhi.bot.ws.Client;
@@ -17,7 +17,7 @@ import java.text.MessageFormat;
 
 @Slf4j
 @Component
-public class PixivCountHandler implements IOnMessageEvent {
+public class PixivCountHandler implements IMessageEvent {
     @Override
     public int weight() {
         return 101;

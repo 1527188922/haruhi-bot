@@ -1,10 +1,10 @@
 package com.haruhi.bot.handlers.message.chatHistory;
 
 import com.haruhi.bot.constant.GocqActionEnum;
-import com.haruhi.bot.constant.MessageTypeEnum;
+import com.haruhi.bot.constant.event.MessageEventEnum;
 import com.haruhi.bot.constant.TimeUnitEnum;
 import com.haruhi.bot.dto.gocq.response.Message;
-import com.haruhi.bot.event.message.IOnGroupMessageEvent;
+import com.haruhi.bot.event.message.IGroupMessageEvent;
 import com.haruhi.bot.factory.ThreadPoolFactory;
 import com.haruhi.bot.service.groupChatHistory.GroupChatHistoryService;
 import com.haruhi.bot.ws.Client;
@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 
 @Slf4j
 @Component
-public class FindChatMessageHandler implements IOnGroupMessageEvent {
+public class FindChatMessageHandler implements IGroupMessageEvent {
     @Override
     public int weight() {
         return 91;
@@ -68,7 +68,7 @@ public class FindChatMessageHandler implements IOnGroupMessageEvent {
                     args = matcher.group(1);
                     num = Integer.valueOf(args);
                 }catch (Exception e){
-                    Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageTypeEnum.group, MessageFormat.format("错误的参数[{0}],请输入整数...",args),GocqActionEnum.SEND_MSG,true);
+                    Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("错误的参数[{0}],请输入整数...",args),GocqActionEnum.SEND_MSG,true);
                     return null;
                 }
                 return new Param(num,item.timeUnit,item.messageType);

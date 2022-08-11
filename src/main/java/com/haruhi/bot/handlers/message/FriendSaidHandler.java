@@ -4,12 +4,12 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.haruhi.bot.config.BotConfig;
 import com.haruhi.bot.constant.GocqActionEnum;
-import com.haruhi.bot.constant.MessageTypeEnum;
+import com.haruhi.bot.constant.event.MessageEventEnum;
 import com.haruhi.bot.constant.RegexEnum;
 import com.haruhi.bot.dto.gocq.response.Message;
 import com.haruhi.bot.dto.gocq.request.ForwardMsg;
 import com.haruhi.bot.dto.gocq.request.GroupMember;
-import com.haruhi.bot.event.message.IOnGroupMessageEvent;
+import com.haruhi.bot.event.message.IGroupMessageEvent;
 import com.haruhi.bot.factory.ThreadPoolFactory;
 import com.haruhi.bot.utils.CommonUtil;
 import com.haruhi.bot.utils.RestUtil;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class FriendSaidHandler implements IOnGroupMessageEvent {
+public class FriendSaidHandler implements IGroupMessageEvent {
     @Override
     public int weight() {
         return 99;
@@ -73,7 +73,7 @@ public class FriendSaidHandler implements IOnGroupMessageEvent {
                 String responseStr = RestUtil.sendPostRequest(RestUtil.getRestTemplate(5 * 1000), BotConfig.HTTP_URL + "/" + GocqActionEnum.GET_GROUP_MEMBER_LIST.getAction(), params, null, String.class);
                 if (responseStr == null) {
                     String errorMsg = "获取群成员列表失败:null";
-                    Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageTypeEnum.group,errorMsg,GocqActionEnum.SEND_MSG,true);
+                    Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group,errorMsg,GocqActionEnum.SEND_MSG,true);
                     log.error(errorMsg);
                     return;
                 }
@@ -83,7 +83,7 @@ public class FriendSaidHandler implements IOnGroupMessageEvent {
                 GroupMember friend = data.get(i);
                 send(friend);
             }catch (Exception e){
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageTypeEnum.group,"这个朋友不听话...",GocqActionEnum.SEND_MSG,true);
+                Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group,"这个朋友不听话...",GocqActionEnum.SEND_MSG,true);
                 log.error("朋友说发生异常",e);
             }
 

@@ -2,7 +2,11 @@ package com.haruhi.bot.event.message;
 
 import com.haruhi.bot.dto.gocq.response.Message;
 
-public interface IOnGroupMessageEvent extends IMessageEventType {
+/**
+ * 实现这接口的类
+ * 都能收到群消息
+ */
+public interface IGroupMessageEvent extends IMessageEventType {
     /**
      * 群聊触发
      * @param message

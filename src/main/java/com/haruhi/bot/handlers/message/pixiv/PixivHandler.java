@@ -3,7 +3,7 @@ package com.haruhi.bot.handlers.message.pixiv;
 import com.haruhi.bot.constant.RegexEnum;
 import com.haruhi.bot.dto.gocq.response.Message;
 import com.haruhi.bot.factory.ThreadPoolFactory;
-import com.haruhi.bot.event.message.IOnMessageEvent;
+import com.haruhi.bot.event.message.IMessageEvent;
 import com.haruhi.bot.service.pixiv.PixivService;
 import com.simplerobot.modules.utils.KQCodeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 
 @Component
-public class PixivHandler implements IOnMessageEvent {
+public class PixivHandler implements IMessageEvent {
     @Override
     public int weight() {
         return 97;

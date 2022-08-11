@@ -6,7 +6,7 @@ import com.haruhi.bot.dto.gocq.response.Message;
 import com.haruhi.bot.dto.gocq.request.Answer;
 import com.haruhi.bot.dto.gocq.request.AnswerBox;
 import com.haruhi.bot.factory.ThreadPoolFactory;
-import com.haruhi.bot.event.message.IOnGroupMessageEvent;
+import com.haruhi.bot.event.message.IGroupMessageEvent;
 import com.haruhi.bot.service.checkin.CheckinService;
 import com.haruhi.bot.ws.Client;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class CheckinHandler implements IOnGroupMessageEvent {
+public class CheckinHandler implements IGroupMessageEvent {
 
     @Autowired
     private CheckinService checkinService;

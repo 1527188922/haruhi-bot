@@ -1,13 +1,13 @@
-package com.haruhi.bot.constant;
+package com.haruhi.bot.constant.event;
 
-public enum MessageTypeEnum {
+public enum MessageEventEnum {
 
     group("group"),
     privat("private");
 
     private String type;
 
-    MessageTypeEnum(String type){
+    MessageEventEnum(String type){
         this.type = type;
     }
     public String getType(){

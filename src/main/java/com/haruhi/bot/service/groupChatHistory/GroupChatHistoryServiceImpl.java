@@ -6,7 +6,7 @@ import com.haruhi.bot.config.BotConfig;
 import com.haruhi.bot.config.env.IEnvConfig;
 import com.haruhi.bot.constant.CqCodeTypeEnum;
 import com.haruhi.bot.constant.GocqActionEnum;
-import com.haruhi.bot.constant.MessageTypeEnum;
+import com.haruhi.bot.constant.event.MessageEventEnum;
 import com.haruhi.bot.constant.RegexEnum;
 import com.haruhi.bot.dto.gocq.response.HttpResponse;
 import com.haruhi.bot.dto.gocq.response.Message;
@@ -89,6 +89,7 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
         if(chatList != null && chatList.size() > 0){
             int limit = 80;
             if(chatList.size() > limit){
+                // 记录条数多于80张,分开发送
                 List<List<GroupChatHistory>> lists = CommonUtil.averageAssign(chatList, limit);
                 for (List<GroupChatHistory> list : lists) {
                     partSend(list,message);
@@ -105,6 +106,7 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
         for (GroupChatHistory e : chatList) {
             params.add(CommonUtil.createForwardMsgItem(e.getContent(),e.getUserId(),getName(e)));
         }
+        // 使用http接口发送消息
         HttpResponse response = Client.sendRestMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG, message.getGroup_id(), params);
         if(response.getRetcode() != 0){
             Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), "消息发送失败：\n可能被风控；\n消息可能包含敏感内容；",GocqActionEnum.SEND_MSG,true);
@@ -162,11 +164,11 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
         }
         List<GroupChatHistory> corpus = groupChatHistoryMapper.selectList(queryWrapper);
         if (corpus == null || corpus.size() == 0) {
-            Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageTypeEnum.group, MessageFormat.format("该条件下没有聊天记录,无法生成",corpus.size()),GocqActionEnum.SEND_MSG,true);
+            Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("该条件下没有聊天记录,无法生成",corpus.size()),GocqActionEnum.SEND_MSG,true);
             return;
         }
 
-        Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageTypeEnum.group, MessageFormat.format("词云图片将从{0}条聊天记录中生成...",corpus.size()),GocqActionEnum.SEND_MSG,true);
+        Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("词云图片将从{0}条聊天记录中生成...",corpus.size()),GocqActionEnum.SEND_MSG,true);
         String outPutPath = null;
         try{
             Map<String, Integer> map = setFrequency(wordSlices(corpus));
@@ -175,9 +177,9 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
             generateWordCloudImage(map,outPutPath);
             KQCodeUtils instance = KQCodeUtils.getInstance();
             String imageCq = instance.toCq(CqCodeTypeEnum.image.getType(), "file=file:///" + outPutPath);
-            Client.sendRestMessage(message.getUser_id(), message.getGroup_id(), MessageTypeEnum.group, imageCq, GocqActionEnum.SEND_MSG, false);
+            Client.sendRestMessage(message.getUser_id(), message.getGroup_id(), MessageEventEnum.group, imageCq, GocqActionEnum.SEND_MSG, false);
         }catch (Exception e){
-            Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageTypeEnum.group, MessageFormat.format("生成失败：{0}",e.getMessage()),GocqActionEnum.SEND_MSG,true);
+            Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("生成失败：{0}",e.getMessage()),GocqActionEnum.SEND_MSG,true);
             log.error("词云图片生产异常",e);
         }finally {
             generateComplete(message,outPutPath);
@@ -187,6 +189,12 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
         WordCloudHandler.lock.remove(message.getGroup_id());
         FileUtil.deleteFile(path);
     }
+
+    /**
+     * 设置词的权重
+     * @param corpus
+     * @return
+     */
     private Map<String,Integer> setFrequency(List<String> corpus){
         Map<String, Integer> map = new HashMap<>();
         for (String e : corpus) {
@@ -203,6 +211,12 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
         return map;
     }
     private static String noSupport = "你的QQ暂不支持查看&#91;转发多条消息&#93;，请期待后续版本。";
+
+    /**
+     * 请求gocq接口进行分词
+     * @param corpus
+     * @return
+     */
     private List<String> wordSlices(List<GroupChatHistory> corpus){
         StrBuilder strBuilder = new StrBuilder();
         for (GroupChatHistory e : corpus) {

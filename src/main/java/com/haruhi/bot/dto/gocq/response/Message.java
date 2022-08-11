@@ -13,6 +13,7 @@ public class Message implements Serializable {
     private String self_id;
     private String sub_type;
     private String user_id;
+    private String sender_id;
     private String group_id;
     private String target_id;
     private String message;

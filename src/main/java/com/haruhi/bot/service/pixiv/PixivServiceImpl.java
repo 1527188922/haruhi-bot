@@ -3,7 +3,7 @@ package com.haruhi.bot.service.pixiv;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.haruhi.bot.config.BotConfig;
 import com.haruhi.bot.constant.GocqActionEnum;
-import com.haruhi.bot.constant.MessageTypeEnum;
+import com.haruhi.bot.constant.event.MessageEventEnum;
 import com.haruhi.bot.dto.gocq.response.Message;
 import com.haruhi.bot.dto.gocq.request.ForwardMsg;
 import com.haruhi.bot.entity.Pixiv;
@@ -44,7 +44,7 @@ public class PixivServiceImpl extends ServiceImpl<PixivMapper, Pixiv> implements
             }
         }
 
-        if (MessageTypeEnum.group.getType().equals(message.getMessage_type())) {
+        if (MessageEventEnum.group.getType().equals(message.getMessage_type())) {
             List<ForwardMsg> params = new ArrayList<>();
             params.add(CommonUtil.createForwardMsgItem(MessageFormat.format("tag：{0}\n※原图链接不需要翻墙，直接点",tag),message.getSelf_id(), BotConfig.NAME));
             if(pixivHashSet != null && pixivHashSet.size() > 0){
@@ -52,7 +52,7 @@ public class PixivServiceImpl extends ServiceImpl<PixivMapper, Pixiv> implements
             }else{
                 groupSend(pixivs,params,message);
             }
-        } else if (MessageTypeEnum.privat.getType().equals(message.getMessage_type())) {
+        } else if (MessageEventEnum.privat.getType().equals(message.getMessage_type())) {
             if(pixivHashSet != null && pixivHashSet.size() > 0){
                 privateSend(pixivHashSet,message);
             }else{

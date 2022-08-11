@@ -2,11 +2,11 @@ package com.haruhi.bot.handlers.message.wordStrip;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.haruhi.bot.constant.GocqActionEnum;
-import com.haruhi.bot.constant.MessageTypeEnum;
+import com.haruhi.bot.constant.event.MessageEventEnum;
 import com.haruhi.bot.constant.RegexEnum;
 import com.haruhi.bot.dto.gocq.response.Message;
 import com.haruhi.bot.entity.WordStrip;
-import com.haruhi.bot.event.message.IOnGroupMessageEvent;
+import com.haruhi.bot.event.message.IGroupMessageEvent;
 import com.haruhi.bot.factory.ThreadPoolFactory;
 import com.haruhi.bot.service.wordStrip.WordStripService;
 import com.haruhi.bot.ws.Client;
@@ -19,7 +19,7 @@ import java.text.MessageFormat;
 
 @Slf4j
 @Component
-public class WordStripDeleteHandler implements IOnGroupMessageEvent {
+public class WordStripDeleteHandler implements IGroupMessageEvent {
     @Override
     public int weight() {
         return 94;
@@ -51,20 +51,20 @@ public class WordStripDeleteHandler implements IOnGroupMessageEvent {
             queryWrapper.eq(WordStrip::getGroupId,message.getGroup_id()).eq(WordStrip::getKeyWord,this.keyWord);
             WordStrip one = wordStripService.getOne(queryWrapper);
             if(one == null){
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageTypeEnum.group, MessageFormat.format("词条不存在：{0}",this.keyWord), GocqActionEnum.SEND_MSG,true);
+                Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("词条不存在：{0}",this.keyWord), GocqActionEnum.SEND_MSG,true);
                 return;
             }
             if(!one.getUserId().equals(message.getUser_id())){
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageTypeEnum.group, MessageFormat.format("你不是该词条的创建人，不可删除：{0}",this.keyWord), GocqActionEnum.SEND_MSG,true);
+                Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("你不是该词条的创建人，不可删除：{0}",this.keyWord), GocqActionEnum.SEND_MSG,true);
                 return;
             }
             try {
                 if (wordStripService.removeById(one.getId())) {
                     WordStripHandler.cache.remove(message.getGroup_id() + "-" + this.keyWord);
-                    Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageTypeEnum.group, MessageFormat.format("删除词条成功：{0}",this.keyWord), GocqActionEnum.SEND_MSG,true);
+                    Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("删除词条成功：{0}",this.keyWord), GocqActionEnum.SEND_MSG,true);
                 }
             }catch (Exception e){
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageTypeEnum.group, MessageFormat.format("删除词条异常：{0}",e.getMessage()), GocqActionEnum.SEND_MSG,true);
+                Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("删除词条异常：{0}",e.getMessage()), GocqActionEnum.SEND_MSG,true);
                 log.error("删除词条异常",e);
             }
 
