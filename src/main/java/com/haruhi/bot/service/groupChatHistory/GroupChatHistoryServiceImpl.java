@@ -80,21 +80,34 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
         if(FindChatMessageHandler.MessageType.IMAGE.equals(param.getMessageType())){
             // 仅查询图片类型
             queryWrapper.like(GroupChatHistory::getContent,"[CQ:image").like(GroupChatHistory::getContent,"subType=0");
+        }else if(FindChatMessageHandler.MessageType.TXT.equals(param.getMessageType())){
+            queryWrapper.notLike(GroupChatHistory::getContent,"[CQ:");
         }
         // 升序
         queryWrapper.orderByAsc(GroupChatHistory::getCreateTime);
         List<GroupChatHistory> chatList = groupChatHistoryMapper.selectList(queryWrapper);
         if(chatList != null && chatList.size() > 0){
-            ArrayList<ForwardMsg> params = new ArrayList<>();
-            for (GroupChatHistory e : chatList) {
-                params.add(CommonUtil.createForwardMsgItem(e.getContent(),e.getUserId(),getName(e)));
-            }
-            HttpResponse response = Client.sendRestMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG, message.getGroup_id(), params);
-            if(response.getRetcode() != 0){
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), "消息发送失败：\n可能被风控；\n消息可能包含敏感内容；",GocqActionEnum.SEND_MSG,true);
+            int limit = 80;
+            if(chatList.size() > limit){
+                List<List<GroupChatHistory>> lists = CommonUtil.averageAssign(chatList, limit);
+                for (List<GroupChatHistory> list : lists) {
+                    partSend(list,message);
+                }
+            }else{
+                partSend(chatList,message);
             }
         }else{
             Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), "该条件下没有聊天记录。",GocqActionEnum.SEND_MSG,true);
+        }
+    }
+    private void partSend(List<GroupChatHistory> chatList, Message message){
+        ArrayList<ForwardMsg> params = new ArrayList<>();
+        for (GroupChatHistory e : chatList) {
+            params.add(CommonUtil.createForwardMsgItem(e.getContent(),e.getUserId(),getName(e)));
+        }
+        HttpResponse response = Client.sendRestMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG, message.getGroup_id(), params);
+        if(response.getRetcode() != 0){
+            Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), "消息发送失败：\n可能被风控；\n消息可能包含敏感内容；",GocqActionEnum.SEND_MSG,true);
         }
     }
     private String getName(GroupChatHistory e){
@@ -177,13 +190,14 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
     private Map<String,Integer> setFrequency(List<String> corpus){
         Map<String, Integer> map = new HashMap<>();
         for (String e : corpus) {
-            if(e.length() > 1){
-                if(map.containsKey(e)){
-                    Integer frequency = map.get(e) + 1;
-                    map.put(e,frequency);
-                }else{
-                    map.put(e,0);
-                }
+            if(e.length() <= 1){
+                continue;
+            }
+            if(map.containsKey(e)){
+                Integer frequency = map.get(e) + 1;
+                map.put(e,frequency);
+            }else{
+                map.put(e,0);
             }
         }
         return map;

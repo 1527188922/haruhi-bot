@@ -91,7 +91,9 @@ public class FindChatMessageHandler implements IOnGroupMessageEvent {
         DAY_ALL("聊天记录(.*?)天",TimeUnitEnum.DAY,MessageType.ALL),
         HOUR_ALL("聊天记录(.*?)时",TimeUnitEnum.HOUR,MessageType.ALL),
         DAY_IMAGE("聊天图片(.*?)天",TimeUnitEnum.DAY,MessageType.IMAGE),
-        HOUR_IMAGE("聊天图片(.*?)时",TimeUnitEnum.HOUR,MessageType.IMAGE);
+        HOUR_IMAGE("聊天图片(.*?)时",TimeUnitEnum.HOUR,MessageType.IMAGE),
+        DAY_TXT("聊天文字(.*?)天",TimeUnitEnum.DAY,MessageType.TXT),
+        HOUR_TXT("聊天文字(.*?)时",TimeUnitEnum.HOUR,MessageType.TXT);
 
         private String value;
         private TimeUnitEnum timeUnit;
@@ -104,6 +106,6 @@ public class FindChatMessageHandler implements IOnGroupMessageEvent {
     }
 
     public enum MessageType{
-        ALL,IMAGE
+        ALL,IMAGE,TXT
     }
 }
