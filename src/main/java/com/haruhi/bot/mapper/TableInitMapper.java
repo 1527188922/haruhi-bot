@@ -49,4 +49,11 @@ public interface TableInitMapper {
      */
     int createGroupChatHistory(@Param("tableName") String tableName);
 
+    /**
+     * 戳一戳回复表
+     * @param tableName
+     * @return
+     */
+    int createPokeReply(@Param("tableName") String tableName);
+
 }

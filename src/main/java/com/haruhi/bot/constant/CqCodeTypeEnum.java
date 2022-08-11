@@ -5,7 +5,9 @@ public enum CqCodeTypeEnum {
     image("image"),
     face("face"),
     forward("forward"),
-    reply("reply");
+    reply("reply"),
+    tts("tts"),
+    poke("poke");
 
 
     private String type;

@@ -56,6 +56,9 @@ public class DataBaseService {
             if(dataBaseInitMapper.isTableExist(DataSourceConfig.DATA_BASE_BOT,DataSourceConfig.BOT_T_GROUP_CHAT_HISTORY) == 0){
                 tableInitMapper.createGroupChatHistory(DataSourceConfig.BOT_T_GROUP_CHAT_HISTORY);
             }
+            if(dataBaseInitMapper.isTableExist(DataSourceConfig.DATA_BASE_BOT,DataSourceConfig.BOT_T_POKE_REPLY) == 0){
+                tableInitMapper.createPokeReply(DataSourceConfig.BOT_T_POKE_REPLY);
+            }
 
             log.info("初始化数据库完成");
         }catch (Exception e){

@@ -1,5 +1,6 @@
 package com.haruhi.bot.thread;
 
+import com.haruhi.bot.service.pokeReply.PokeReplyService;
 import com.haruhi.bot.service.verbalTricks.VerbalTricksService;
 import com.haruhi.bot.service.wordStrip.WordStripService;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,8 @@ public class FirstTask implements Runnable{
     private WordStripService wordStripService;
     @Autowired
     private VerbalTricksService verbalTricksService;
+    @Autowired
+    private PokeReplyService pokeReplyService;
 
     @Override
     public void run() {
@@ -27,6 +30,8 @@ public class FirstTask implements Runnable{
         wordStripService.loadWordStrip();
         // 加载话术到内存
         verbalTricksService.loadVerbalTricks();
+        // 加载戳一戳回复
+        pokeReplyService.loadPokeReply();
     }
 
     public void execute(FirstTask self){

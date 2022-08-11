@@ -47,6 +47,8 @@ public class DataSourceConfig {
     public final static String BOT_T_VERBAL_TRICKS = "t_verbal_tricks";
     // 群聊天历史
     public final static String BOT_T_GROUP_CHAT_HISTORY = "t_group_chat_history";
+    // 戳一戳回复表
+    public final static String BOT_T_POKE_REPLY = "t_poke_reply";
 
     @Autowired
     public void setSystemDbname(@Value("${spring.datasource.dynamic.datasource.master.dbName}") String dbName) {

@@ -1,5 +1,6 @@
 package com.haruhi.bot.dispenser;
 
+import com.haruhi.bot.constant.event.MessageEventEnum;
 import com.haruhi.bot.constant.event.NoticeEventEnum;
 import com.haruhi.bot.dto.gocq.response.Message;
 import com.haruhi.bot.event.message.IMessageEventType;
@@ -45,12 +46,22 @@ public class NoticeDispenser {
 
     public static void onEvent(final Message message){
         String subType = message.getSub_type();
+
+
         if(NoticeEventEnum.poke.toString().equals(subType)){
+            setMessageType(message);
             for (IPokeEvent value : pokeEventMap.values()) {
                 if(value.onPoke(message)){
                     break;
                 }
             }
+        }
+    }
+    private static void setMessageType(final Message message){
+        if(message.getGroup_id() != null){
+            message.setMessage_type(MessageEventEnum.group.getType());
+        }else if(message.getGroup_id() == null && message.getUser_id() != null){
+            message.setMessage_type(MessageEventEnum.privat.getType());
         }
     }
 }
