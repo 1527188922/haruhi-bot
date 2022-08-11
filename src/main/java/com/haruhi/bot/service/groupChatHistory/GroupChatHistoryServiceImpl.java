@@ -177,10 +177,7 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
     private Map<String,Integer> setFrequency(List<String> corpus){
         Map<String, Integer> map = new HashMap<>();
         for (String e : corpus) {
-            if(!"\n".equals(e)){
-                if(e.matches(RegexEnum.CQ_CODE.getValue())){
-                    e = e.replaceAll(RegexEnum.CQ_CODE_REPLACR.getValue(), "");
-                }
+            if(e.length() > 1){
                 if(map.containsKey(e)){
                     Integer frequency = map.get(e) + 1;
                     map.put(e,frequency);
@@ -197,7 +194,7 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
         for (GroupChatHistory e : corpus) {
             String s = e.getContent();
             if(s.matches(RegexEnum.CQ_CODE.getValue())){
-                s = s.replaceAll(RegexEnum.CQ_CODE_REPLACR.getValue(), "").replace(noSupport,"");
+                s = s.replaceAll(RegexEnum.CQ_CODE_REPLACR.getValue(), "").replace(noSupport,"").replaceAll("\\s*|\r|\n|\t","");
             }
             strBuilder.append(s);
         }
