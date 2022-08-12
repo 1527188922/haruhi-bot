@@ -15,6 +15,7 @@ import com.simplerobot.modules.utils.KQCodeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -68,7 +69,7 @@ public class AiChatHandler implements IMessageEvent {
     }
 
     @Override
-    public boolean onMessage(Message message,String command) {
+    public boolean onMessage(final Message message,final String command) {
         if(!matching(message,command)){
             return false;
         }
@@ -84,7 +85,13 @@ public class AiChatHandler implements IMessageEvent {
             urlParam.put("key","free");
             urlParam.put("appid",0);
             urlParam.put("msg",s);
-            ChatResp chatResp = RestUtil.sendGetRequest(RestUtil.getRestTemplate(5 * 1000), url, urlParam, ChatResp.class);
+            ChatResp chatResp = null;
+            try {
+                chatResp = RestUtil.sendGetRequest(RestUtil.getRestTemplate(8 * 1000), url, urlParam, ChatResp.class);
+            }catch (Exception e){
+                Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), MessageFormat.format("聊天api请求异常:{0}",e.getMessage()),GocqActionEnum.SEND_MSG,false);
+                log.error("青云客api请求异常",e);
+            }
             if(chatResp != null){
                 String content = chatResp.getContent();
                 if(content != null){

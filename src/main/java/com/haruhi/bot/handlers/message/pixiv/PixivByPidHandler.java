@@ -58,6 +58,7 @@ public class PixivByPidHandler implements IMessageEvent {
         return true;
     }
 
+    private static String u = "https://pixiv.re/";
     public static class Task implements Runnable{
         private PixivService pixivService;
         private String pid;
@@ -81,7 +82,23 @@ public class PixivByPidHandler implements IMessageEvent {
                     pixivService.privateSend(list,message);
                 }
             }else {
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), MessageFormat.format("没找到该pid[{0}]的图片。",pid), GocqActionEnum.SEND_MSG,true);
+                String temp = "{0}{1}-{2}.jpg";
+                String noImageTip = "本地库没有pid[{0}]的图片\n试试点击下面这些链接吧\n※如果pid只有1p,只需要点第一个连接,后缀带有数字的连接,多p情况下有效";
+                if(MessageEventEnum.group.getType().equals(message.getMessage_type())){
+                    ArrayList<ForwardMsg> params = new ArrayList<>();
+                    params.add(CommonUtil.createForwardMsgItem(MessageFormat.format(noImageTip,pid),message.getSelf_id(),BotConfig.NAME));
+                    params.add(CommonUtil.createForwardMsgItem(MessageFormat.format("{0}{1}.jpg",u,pid),message.getSelf_id(),BotConfig.NAME));
+                    for (int i = 1; i <= 20; i++) {
+                        params.add(CommonUtil.createForwardMsgItem(MessageFormat.format(temp,u,pid,i),message.getSelf_id(),BotConfig.NAME));
+                    }
+                    Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,message.getGroup_id(),params);
+                }else if(MessageEventEnum.privat.getType().equals(message.getMessage_type())){
+                    Client.sendMessage(message.getUser_id(),message.getGroup_id(),MessageEventEnum.privat,MessageFormat.format(noImageTip,pid),GocqActionEnum.SEND_MSG,true);
+                    Client.sendMessage(message.getUser_id(),message.getGroup_id(),MessageEventEnum.privat,MessageFormat.format("{0}{1}.jpg",u,pid),GocqActionEnum.SEND_MSG,true);
+                    for (int i = 1; i <= 20; i++) {
+                        Client.sendMessage(message.getUser_id(),message.getGroup_id(),MessageEventEnum.privat,MessageFormat.format(temp,u,pid,i),GocqActionEnum.SEND_MSG,true);
+                    }
+                }
             }
         }
 

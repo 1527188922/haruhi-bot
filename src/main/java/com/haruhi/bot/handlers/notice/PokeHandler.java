@@ -25,7 +25,7 @@ public class PokeHandler implements IPokeEvent {
 
     @Override
     public boolean onPoke(final Message message) {
-        if(message.getSelf_id().equals(message.getUser_id())){
+        if(message.getSelf_id().equals(message.getUser_id()) || cache.size() == 0){
             return false;
         }
 

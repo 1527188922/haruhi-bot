@@ -16,6 +16,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * 话术
+ * 这个功能其实就是在所有群都生效的 词条 功能
+ */
 @Slf4j
 @Component
 public class VerbalTricksHandler implements IMessageEvent {
