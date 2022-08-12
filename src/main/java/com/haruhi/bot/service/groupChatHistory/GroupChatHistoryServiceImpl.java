@@ -32,6 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.text.StrBuilder;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -40,6 +41,10 @@ import java.io.File;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -52,6 +57,8 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
     private IEnvConfig envConfig;
 
     private static String basePath;
+
+    private static Executor pool =  new ThreadPoolExecutor(2,2,60,TimeUnit.SECONDS,new ArrayBlockingQueue(10),new CustomizableThreadFactory("pool-chat-history-"),new ThreadPoolExecutor.CallerRunsPolicy());
 
     @PostConstruct
     private void mkdirs(){
@@ -92,7 +99,9 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
                 // 记录条数多于80张,分开发送
                 List<List<GroupChatHistory>> lists = CommonUtil.averageAssign(chatList, limit);
                 for (List<GroupChatHistory> list : lists) {
-                    partSend(list,message);
+                    pool.execute(()->{
+                        partSend(list,message);
+                    });
                 }
             }else{
                 partSend(chatList,message);
