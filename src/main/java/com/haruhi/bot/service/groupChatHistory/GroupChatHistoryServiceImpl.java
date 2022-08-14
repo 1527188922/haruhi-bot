@@ -186,10 +186,11 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
             generateWordCloudImage(map,outPutPath);
             KQCodeUtils instance = KQCodeUtils.getInstance();
             String imageCq = instance.toCq(CqCodeTypeEnum.image.getType(), "file=file:///" + outPutPath);
+            // 走http发送，这样go-cqhttp发送成功之后，连接才会结束
             Client.sendRestMessage(message.getUser_id(), message.getGroup_id(), MessageEventEnum.group, imageCq, GocqActionEnum.SEND_MSG, false);
         }catch (Exception e){
-            Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("生成失败：{0}",e.getMessage()),GocqActionEnum.SEND_MSG,true);
-            log.error("词云图片生产异常",e);
+            Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("发送词云图片异常：{0}",e.getMessage()),GocqActionEnum.SEND_MSG,true);
+            log.error("发送词云图片异常",e);
         }finally {
             generateComplete(message,outPutPath);
         }

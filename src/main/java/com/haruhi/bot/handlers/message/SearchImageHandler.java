@@ -37,24 +37,24 @@ public class SearchImageHandler implements IMessageEvent {
 
     private static Long timeout = 25L* 1000L;
 
-    private Map<String,Long> timeoutMap = new ConcurrentHashMap<>(10);
-    private Map<String,String> cqtMap = new ConcurrentHashMap<>(10);
-    public boolean matching(final Message message, final String command) {
+    private static Map<String,Long> timeoutMap = new ConcurrentHashMap<>(6);
+
+    @Override
+    public boolean onMessage(final Message message,final String command) {
         KQCodeUtils utils = KQCodeUtils.getInstance();
         String cq = utils.getCq(command, CqCodeTypeEnum.image.getType(), 0);
         String key = CommonUtil.getKey(message.getUser_id(), message.getGroup_id());
-
+        boolean matches = false;
         if(timeoutMap.get(key) != null ){
             if(System.currentTimeMillis() - timeoutMap.get(key) < timeout){
                 if(cq != null){
-                    cqtMap.put(key,cq);
-                    return true;
+                    matches = true;
                 }
             }else{
                 timeoutMap.remove(key);
             }
         }
-        boolean matches = false;
+
         String[] split = RegexEnum.SEARCH_IMAGE.getValue().split("\\|");
         for (String s : split) {
             if(command.startsWith(s)){
@@ -66,32 +66,17 @@ public class SearchImageHandler implements IMessageEvent {
             return false;
         }
 
-        if(cq != null){
-            cqtMap.put(key,cq);
-            return true;
-        }else{
+        if(cq == null){
             timeoutMap.put(key,System.currentTimeMillis());
             Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"图呢！", GocqActionEnum.SEND_MSG,true);
-            return false;
+            return true;
         }
-    }
-
-    @Override
-    public boolean onMessage(final Message message,final String command) {
-        if (!matching(message,command)){
-            return false;
-        }
-        String key = CommonUtil.getKey(message.getUser_id(), message.getGroup_id());
         Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"开始搜图...",GocqActionEnum.SEND_MSG,true);
-        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new searchImageTask(message,cqtMap.get(key)));
-        after(key);
+        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new searchImageTask(message,cq));
+        timeoutMap.remove(key);
         return true;
     }
 
-    private void after(String key){
-        timeoutMap.remove(key);
-        cqtMap.remove(key);
-    }
 
     public static class searchImageTask implements Runnable{
         private static String url = "https://saucenao.com/search.php";
