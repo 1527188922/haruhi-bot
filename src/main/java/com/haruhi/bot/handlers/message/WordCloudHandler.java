@@ -29,12 +29,14 @@ public class WordCloudHandler implements IGroupMessageEvent {
 
     @Autowired
     private GroupChatHistoryService groupChatHistoryService;
+
     private RegexEnum matching(final String command){
-        if(command.matches(RegexEnum.YEAR.regex)){
+        String s = command.replaceAll(com.haruhi.bot.constant.RegexEnum.CQ_CODE_REPLACR.getValue(), "").trim();
+        if(s.matches(RegexEnum.YEAR.regex)){
             return RegexEnum.YEAR;
-        }else if (command.matches(RegexEnum.MONTH.regex)){
+        }else if (s.matches(RegexEnum.MONTH.regex)){
             return RegexEnum.MONTH;
-        }else if (command.matches(RegexEnum.DAY.regex)){
+        }else if (s.matches(RegexEnum.DAY.regex)){
             return RegexEnum.DAY;
         }
         return null;

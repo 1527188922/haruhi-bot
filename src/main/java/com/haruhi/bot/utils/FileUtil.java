@@ -1,6 +1,7 @@
 package com.haruhi.bot.utils;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -11,7 +12,9 @@ public class FileUtil {
     private FileUtil(){}
 
     public static void deleteFile(String path){
-        deleteFile(new File(path));
+        if(Strings.isNotBlank(path)){
+            deleteFile(new File(path));
+        }
     }
     public static void deleteFile(File file){
         if(file.exists()){

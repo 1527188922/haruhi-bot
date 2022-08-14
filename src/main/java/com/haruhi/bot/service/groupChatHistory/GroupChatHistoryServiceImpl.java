@@ -166,7 +166,7 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
         Date date = limitDate(regexEnum);
         LambdaQueryWrapper<GroupChatHistory> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(GroupChatHistory::getGroupId,message.getGroup_id()).gt(GroupChatHistory::getCreateTime,date.getTime());
-
+        String outPutPath = null;
         List<String> userIds = CommonUtil.getCqParams(message.getMessage(), CqCodeTypeEnum.at, "qq");
         if (userIds != null && userIds.size() > 0) {
             queryWrapper.in(GroupChatHistory::getUserId,userIds);
@@ -174,13 +174,19 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
         List<GroupChatHistory> corpus = groupChatHistoryMapper.selectList(queryWrapper);
         if (corpus == null || corpus.size() == 0) {
             Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("该条件下没有聊天记录,无法生成",corpus.size()),GocqActionEnum.SEND_MSG,true);
+            generateComplete(message,outPutPath);
             return;
         }
 
         Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("词云图片将从{0}条聊天记录中生成...",corpus.size()),GocqActionEnum.SEND_MSG,true);
-        String outPutPath = null;
         try{
-            Map<String, Integer> map = setFrequency(wordSlices(corpus));
+            List<String> strings = wordSlices(corpus);
+            if(strings == null || strings.size() == 0){
+                Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("词料为0，本次不生成词云图",corpus.size()),GocqActionEnum.SEND_MSG,true);
+                return;
+            }
+            Map<String, Integer> map = setFrequency(strings);
+
             String fileName = regexEnum.getUnit().toString() + "-" + message.getGroup_id() + ".png";
             outPutPath = basePath + File.separator + fileName;
             generateWordCloudImage(map,outPutPath);
@@ -215,7 +221,7 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
                 Integer frequency = map.get(e) + 1;
                 map.put(e,frequency);
             }else{
-                map.put(e,0);
+                map.put(e,1);
             }
         }
         return map;
@@ -287,7 +293,7 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
 //        wordCloud.setBackground(new PixelBoundaryBackground(shapePicPath));
 
         // 颜色模板，不同频率的颜色会不同
-        wordCloud.setColorPalette(new ColorPalette(new Color(234,106,40), new Color(255,146,70), new Color(255,182,69), new Color(255,232,113), new Color(255,251,192), new Color(254,255,233)));
+        wordCloud.setColorPalette(new ColorPalette(new Color(255, 68, 51), new Color(208, 79, 8), new Color(225, 98, 50), new Color(231, 126, 88), new Color(175, 129, 3), new Color(243, 150, 9)));
         // 设置字体
         java.awt.Font font = new java.awt.Font("楷体", 0, 20);
         wordCloud.setKumoFont(new KumoFont(font));
