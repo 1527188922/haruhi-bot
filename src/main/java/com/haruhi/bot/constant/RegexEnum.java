@@ -17,7 +17,8 @@ public enum RegexEnum {
     FRIEND_SAID("朋友说|我朋友说|我朋友都说|朋友都说|朋友说过|我朋友说过|我朋友老说|我朋友总说|我朋友老是说|我朋友总是说"),
     WORD_STRIP_ADD("添加词条(.*?)答"),
     WORD_STRIP_DELETE("删除词条"),
-    WORD_STRIP_SHOW("本群词条|所有词条|查看所有词条|显示所有词条");
+    WORD_STRIP_SHOW("本群词条|所有词条|查看所有词条|显示所有词条"),
+    BULLET_CHAT_WORD_CLOUD("弹幕词云");
 
 
     private String value;

@@ -3,6 +3,7 @@ package com.haruhi.bot.handlers.message;
 import com.haruhi.bot.config.BotConfig;
 import com.haruhi.bot.constant.CqCodeTypeEnum;
 import com.haruhi.bot.constant.GocqActionEnum;
+import com.haruhi.bot.constant.ThirdPartyURL;
 import com.haruhi.bot.constant.event.MessageEventEnum;
 import com.haruhi.bot.constant.RegexEnum;
 import com.haruhi.bot.dto.aiChat.response.ChatResp;
@@ -29,8 +30,6 @@ import java.util.regex.Pattern;
 @Slf4j
 @Component
 public class AiChatHandler implements IMessageEvent {
-
-    private static String url = "http://api.qingyunke.com/api.php";
 
     @Override
     public int weight() {
@@ -87,7 +86,7 @@ public class AiChatHandler implements IMessageEvent {
             urlParam.put("msg",s);
             ChatResp chatResp = null;
             try {
-                chatResp = RestUtil.sendGetRequest(RestUtil.getRestTemplate(8 * 1000), url, urlParam, ChatResp.class);
+                chatResp = RestUtil.sendGetRequest(RestUtil.getRestTemplate(8 * 1000), ThirdPartyURL.AI_CHAT, urlParam, ChatResp.class);
             }catch (Exception e){
                 Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), MessageFormat.format("聊天api请求异常:{0}",e.getMessage()),GocqActionEnum.SEND_MSG,false);
                 log.error("青云客api请求异常",e);

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.haruhi.bot.config.BotConfig;
 import com.haruhi.bot.constant.CqCodeTypeEnum;
 import com.haruhi.bot.constant.GocqActionEnum;
+import com.haruhi.bot.constant.ThirdPartyURL;
 import com.haruhi.bot.constant.event.MessageEventEnum;
 import com.haruhi.bot.constant.RegexEnum;
 import com.haruhi.bot.dto.gocq.response.Message;
@@ -80,7 +81,6 @@ public class SearchImageHandler implements IMessageEvent {
 
 
     public static class searchImageTask implements Runnable{
-        private static String url = "https://saucenao.com/search.php";
         private Message message;
         private String cq;
 
@@ -101,7 +101,7 @@ public class SearchImageHandler implements IMessageEvent {
             param.add("db",99);
             param.add("url",imageUrl);
             try {
-                String response = RestUtil.sendPostForm(RestUtil.getRestTemplate(30 * 1000), url, param, String.class);
+                String response = RestUtil.sendPostForm(RestUtil.getRestTemplate(30 * 1000), ThirdPartyURL.SEARCH_IMAGE, param, String.class);
                 if(response != null){
                     JSONObject jsonObject = JSONObject.parseObject(response);
                     String resultsStr = jsonObject.getString("results");

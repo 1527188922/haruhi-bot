@@ -1,8 +1,10 @@
 package com.haruhi.bot.utils;
 
+import com.alibaba.fastjson.JSONObject;
 import com.haruhi.bot.config.BotConfig;
 import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.RegexEnum;
+import com.haruhi.bot.constant.ThirdPartyURL;
 import com.haruhi.bot.dto.gocq.response.HttpResponse;
 import com.kennycason.kumo.CollisionMode;
 import com.kennycason.kumo.WordCloud;
@@ -16,10 +18,8 @@ import org.apache.commons.lang.text.StrBuilder;
 import org.apache.logging.log4j.util.Strings;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 public class WordCloudUtil {
@@ -115,4 +115,37 @@ public class WordCloudUtil {
         wordCloud.build(wordFrequencies);
         wordCloud.writeToFile(pngOutputPath);
     }
+
+    /**
+     * 通过视频bv获取cid
+     * @param bv
+     * @return
+     */
+    public static String getCid(String bv){
+        Map<String, Object> param = new HashMap<>();
+        param.put("bvid",bv);
+        param.put("jsonp","jsonp");
+        String responseStr = RestUtil.sendGetRequest(RestUtil.getRestTemplate(), ThirdPartyURL.PLAYER_CID, param, String.class);
+        if(Strings.isNotBlank(responseStr)){
+            JSONObject jsonObject = JSONObject.parseObject(responseStr);
+            return jsonObject.getJSONArray("data").getJSONObject(0).getString("cid");
+        }
+        return null;
+    }
+
+    /**
+     * 根据视频cid获取弹幕
+     * @param cid
+     * @return
+     */
+    public static List<String> getChatList(String cid){
+        Map<String, Object> param = new HashMap<>();
+        param.put("oid",cid);
+        String responseSre = HttpClientUtil.doGet(ThirdPartyURL.BULLET_CHAR, param);
+        if(Strings.isNotBlank(responseSre)){
+
+        }
+        return null;
+    }
+
 }
