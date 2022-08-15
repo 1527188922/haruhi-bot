@@ -58,7 +58,7 @@ public class PixivByPidHandler implements IMessageEvent {
         return true;
     }
 
-    private static String u = "https://pixiv.re/";
+    public static String u = "https://pixiv.re/";
     public static class Task implements Runnable{
         private PixivService pixivService;
         private String pid;

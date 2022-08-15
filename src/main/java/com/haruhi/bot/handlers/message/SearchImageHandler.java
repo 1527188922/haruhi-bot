@@ -11,6 +11,7 @@ import com.haruhi.bot.dto.gocq.request.ForwardMsg;
 import com.haruhi.bot.dto.searchImage.response.Results;
 import com.haruhi.bot.factory.ThreadPoolFactory;
 import com.haruhi.bot.event.message.IMessageEvent;
+import com.haruhi.bot.handlers.message.pixiv.PixivByPidHandler;
 import com.haruhi.bot.utils.CommonUtil;
 import com.haruhi.bot.utils.RestUtil;
 import com.haruhi.bot.ws.Client;
@@ -169,8 +170,9 @@ public class SearchImageHandler implements IMessageEvent {
             if(results.getData().getTitle() != null){
                 strBui.append(MessageFormat.format("标题：{0}\n",results.getData().getTitle()));
             }
-            if(results.getData().getPixiv_id() != null){
-                strBui.append(MessageFormat.format("pid：{0}\n",results.getData().getPixiv_id()));
+            String pixivId = results.getData().getPixiv_id();
+            if(pixivId != null){
+                strBui.append(MessageFormat.format("pid：{0}\n",pixivId));
             }
             if(results.getData().getMember_name() != null){
                 strBui.append(MessageFormat.format("作者：{0}\n",results.getData().getMember_name()));
@@ -186,6 +188,9 @@ public class SearchImageHandler implements IMessageEvent {
             }
             if(results.getHeader().getThumbnail() != null){
                 strBui.append(MessageFormat.format("略缩图：{0}\n",results.getHeader().getThumbnail()));
+            }
+            if(pixivId != null){
+                strBui.append(MessageFormat.format("原图链接：{0}{1}.jpg", PixivByPidHandler.u,pixivId));
             }
             return strBui.toString();
         }
