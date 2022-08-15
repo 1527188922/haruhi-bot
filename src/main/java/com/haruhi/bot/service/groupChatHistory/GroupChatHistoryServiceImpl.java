@@ -150,6 +150,9 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
         Date date = limitDate(regexEnum);
         LambdaQueryWrapper<GroupChatHistory> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(GroupChatHistory::getGroupId,message.getGroup_id()).gt(GroupChatHistory::getCreateTime,date.getTime());
+        for (WordCloudHandler.RegexEnum value : WordCloudHandler.RegexEnum.values()) {
+            queryWrapper.ne(GroupChatHistory::getContent,value.getRegex());
+        }
         String outPutPath = null;
         List<String> userIds = CommonUtil.getCqParams(message.getMessage(), CqCodeTypeEnum.at, "qq");
         if (userIds != null && userIds.size() > 0) {
@@ -214,6 +217,17 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
                 break;
             case MONTH:
                 res = DateTimeUtil.formatToDate(current,DateTimeUtil.FormatEnum.yyyyMM);
+                break;
+            case WEEK:
+                // 获取本周第一天日期
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(current);
+                calendar.set(Calendar.DAY_OF_WEEK, 2);
+                calendar.set(Calendar.HOUR_OF_DAY, 0);
+                calendar.set(Calendar.MINUTE, 0);
+                calendar.set(Calendar.SECOND, 0);
+                calendar.set(Calendar.MILLISECOND, 0);
+                res = calendar.getTime();
                 break;
             case DAY:
                 res = DateTimeUtil.formatToDate(current,DateTimeUtil.FormatEnum.yyyyMMdd);

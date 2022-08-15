@@ -36,7 +36,9 @@ public class WordCloudHandler implements IGroupMessageEvent {
             return RegexEnum.YEAR;
         }else if (s.matches(RegexEnum.MONTH.regex)){
             return RegexEnum.MONTH;
-        }else if (s.matches(RegexEnum.DAY.regex)){
+        }else if(s.matches(RegexEnum.WEEK.regex)){
+            return RegexEnum.WEEK;
+        }else if(s.matches(RegexEnum.DAY.regex)){
             return RegexEnum.DAY;
         }
         return null;
@@ -73,6 +75,7 @@ public class WordCloudHandler implements IGroupMessageEvent {
     public enum RegexEnum{
         YEAR("年度词云",TimeUnitEnum.YEAR),
         MONTH("本月词云",TimeUnitEnum.MONTH),
+        WEEK("本周词云",TimeUnitEnum.WEEK),
         DAY("今日词云",TimeUnitEnum.DAY);
 
         private String regex;
@@ -83,6 +86,9 @@ public class WordCloudHandler implements IGroupMessageEvent {
         }
         public TimeUnitEnum getUnit(){
             return unit;
+        }
+        public String getRegex(){
+            return regex;
         }
     }
 
