@@ -83,7 +83,7 @@ public class CommonUtil {
      * @param source 源List
      * @param splitItemNum 每个List中元素数量
      */
-    public static <T> List<List<T>> averageAssign(List<T> source, int splitItemNum) {
+    public static <T> List<List<T>> averageAssignList(List<T> source, int splitItemNum) {
         List<List<T>> result = new ArrayList<List<T>>();
         if (source != null && source.size() > 0 && splitItemNum > 0) {
             if (source.size() <= splitItemNum) {
@@ -106,5 +106,12 @@ public class CommonUtil {
             }
         }
         return result;
+    }
+    public static int averageAssignListSize(int size,int num){
+        if(size % num == 0){
+            return size / num;
+        }else{
+            return size / num + 1;
+        }
     }
 }
