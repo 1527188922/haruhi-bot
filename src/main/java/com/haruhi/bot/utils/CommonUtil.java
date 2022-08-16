@@ -1,6 +1,7 @@
 package com.haruhi.bot.utils;
 
 import com.haruhi.bot.constant.CqCodeTypeEnum;
+import com.haruhi.bot.constant.RegexEnum;
 import com.haruhi.bot.dto.gocq.request.ForwardMsg;
 import com.simplerobot.modules.utils.KQCodeUtils;
 import org.apache.logging.log4j.util.Strings;
@@ -39,7 +40,7 @@ public class CommonUtil {
         return item;
     }
 
-    public static boolean isAt(String userId,String context) {
+    public static boolean isAt(String userId,final String context) {
         KQCodeUtils instance = KQCodeUtils.getInstance();
         String[] cqs = instance.getCqs(context, CqCodeTypeEnum.at.getType());
         if (cqs == null || cqs.length == 0){
@@ -52,6 +53,15 @@ public class CommonUtil {
             }
         }
         return false;
+    }
+    public static String startsWithCommandReplace(final String command, RegexEnum regexEnum){
+        String[] split = regexEnum.getValue().split("\\|");
+        for (String s : split) {
+            if (command.startsWith(s)) {
+                return command.replace(s,"");
+            }
+        }
+        return null;
     }
 
     /**

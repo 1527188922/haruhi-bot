@@ -39,7 +39,13 @@ public class ScoldMeHandler implements IMessageEvent {
 
     @Override
     public boolean onMessage(final Message message,final String command) {
-        if (!command.matches(RegexEnum.SCOLD_ME_DG.getValue())){
+        String cmd;
+        if(CommonUtil.isAt(message.getSelf_id(),command)){
+            cmd = command.replaceAll(RegexEnum.CQ_CODE_REPLACR.getValue(),"");
+        }else{
+            cmd = command;
+        }
+        if (!cmd.trim().matches(RegexEnum.SCOLD_ME_DG.getValue())){
             return false;
         }
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(()->{
