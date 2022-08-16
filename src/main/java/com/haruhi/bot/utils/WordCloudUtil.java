@@ -6,6 +6,7 @@ import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.RegexEnum;
 import com.haruhi.bot.constant.ThirdPartyURL;
 import com.haruhi.bot.dto.gocq.response.HttpResponse;
+import com.haruhi.bot.dto.xml.bilibili.PlayerInfoResp;
 import com.kennycason.kumo.CollisionMode;
 import com.kennycason.kumo.WordCloud;
 import com.kennycason.kumo.WordFrequency;
@@ -20,6 +21,8 @@ import org.apache.logging.log4j.util.Strings;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 public class WordCloudUtil {
@@ -121,14 +124,15 @@ public class WordCloudUtil {
      * @param bv
      * @return
      */
-    public static String getCid(String bv){
+    public static PlayerInfoResp getCid(String bv){
         Map<String, Object> param = new HashMap<>();
         param.put("bvid",bv);
         param.put("jsonp","jsonp");
         String responseStr = RestUtil.sendGetRequest(RestUtil.getRestTemplate(), ThirdPartyURL.PLAYER_CID, param, String.class);
         if(Strings.isNotBlank(responseStr)){
             JSONObject jsonObject = JSONObject.parseObject(responseStr);
-            return jsonObject.getJSONArray("data").getJSONObject(0).getString("cid");
+            String data = jsonObject.getJSONArray("data").getString(0);
+            return JSONObject.parseObject(data,PlayerInfoResp.class);
         }
         return null;
     }
@@ -143,7 +147,31 @@ public class WordCloudUtil {
         param.put("oid",cid);
         String responseSre = HttpClientUtil.doGet(ThirdPartyURL.BULLET_CHAR, param);
         if(Strings.isNotBlank(responseSre)){
+            Pattern compile = Pattern.compile("\">(.*?)</d>");
+            Matcher matcher = compile.matcher(responseSre);
+            List<String> res = new ArrayList<>();
+            while (matcher.find()) {
+                res.add(matcher.group(1));
+            }
+            return res;
+        }
+        return null;
+    }
 
+    /**
+     * 根据av号获取bv号
+     * @param av
+     * @return
+     */
+    public static String getBvByAv(String av){
+
+        String responseSre = HttpClientUtil.doGet(ThirdPartyURL.BILIBILI_URL+"/" + av,null);
+        if (Strings.isNotBlank(responseSre)) {
+            Pattern compile = Pattern.compile("<meta data-vue-meta=\"true\" itemprop=\"url\" content=\"https://www.bilibili.com/video/(.*?)/\">");
+            Matcher matcher = compile.matcher(responseSre);
+            if (matcher.find()) {
+                return matcher.group(1);
+            }
         }
         return null;
     }

@@ -9,6 +9,7 @@ import org.apache.logging.log4j.util.Strings;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 public class CommonUtil {
     private CommonUtil(){}
@@ -116,6 +117,9 @@ public class CommonUtil {
             }
         }
         return result;
+    }
+    public static String uuid(){
+        return UUID.randomUUID().toString().replace("-","");
     }
     public static int averageAssignListSize(int size,int num){
         if(size % num == 0){

@@ -13,6 +13,7 @@ import com.haruhi.bot.entity.GroupChatHistory;
 import com.haruhi.bot.handlers.message.WordCloudHandler;
 import com.haruhi.bot.handlers.message.chatHistory.FindChatMessageHandler;
 import com.haruhi.bot.mapper.GroupChatHistoryMapper;
+import com.haruhi.bot.thread.WordSlicesTask;
 import com.haruhi.bot.utils.*;
 import com.haruhi.bot.ws.Client;
 import com.simplerobot.modules.utils.KQCodeUtils;
@@ -41,9 +42,9 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
     private IEnvConfig envConfig;
 
     private static String basePath;
-    private static int poolSize = 20;
+
     private static Executor pool =  new ThreadPoolExecutor(2,2,60L,TimeUnit.SECONDS,new ArrayBlockingQueue(8),new CustomizableThreadFactory("pool-chat-history-"),new ThreadPoolExecutor.CallerRunsPolicy());
-    private static ExecutorService es = new ThreadPoolExecutor(poolSize, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(),new CustomizableThreadFactory("pool-word-slices-"));
+
     @PostConstruct
     private void mkdirs(){
         basePath = envConfig.resourcesImagePath() + File.separator + "wordCloud";
@@ -151,7 +152,7 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
         LambdaQueryWrapper<GroupChatHistory> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(GroupChatHistory::getGroupId,message.getGroup_id()).gt(GroupChatHistory::getCreateTime,date.getTime());
         for (WordCloudHandler.RegexEnum value : WordCloudHandler.RegexEnum.values()) {
-            queryWrapper.ne(GroupChatHistory::getContent,value.getRegex());
+            queryWrapper.notLike(GroupChatHistory::getContent,value.getRegex());
         }
         String outPutPath = null;
         List<String> userIds = CommonUtil.getCqParams(message.getMessage(), CqCodeTypeEnum.at, "qq");
@@ -169,20 +170,9 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
         try{
             long l = System.currentTimeMillis();
             List<String> collect = corpus.stream().map(GroupChatHistory::getContent).collect(Collectors.toList());
-            List<String> strings = new ArrayList<>();
-            int limit = CommonUtil.averageAssignListSize(collect.size(),poolSize);
-            ArrayList<FutureTask<List<String>>> futureTasks = new ArrayList<>();
-            List<List<String>> lists = CommonUtil.averageAssignList(collect, limit);
-            for (List<String> list : lists) {
-                FutureTask<List<String>> listFutureTask = new FutureTask<>(new GroupChatHistoryServiceImpl.GenerateWordCloudTask(list));
-                futureTasks.add(listFutureTask);
-                es.submit(listFutureTask);
-            }
-            for (FutureTask<List<String>> futureTask : futureTasks) {
-                strings.addAll(futureTask.get());
-            }
+            List<String> strings = WordSlicesTask.execute(collect);
             if(strings == null || strings.size() == 0){
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, "词料为0，本次不生成词云图",GocqActionEnum.SEND_MSG,true);
+                Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, "有效词料为0，本次不生成词云图",GocqActionEnum.SEND_MSG,true);
                 generateComplete(message,null);
                 return;
             }
@@ -236,28 +226,6 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
                 break;
         }
         return res;
-    }
-
-    public static class GenerateWordCloudTask implements Callable<List<String>>{
-
-        private List<String> data;
-
-        public GenerateWordCloudTask(List<String> data){
-            this.data = data;
-        }
-
-        @Override
-        public List<String> call() throws Exception {
-            List<String> res = new ArrayList<>();
-            for (String item : data) {
-                List<String> strings = WordCloudUtil.wordSlices(item);
-                if(strings == null || strings.size() == 0){
-                    continue;
-                }
-                res.addAll(strings);
-            }
-            return res;
-        }
     }
 
 }
