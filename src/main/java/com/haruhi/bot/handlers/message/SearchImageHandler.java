@@ -14,6 +14,7 @@ import com.haruhi.bot.factory.ThreadPoolFactory;
 import com.haruhi.bot.event.message.IMessageEvent;
 import com.haruhi.bot.handlers.message.pixiv.PixivByPidHandler;
 import com.haruhi.bot.utils.CommonUtil;
+import com.haruhi.bot.utils.GocqRequestUtil;
 import com.haruhi.bot.utils.RestUtil;
 import com.haruhi.bot.ws.Client;
 import com.simplerobot.modules.utils.KQCodeUtils;
@@ -37,48 +38,77 @@ public class SearchImageHandler implements IMessageEvent {
         return 98;
     }
 
-    private static Long timeout = 25L* 1000L;
+    private static Long timeout = 30L* 1000L;
 
     private static Map<String,Long> timeoutMap = new ConcurrentHashMap<>(6);
 
     @Override
     public boolean onMessage(final Message message,final String command) {
-        KQCodeUtils utils = KQCodeUtils.getInstance();
-        String cq = utils.getCq(command, CqCodeTypeEnum.image.getType(), 0);
-        String key = CommonUtil.getKey(message.getUser_id(), message.getGroup_id());
-        boolean matches = false;
-        if(timeoutMap.get(key) != null ){
-            if(System.currentTimeMillis() - timeoutMap.get(key) < timeout){
-                if(cq != null){
-                    matches = true;
+        String cq = replySearch(message);
+        String key = null;
+        if(Strings.isNotBlank(cq)){
+            start(message,cq,key);
+        }else{
+            KQCodeUtils utils = KQCodeUtils.getInstance();
+            cq = utils.getCq(command, CqCodeTypeEnum.image.getType(), 0);
+            key = CommonUtil.getKey(message.getUser_id(), message.getGroup_id());
+            boolean matches = false;
+            if(timeoutMap.get(key) != null ){
+                if(System.currentTimeMillis() - timeoutMap.get(key) < timeout){
+                    if(cq != null){
+                        matches = true;
+                    }
+                }else{
+                    timeoutMap.remove(key);
                 }
-            }else{
-                timeoutMap.remove(key);
             }
-        }
 
-        String[] split = RegexEnum.SEARCH_IMAGE.getValue().split("\\|");
-        for (String s : split) {
-            if(command.startsWith(s)){
-                matches = true;
-                break;
+            String[] split = RegexEnum.SEARCH_IMAGE.getValue().split("\\|");
+            for (String s : split) {
+                if(command.startsWith(s)){
+                    matches = true;
+                    break;
+                }
             }
-        }
-        if(!matches){
-            return false;
-        }
+            if(!matches){
+                return false;
+            }
 
-        if(cq == null){
-            timeoutMap.put(key,System.currentTimeMillis());
-            Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"图呢！", GocqActionEnum.SEND_MSG,true);
-            return true;
+            if(cq == null){
+                timeoutMap.put(key,System.currentTimeMillis());
+                Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"图呢！", GocqActionEnum.SEND_MSG,true);
+                return true;
+            }
+            start(message,cq,key);
         }
-        Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"开始搜图...",GocqActionEnum.SEND_MSG,true);
-        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new searchImageTask(message,cq));
-        timeoutMap.remove(key);
         return true;
     }
 
+    private void start(Message message,String cq,String key){
+        Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"开始搜图...",GocqActionEnum.SEND_MSG,true);
+        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new searchImageTask(message,cq));
+        if(key != null){
+            timeoutMap.remove(key);
+        }
+    }
+
+    private String replySearch(final Message message){
+        if (MessageEventEnum.group.getType().equals(message.getMessage_type())) {
+            KQCodeUtils instance = KQCodeUtils.getInstance();
+            String s = message.getMessage().replaceAll(RegexEnum.CQ_CODE_REPLACR.getValue(), "").trim();
+            if (s.matches(RegexEnum.SEARCH_IMAGE.getValue())) {
+                String cq = instance.getCq(message.getMessage(), CqCodeTypeEnum.reply.getType());
+                if(Strings.isNotBlank(cq)){
+                    String messageId = instance.getParam(cq, "id");
+                    Message msg = GocqRequestUtil.getMsg(messageId);
+                    String respMessage = msg.getMessage();
+                    String cq1 = instance.getCq(respMessage, CqCodeTypeEnum.image.getType());
+                    return cq1;
+                }
+            }
+        }
+        return null;
+    }
 
     public static class searchImageTask implements Runnable{
         private Message message;
@@ -101,7 +131,7 @@ public class SearchImageHandler implements IMessageEvent {
             param.add("db",99);
             param.add("url",imageUrl);
             try {
-                String response = RestUtil.sendPostForm(RestUtil.getRestTemplate(30 * 1000), ThirdPartyURL.SEARCH_IMAGE, param, String.class);
+                String response = RestUtil.sendPostForm(RestUtil.getRestTemplate(25 * 1000), ThirdPartyURL.SEARCH_IMAGE, param, String.class);
                 if(response != null){
                     JSONObject jsonObject = JSONObject.parseObject(response);
                     String resultsStr = jsonObject.getString("results");
