@@ -126,6 +126,7 @@
                         <exclude>lib/**</exclude>
                         <exclude>*.yml</exclude>
                         <exclude>*.xml</exclude>
+                        <exclude>build/**</exclude>
                     </excludes>
                 </configuration>
             </plugin>

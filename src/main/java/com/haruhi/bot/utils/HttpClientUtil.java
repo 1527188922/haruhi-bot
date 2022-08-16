@@ -19,11 +19,7 @@ public class HttpClientUtil {
         try {
             String uri = "";
             if(urlParams != null){
-                StringBuffer sb=new StringBuffer("?");
-                for(Map.Entry<String,Object> map:urlParams.entrySet()){
-                    sb.append(map.getKey()+"="+(map.getValue())+"&");
-                }
-                uri = url.concat(sb.substring(0, sb.length() - 1));
+                uri = RestUtil.urlSplicing(url,urlParams);
             }else{
                 uri = url;
             }

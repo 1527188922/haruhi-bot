@@ -8,5 +8,12 @@ public interface IEnvConfig {
      */
     String applicationHomePath();
 
+    /**
+     * 图片路径
+     * @return
+     */
     String resourcesImagePath();
+
+    // 音频路径
+    String resourcesAudio();
 }

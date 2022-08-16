@@ -15,24 +15,23 @@ public class DevEnvConfigImpl implements IEnvConfig{
     public DevEnvConfigImpl(){
         log.info("当前启动环境为:dev");
     }
+    // directory 拿到resources目录路径
+    public static File directory = new File("src/main/resources");
     private static String homePath;
     private static String imagePath;
+    private static String audioPath;
 
     static {
         setHomePath();
         setImagePath();
+        setAudioPath();
     }
-    @Override
-    public synchronized String applicationHomePath() {
 
-        return homePath;
-    }
     private static void setHomePath(){
         ApplicationHome ah = new ApplicationHome(DevEnvConfigImpl.class);
         homePath = ah.getSource().getParentFile().toString();
     }
     private static void setImagePath(){
-        File directory = new File("src/main/resources");
         try {
             imagePath = directory.getCanonicalPath() + File.separator + "build\\image";
             File file = new File(imagePath);
@@ -43,10 +42,25 @@ public class DevEnvConfigImpl implements IEnvConfig{
             e.printStackTrace();
         }
     }
-
+    private static void setAudioPath(){
+        try {
+            // 这个目录是一定存在的 不用创建
+            audioPath = directory.getCanonicalPath() + File.separator + "build\\audio";
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @Override
+    public String applicationHomePath() {
+        return homePath;
+    }
     @Override
     public String resourcesImagePath() {
-
         return imagePath;
+    }
+
+    @Override
+    public String resourcesAudio() {
+        return audioPath;
     }
 }

@@ -1,5 +1,5 @@
 spring:
   profiles:
     # 打包之后默认使用pro配置文件，跟这里无关
-    # pro配置针对linux系统而做，若你的生产环建是windows 请打包之后将 application.yml中的 env.active 属性值修改为 dev
+    # 打包后启动一定要用pro环境 在application.yml文件中配置(打包默认就是pro,所以不用动)
     active: dev

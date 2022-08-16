@@ -31,11 +31,7 @@ public class RestUtil {
             HttpEntity<O> entity = new HttpEntity<>(msgBody, httpHeaders);
             ResponseEntity<String> response = null;
             if(urlRequestParam != null){
-                StringBuffer sb=new StringBuffer("?");
-                for(Map.Entry<String,Object> map:urlRequestParam.entrySet()){
-                    sb.append(map.getKey()+"="+(map.getValue())+"&");
-                }
-                response = restTemplate.exchange(url.concat(sb.substring(0, sb.length() - 1)), method, entity, new ParameterizedTypeReference<String>() {
+                response = restTemplate.exchange(urlSplicing(url,urlRequestParam), method, entity, new ParameterizedTypeReference<String>() {
                 });
             }else{
                 response = restTemplate.exchange(url, method,entity,new ParameterizedTypeReference<String>() {
@@ -47,6 +43,14 @@ public class RestUtil {
             log.info("rest请求发送异常",e);
             return null;
         }
+    }
+
+    public static String urlSplicing(String url,Map<String,Object> param){
+        StringBuffer sb=new StringBuffer("?");
+        for(Map.Entry<String,Object> map:param.entrySet()){
+            sb.append(map.getKey()+"="+(map.getValue())+"&");
+        }
+        return url.concat(sb.substring(0, sb.length() - 1));
     }
 
     /**

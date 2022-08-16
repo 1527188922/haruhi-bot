@@ -7,7 +7,8 @@ public enum CqCodeTypeEnum {
     forward("forward"),
     reply("reply"),
     tts("tts"),
-    poke("poke");
+    poke("poke"),
+    record("record");
 
 
     private String type;

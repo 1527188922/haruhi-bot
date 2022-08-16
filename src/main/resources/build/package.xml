@@ -34,6 +34,10 @@
             <outputDirectory>image</outputDirectory>
         </fileSet>
         <fileSet>
+            <directory>${project.basedir}/src/main/resources/build/record</directory>
+            <outputDirectory>record</outputDirectory>
+        </fileSet>
+        <fileSet>
             <directory>${project.build.directory}</directory>
             <outputDirectory></outputDirectory>
             <includes>
