@@ -58,7 +58,7 @@ public class BulletChatWordCloudHandler implements IMessageEvent {
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(new BulletChatWordCloudHandler.Task(message,param));
         return true;
     }
-    private static String getBy(String param){
+    private static String getBv(String param){
         String bv = null;
         if(param.startsWith("av") || param.startsWith("AV")){
             bv = WordCloudUtil.getBvByAv(param);
@@ -81,8 +81,8 @@ public class BulletChatWordCloudHandler implements IMessageEvent {
             String outPutPath = null;
             try {
 
-                String bv = getBy(param);
-                PlayerInfoResp playerInfoResp = WordCloudUtil.getCid(bv);
+                String bv = getBv(param);
+                PlayerInfoResp playerInfoResp = WordCloudUtil.getPlayerInfo(bv);
                 if(playerInfoResp == null || Strings.isBlank(playerInfoResp.getCid())){
                     Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), "视频cid获取失败", GocqActionEnum.SEND_MSG,true);
                     return;

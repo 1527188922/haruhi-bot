@@ -1,8 +1,5 @@
 package com.haruhi.bot.handlers.message;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.haruhi.bot.config.BotConfig;
 import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.event.MessageEventEnum;
 import com.haruhi.bot.constant.RegexEnum;
@@ -12,16 +9,13 @@ import com.haruhi.bot.dto.gocq.request.GroupMember;
 import com.haruhi.bot.event.message.IGroupMessageEvent;
 import com.haruhi.bot.factory.ThreadPoolFactory;
 import com.haruhi.bot.utils.CommonUtil;
-import com.haruhi.bot.utils.RestUtil;
+import com.haruhi.bot.utils.GocqRequestUtil;
 import com.haruhi.bot.ws.Client;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -62,25 +56,19 @@ public class FriendSaidHandler implements IGroupMessageEvent {
         private Message message;
         private String say;
         SayTask(Message message,String say){
-            this.say = new String(say);
+            this.say = say;
             this.message = message;
         }
         @Override
         public void run() {
             try {
-                Map<String, Object> params = new HashMap<>();
-                params.put("group_id",message.getGroup_id());
-                String responseStr = RestUtil.sendPostRequest(RestUtil.getRestTemplate(5 * 1000), BotConfig.HTTP_URL + "/" + GocqActionEnum.GET_GROUP_MEMBER_LIST.getAction(), params, null, String.class);
-                if (responseStr == null) {
-                    String errorMsg = "获取群成员列表失败:null";
-                    Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group,errorMsg,GocqActionEnum.SEND_MSG,true);
-                    log.error(errorMsg);
+                List<GroupMember> groupMemberList = GocqRequestUtil.getGroupMemberList(message.getGroup_id(), message.getUser_id(), message.getSelf_id());
+                if(groupMemberList == null || groupMemberList.size() == 0){
+                    Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group,"你哪来的朋友？",GocqActionEnum.SEND_MSG,true);
                     return;
                 }
-                JSONObject responseJsonObj = JSONObject.parseObject(responseStr);
-                List<GroupMember> data = JSONArray.parseArray(responseJsonObj.getString("data"), GroupMember.class).stream().filter(e -> !e.getUser_id().equals(message.getUser_id()) && !e.getUser_id().equals(message.getSelf_id())).collect(Collectors.toList());
-                int i = CommonUtil.randomInt(0, data.size() - 1);
-                GroupMember friend = data.get(i);
+                int i = CommonUtil.randomInt(0, groupMemberList.size() - 1);
+                GroupMember friend = groupMemberList.get(i);
                 send(friend);
             }catch (Exception e){
                 Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group,"这个朋友不听话...",GocqActionEnum.SEND_MSG,true);

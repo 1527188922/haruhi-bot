@@ -1,11 +1,8 @@
 package com.haruhi.bot.utils;
 
 import com.alibaba.fastjson.JSONObject;
-import com.haruhi.bot.config.BotConfig;
-import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.RegexEnum;
 import com.haruhi.bot.constant.ThirdPartyURL;
-import com.haruhi.bot.dto.gocq.response.HttpResponse;
 import com.haruhi.bot.dto.xml.bilibili.PlayerInfoResp;
 import com.kennycason.kumo.CollisionMode;
 import com.kennycason.kumo.WordCloud;
@@ -51,14 +48,7 @@ public class WordCloudUtil {
         if(Strings.isBlank(s) || s.length() <= 1){
             return null;
         }
-        Map<String, Object> req = new HashMap<>();
-        req.put("content",s);
-        HttpResponse httpResponse = RestUtil.sendPostRequest(RestUtil.getRestTemplate(10 * 1000), BotConfig.HTTP_URL + "/" + GocqActionEnum.GET_WORD_SLICES.getAction(), req, null, HttpResponse.class);
-        if(httpResponse != null && httpResponse.getRetcode() == 0 ){
-            HttpResponse.RespData data = httpResponse.getData();
-            return data != null ? data.getSlices() : null;
-        }
-        return null;
+        return GocqRequestUtil.getWordSlices(s);
     }
 
     /**
@@ -124,7 +114,7 @@ public class WordCloudUtil {
      * @param bv
      * @return
      */
-    public static PlayerInfoResp getCid(String bv){
+    public static PlayerInfoResp getPlayerInfo(String bv){
         Map<String, Object> param = new HashMap<>();
         param.put("bvid",bv);
         param.put("jsonp","jsonp");
