@@ -3,6 +3,7 @@ package com.haruhi.bot.job;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.haruhi.bot.config.BotConfig;
 import com.haruhi.bot.constant.GocqActionEnum;
+import com.haruhi.bot.constant.ThirdPartyURL;
 import com.haruhi.bot.constant.event.MessageEventEnum;
 import com.haruhi.bot.entity.Pixiv;
 import com.haruhi.bot.factory.ThreadPoolFactory;
@@ -57,7 +58,7 @@ public class DownloadPixivJob extends AbstractJob {
         }
         ThreadPoolFactory.getDownloadThreadPool().execute(new DownloadPixivJob.downloadTask(pixivService,paramR18));
     }
-    private static String url = "https://api.lolicon.app/setu/v2";
+
     public static class downloadTask implements Runnable{
         private Map<String,Object> param;
         private PixivService pixivService;
@@ -70,7 +71,7 @@ public class DownloadPixivJob extends AbstractJob {
         @Override
         public void run() {
             try {
-                Response response = RestUtil.sendGetRequest(RestUtil.getRestTemplate(11 * 1000), url, param, Response.class);
+                Response response = RestUtil.sendGetRequest(RestUtil.getRestTemplate(11 * 1000), ThirdPartyURL.LOLICON, param, Response.class);
                 if(response == null){
                     Client.sendMessage(BotConfig.SUPER_USER,null, MessageEventEnum.privat, MessageFormat.format("no data\n本次请求为null\n线程：{0}",Thread.currentThread().getName()), GocqActionEnum.SEND_MSG,true);
                     return;

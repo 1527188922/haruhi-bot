@@ -1,6 +1,5 @@
 package com.haruhi.bot;
 
-import com.haruhi.bot.config.env.IEnvConfig;
 import com.haruhi.bot.job.schedule.JobManage;
 import com.haruhi.bot.service.DataBaseService;
 import com.haruhi.bot.thread.FirstTask;
@@ -23,10 +22,11 @@ public class SystemCommandLineRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-
+        // 初始化数据库
         dataBaseService.dataBaseInit();
-
+        // 执行项目首次启动需要执行的任务 比如从库里加载一些数据到内存
         firstTask.execute(firstTask);
+        // 开启job
         jobManage.startAllJob();
         log.info("开始连接go-cqhttp...");
         Client instance = Client.getInstance();

@@ -39,7 +39,7 @@ public class WordSlicesTask implements Callable<List<String>> {
     public static List<String> execute(List<String> corpus){
         List<String> strings = new ArrayList<>();
         // 根据线程池大小，计算每个线程需要跑几个词语 确保不会有线程空闲
-        int limit = CommonUtil.averageAssignListSize(corpus.size(),poolSize);
+        int limit = CommonUtil.averageAssignNum(corpus.size(),poolSize);
         ArrayList<FutureTask<List<String>>> futureTasks = new ArrayList<>();
         List<List<String>> lists = CommonUtil.averageAssignList(corpus, limit);
         for (List<String> list : lists) {

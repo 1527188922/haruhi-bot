@@ -121,11 +121,11 @@ public class CommonUtil {
     public static String uuid(){
         return UUID.randomUUID().toString().replace("-","");
     }
-    public static int averageAssignListSize(int size,int num){
-        if(size % num == 0){
-            return size / num;
+    public static int averageAssignNum(int num, int divisor){
+        if(num % divisor == 0){
+            return num / divisor;
         }else{
-            return size / num + 1;
+            return num / divisor + 1;
         }
     }
 }

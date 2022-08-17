@@ -55,7 +55,9 @@ public class GocqRequestUtil {
                     }
                 }
             }
-            data.removeAll(excludeList);
+            if (excludeList.size() > 0) {
+                data.removeAll(excludeList);
+            }
         }
         return data;
     }
