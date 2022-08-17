@@ -11,6 +11,7 @@ import com.haruhi.bot.factory.ThreadPoolFactory;
 import com.haruhi.bot.service.wordStrip.WordStripService;
 import com.haruhi.bot.ws.Client;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.text.StrBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -50,10 +51,10 @@ public class WordStripShowHandler implements IGroupMessageEvent {
     }
 
     private String processWordStrip(List<WordStrip> list){
-        StringBuffer stringBuffer = new StringBuffer("本群词条：\n");
+        StrBuilder strBuilder = new StrBuilder("本群词条：\n");
         for (WordStrip wordStrip : list) {
-            stringBuffer.append(MessageFormat.format("[{0}]-[{1}] 创建人：{2}\n",wordStrip.getKeyWord(),wordStrip.getAnswer(),wordStrip.getUserId()));
+            strBuilder.append(MessageFormat.format("[{0}]-[{1}] 创建人：{2}\n",wordStrip.getKeyWord(),wordStrip.getAnswer(),wordStrip.getUserId()));
         }
-        return stringBuffer.toString();
+        return strBuilder.toString();
     }
 }

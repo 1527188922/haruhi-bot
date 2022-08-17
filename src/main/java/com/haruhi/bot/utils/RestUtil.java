@@ -46,7 +46,7 @@ public class RestUtil {
     }
 
     public static String urlSplicing(String url,Map<String,Object> param){
-        StringBuffer sb=new StringBuffer("?");
+        StringBuilder sb=new StringBuilder("?");
         for(Map.Entry<String,Object> map:param.entrySet()){
             sb.append(map.getKey()+"="+(map.getValue())+"&");
         }

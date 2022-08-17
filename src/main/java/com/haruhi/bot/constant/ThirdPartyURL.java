@@ -14,4 +14,6 @@ public class ThirdPartyURL {
     public static final String PLAYER_CID = "https://api.bilibili.com/x/player/pagelist";
     // lolicon
     public static final String LOLICON = "https://api.lolicon.app/setu/v2";
+    // bt 搜索
+    public static final String BT_SEARCH = "http://www.eclzz.plus";
 }

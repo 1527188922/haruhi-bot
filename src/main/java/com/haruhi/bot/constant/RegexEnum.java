@@ -19,7 +19,9 @@ public enum RegexEnum {
     WORD_STRIP_DELETE("删除词条"),
     WORD_STRIP_SHOW("本群词条|所有词条|查看所有词条|显示所有词条"),
     BULLET_CHAT_WORD_CLOUD("弹幕词云"),
-    SCOLD_ME_DG("骂我|钉宫|钉宫理惠");
+    SCOLD_ME_DG("骂我|钉宫|钉宫理惠"),
+    BT_SEARCH("bt"),
+    BT_SEARCH_HAS_PAGE("bt(.*?)页");
 
 
     private String value;

@@ -135,7 +135,7 @@ public class WordCloudUtil {
     public static List<String> getChatList(String cid){
         Map<String, Object> param = new HashMap<>();
         param.put("oid",cid);
-        String responseSre = HttpClientUtil.doGet(ThirdPartyURL.BULLET_CHAR, param);
+        String responseSre = HttpClientUtil.doGet(ThirdPartyURL.BULLET_CHAR, param,10 * 1000);
         if(Strings.isNotBlank(responseSre)){
             Pattern compile = Pattern.compile("\">(.*?)</d>");
             Matcher matcher = compile.matcher(responseSre);
@@ -155,7 +155,7 @@ public class WordCloudUtil {
      */
     public static String getBvByAv(String av){
 
-        String responseSre = HttpClientUtil.doGet(ThirdPartyURL.BILIBILI_URL+"/" + av,null);
+        String responseSre = HttpClientUtil.doGet(ThirdPartyURL.BILIBILI_URL+"/" + av,null,10 * 1000);
         if (Strings.isNotBlank(responseSre)) {
             Pattern compile = Pattern.compile("<meta data-vue-meta=\"true\" itemprop=\"url\" content=\"https://www.bilibili.com/video/(.*?)/\">");
             Matcher matcher = compile.matcher(responseSre);
