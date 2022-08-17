@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.haruhi.bot.config.BotConfig;
 import com.haruhi.bot.constant.GocqActionEnum;
-import com.haruhi.bot.dto.gocq.request.GroupMember;
+import com.haruhi.bot.dto.gocq.response.GroupMember;
 import com.haruhi.bot.dto.gocq.response.HttpResponse;
 import com.haruhi.bot.dto.gocq.response.Message;
 import lombok.extern.slf4j.Slf4j;

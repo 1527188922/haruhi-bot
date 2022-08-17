@@ -14,7 +14,7 @@ public enum RegexEnum {
     PIXIV_PID("ppid|PPID"),
     PIXIV_UID("puid|PUID"),
     PIXIV_COUNT("pix统计|PIX统计"),
-    FRIEND_SAID("朋友说|我朋友说|我朋友都说|朋友都说|朋友说过|我朋友说过|我朋友老说|我朋友总说|我朋友老是说|我朋友总是说"),
+    FRIEND_SAID("朋友说|我朋友说|我朋友都说|朋友都说|朋友说过|我朋友说过|我朋友老说|我朋友总说|我朋友老是说|我朋友总是说|我朋友他说|我朋友她说|我朋友它说|朋友他说|朋友她说|朋友它说"),
     WORD_STRIP_ADD("添加词条(.*?)答"),
     WORD_STRIP_DELETE("删除词条"),
     WORD_STRIP_SHOW("本群词条|所有词条|查看所有词条|显示所有词条"),

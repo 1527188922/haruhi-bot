@@ -5,7 +5,7 @@ import com.haruhi.bot.constant.event.MessageEventEnum;
 import com.haruhi.bot.constant.RegexEnum;
 import com.haruhi.bot.dto.gocq.response.Message;
 import com.haruhi.bot.dto.gocq.request.ForwardMsg;
-import com.haruhi.bot.dto.gocq.request.GroupMember;
+import com.haruhi.bot.dto.gocq.response.GroupMember;
 import com.haruhi.bot.event.message.IGroupMessageEvent;
 import com.haruhi.bot.factory.ThreadPoolFactory;
 import com.haruhi.bot.utils.CommonUtil;
