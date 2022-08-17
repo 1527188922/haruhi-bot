@@ -1,1 +1,1 @@
-java -jar haruhiBot-server.jar
+java -jar -Xms512m -Xmx512m haruhiBot-server.jar
