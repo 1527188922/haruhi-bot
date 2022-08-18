@@ -79,7 +79,7 @@ public class BtSearchHandler implements IMessageEvent {
                 Document document = Jsoup.parse(htmlStr);
                 Elements list = document.getElementsByClass("search-item");
                 if (list == null || list.size() == 0) {
-                    Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"没搜到：" + keyword, GocqActionEnum.SEND_MSG,true);
+                    noData(message,keyword);
                     return;
                 }
                 List<String> res = new ArrayList<>();
@@ -97,6 +97,10 @@ public class BtSearchHandler implements IMessageEvent {
                     requestDetail(strBuilder,detailHref);
                     res.add(strBuilder.toString());
                 }
+                if(res.size() == 0){
+                    noData(message,keyword);
+                    return;
+                }
                 if(MessageEventEnum.group.getType().equals(message.getMessage_type())){
                     sendGroup(res,message);
                 }else if(MessageEventEnum.privat.getType().equals(message.getMessage_type())){
@@ -108,6 +112,9 @@ public class BtSearchHandler implements IMessageEvent {
             }
 
         }
+    }
+    private static void noData(Message message,String keyword){
+        Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"没搜到：" + keyword, GocqActionEnum.SEND_MSG,true);
     }
     private static void sendPrivate(List<String> res,Message message){
         for (String re : res) {
