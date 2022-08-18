@@ -42,7 +42,7 @@ public class HttpClientUtil {
             }else{
                 uri = url;
             }
-            HttpGet httpGet = new HttpGet(uri);
+            HttpGet httpGet = new HttpGet(encode(uri));
             response = httpClient.execute(httpGet);
             HttpEntity entity = response.getEntity();
             return EntityUtils.toString(entity,"UTF-8");
@@ -50,5 +50,24 @@ public class HttpClientUtil {
             log.error("HttpClient请求{}异常",url,e);
             return null;
         }
+    }
+
+    public static String encode(String url) {
+        return url.replace("\\","%5C")
+                .replace("+","%2B")
+                .replace(" ","%20")
+                .replace("?","%3F")
+                .replace("%","%25")
+                .replace("#","%23")
+                .replace("&","%26")
+                .replace("=","%3D")
+                .replace("$","%24")
+                .replace("^","%5E")
+                .replace("{","%7B")
+                .replace("}","%7D")
+                .replace("|","%7C")
+                .replace("[","%5B")
+                .replace("]","%5D");
+
     }
 }

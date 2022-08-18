@@ -40,7 +40,7 @@ public class RestUtil {
 
             return processResponse(response,type);
         }catch (Exception e){
-            log.info("rest请求发送异常",e);
+            log.info("rest请求发生异常",e);
             return null;
         }
     }

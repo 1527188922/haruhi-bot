@@ -73,7 +73,7 @@ public class BtSearchHandler implements IMessageEvent {
             try {
                 String htmlStr = HttpClientUtil.doGet(MessageFormat.format(ThirdPartyURL.BT_SEARCH + "/s/{0}_rel_{1}.html", keyword, page), null,10 * 1000);
                 if(Strings.isBlank(htmlStr)){
-                    Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"bt搜索请求发送异常", GocqActionEnum.SEND_MSG,true);
+                    Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"bt搜索请求发生异常", GocqActionEnum.SEND_MSG,true);
                     return;
                 }
                 Document document = Jsoup.parse(htmlStr);
