@@ -80,8 +80,10 @@ public class BulletChatWordCloudHandler implements IMessageEvent {
         public void run() {
             String outPutPath = null;
             try {
-
                 String bv = getBv(param);
+                if(Strings.isBlank(bv)){
+                    return;
+                }
                 PlayerInfoResp playerInfoResp = WordCloudUtil.getPlayerInfo(bv);
                 if(playerInfoResp == null || Strings.isBlank(playerInfoResp.getCid())){
                     Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), "视频cid获取失败", GocqActionEnum.SEND_MSG,true);
