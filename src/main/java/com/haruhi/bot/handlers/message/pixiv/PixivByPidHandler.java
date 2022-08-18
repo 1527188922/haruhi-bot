@@ -88,14 +88,14 @@ public class PixivByPidHandler implements IMessageEvent {
                     ArrayList<ForwardMsg> params = new ArrayList<>();
                     params.add(CommonUtil.createForwardMsgItem(MessageFormat.format(noImageTip,pid),message.getSelf_id(),BotConfig.NAME));
                     params.add(CommonUtil.createForwardMsgItem(MessageFormat.format("{0}{1}.jpg",u,pid),message.getSelf_id(),BotConfig.NAME));
-                    for (int i = 1; i <= 20; i++) {
+                    for (int i = 2; i <= 20; i++) {
                         params.add(CommonUtil.createForwardMsgItem(MessageFormat.format(temp,u,pid,i),message.getSelf_id(),BotConfig.NAME));
                     }
                     Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,message.getGroup_id(),params);
                 }else if(MessageEventEnum.privat.getType().equals(message.getMessage_type())){
                     Client.sendMessage(message.getUser_id(),message.getGroup_id(),MessageEventEnum.privat,MessageFormat.format(noImageTip,pid),GocqActionEnum.SEND_MSG,true);
                     Client.sendMessage(message.getUser_id(),message.getGroup_id(),MessageEventEnum.privat,MessageFormat.format("{0}{1}.jpg",u,pid),GocqActionEnum.SEND_MSG,true);
-                    for (int i = 1; i <= 20; i++) {
+                    for (int i = 2; i <= 20; i++) {
                         Client.sendMessage(message.getUser_id(),message.getGroup_id(),MessageEventEnum.privat,MessageFormat.format(temp,u,pid,i),GocqActionEnum.SEND_MSG,true);
                     }
                 }
