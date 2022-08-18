@@ -1,5 +1,6 @@
 package com.haruhi.bot.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -12,6 +13,7 @@ import org.apache.http.util.EntityUtils;
 import java.io.IOException;
 import java.util.Map;
 
+@Slf4j
 public class HttpClientUtil {
     private HttpClientUtil(){}
     private static CloseableHttpClient defaultHttpClient = HttpClientBuilder.create().build();
@@ -45,7 +47,7 @@ public class HttpClientUtil {
             HttpEntity entity = response.getEntity();
             return EntityUtils.toString(entity,"UTF-8");
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("HttpClient请求{}异常",url,e);
             return null;
         }
     }
