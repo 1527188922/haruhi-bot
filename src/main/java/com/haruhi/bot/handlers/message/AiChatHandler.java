@@ -14,6 +14,7 @@ import com.haruhi.bot.utils.RestUtil;
 import com.haruhi.bot.ws.Client;
 import com.simplerobot.modules.utils.KQCodeUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
@@ -78,6 +79,9 @@ public class AiChatHandler implements IMessageEvent {
                 for (String cq : this.cqs) {
                     s = s.replace(cq,"");
                 }
+            }
+            if(Strings.isBlank(s)){
+                return;
             }
 
             HashMap<String, Object> urlParam = new HashMap<>();
