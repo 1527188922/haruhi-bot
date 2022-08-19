@@ -36,15 +36,8 @@ public class PixivByUidHandler implements IMessageEvent {
     private PixivService pixivService;
 
     @Override
-    public boolean onMessage(Message message, String command) {
-        String[] split = RegexEnum.PIXIV_UID.getValue().split("\\|");
-        String uid = "";
-        for (String s : split) {
-            if (command.startsWith(s)) {
-                uid = command.replace(s,"");
-                break;
-            }
-        }
+    public boolean onMessage(final Message message,final String command) {
+        String uid = CommonUtil.commandReplaceFirst(command,RegexEnum.PIXIV_UID);
         if(Strings.isBlank(uid)){
             return false;
         }

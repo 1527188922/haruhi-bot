@@ -31,7 +31,7 @@ public class WordStripDeleteHandler implements IGroupMessageEvent {
 
     public boolean matching(final String command) {
         if(command.startsWith(RegexEnum.WORD_STRIP_DELETE.getValue())){
-            String keyWord = command.replace(RegexEnum.WORD_STRIP_DELETE.getValue(),"");
+            String keyWord = command.replaceFirst(RegexEnum.WORD_STRIP_DELETE.getValue(),"");
             if(Strings.isNotBlank(keyWord)){
                 this.keyWord = keyWord;
                 return true;
@@ -42,7 +42,7 @@ public class WordStripDeleteHandler implements IGroupMessageEvent {
     }
 
     @Override
-    public boolean onGroup(Message message, String command) {
+    public boolean onGroup(final Message message,final String command) {
         if (!matching(command)) {
             return false;
         }

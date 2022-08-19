@@ -30,7 +30,7 @@ public class FriendSaidHandler implements IGroupMessageEvent {
         String[] split = RegexEnum.FRIEND_SAID.getValue().split("\\|");
         for (String s : split) {
             if (command.startsWith(s)) {
-                say = command.replace(s,"").trim();
+                say = command.replaceFirst(s,"").trim();
                 if("".equals(say)){
                     return false;
                 }
@@ -43,7 +43,7 @@ public class FriendSaidHandler implements IGroupMessageEvent {
     }
 
     @Override
-    public boolean onGroup(Message message, String command) {
+    public boolean onGroup(final Message message,final String command) {
         if(!matching(message,command)){
             return false;
         }

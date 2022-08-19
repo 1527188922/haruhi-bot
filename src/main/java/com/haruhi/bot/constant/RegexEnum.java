@@ -21,7 +21,8 @@ public enum RegexEnum {
     BULLET_CHAT_WORD_CLOUD("弹幕词云"),
     SCOLD_ME_DG("骂我|钉宫|钉宫理惠"),
     BT_SEARCH("bt"),
-    BT_SEARCH_HAS_PAGE("bt(.*?)页");
+    BT_SEARCH_HAS_PAGE("bt(.*?)页"),
+    GROUP_BROADCAST_MESSAGES("群广播：|群广播:");
 
 
     private String value;

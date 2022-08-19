@@ -29,7 +29,7 @@ public class PixivRHandler implements IMessageEvent {
         for (String s : split) {
             if (command.startsWith(s)) {
                 flag = true;
-                tag = command.replace(s,"");
+                tag = command.replaceFirst(s,"");
                 break;
             }
         }

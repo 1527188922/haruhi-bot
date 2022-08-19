@@ -55,11 +55,11 @@ public class CommonUtil {
         }
         return false;
     }
-    public static String startsWithCommandReplace(final String command, RegexEnum regexEnum){
+    public static String commandReplaceFirst(final String command, RegexEnum regexEnum){
         String[] split = regexEnum.getValue().split("\\|");
         for (String s : split) {
             if (command.startsWith(s)) {
-                return command.replace(s,"");
+                return command.replaceFirst(s,"");
             }
         }
         return null;

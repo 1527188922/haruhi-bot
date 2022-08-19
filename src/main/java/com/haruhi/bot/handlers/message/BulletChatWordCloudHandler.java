@@ -50,7 +50,7 @@ public class BulletChatWordCloudHandler implements IMessageEvent {
         if(!command.startsWith(RegexEnum.BULLET_CHAT_WORD_CLOUD.getValue())){
             return false;
         }
-        String param = command.replace(RegexEnum.BULLET_CHAT_WORD_CLOUD.getValue(), "");
+        String param = command.replaceFirst(RegexEnum.BULLET_CHAT_WORD_CLOUD.getValue(), "");
         if(Strings.isBlank(param)){
             return false;
         }

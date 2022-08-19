@@ -11,7 +11,8 @@ public enum GocqActionEnum {
     GET_GROUP_MEMBER_LIST("get_group_member_list","获取群成员列表"),
     GET_FORWARD_MSG("get_forward_msg","获取合并转发内容"),
     GET_WORD_SLICES(".get_word_slices","获取中文分词"),
-    GET_MSG("get_msg","根据message_id获取消息详情");
+    GET_MSG("get_msg","根据message_id获取消息详情"),
+    GET_GROUP_LIST("get_group_list","获取群列表");
 
     private String action;
     private String remarks;

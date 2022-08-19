@@ -49,7 +49,7 @@ public class BtSearchHandler implements IMessageEvent {
             }
         }else if(command.startsWith(RegexEnum.BT_SEARCH.getValue())){
             page = 1;
-            keyword = command.replace(RegexEnum.BT_SEARCH.getValue(),"");
+            keyword = command.replaceFirst(RegexEnum.BT_SEARCH.getValue(),"");
         }
         if(Strings.isBlank(keyword)){
             return false;

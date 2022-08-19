@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.haruhi.bot.config.BotConfig;
 import com.haruhi.bot.constant.GocqActionEnum;
+import com.haruhi.bot.dto.gocq.response.GroupInfo;
 import com.haruhi.bot.dto.gocq.response.GroupMember;
 import com.haruhi.bot.dto.gocq.response.HttpResponse;
 import com.haruhi.bot.dto.gocq.response.Message;
@@ -74,6 +75,22 @@ public class GocqRequestUtil {
         if(httpResponse != null && httpResponse.getRetcode() == 0 ){
             HttpResponse.RespData data = httpResponse.getData();
             return data != null ? data.getSlices() : null;
+        }
+        return null;
+    }
+
+    /**
+     * 获取群列表
+     * 无需要参数 只能获取登录于go-cqhttp的账号的群组集合
+     * @return
+     */
+    public static List<GroupInfo> getGroupList(){
+        String responseStr = RestUtil.sendGetRequest(RestUtil.getRestTemplate(),BotConfig.HTTP_URL + "/" + GocqActionEnum.GET_GROUP_LIST.getAction(), null, String.class);
+        if (Strings.isNotBlank(responseStr)) {
+            String listStr = JSONObject.parseObject(responseStr).getString("data");
+            if (Strings.isNotBlank(listStr)) {
+                return JSONArray.parseArray(listStr, GroupInfo.class);
+            }
         }
         return null;
     }

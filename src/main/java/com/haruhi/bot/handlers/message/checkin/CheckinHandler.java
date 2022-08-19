@@ -31,7 +31,7 @@ public class CheckinHandler implements IGroupMessageEvent {
     }
 
     @Override
-    public boolean onGroup(Message message, String command) {
+    public boolean onGroup(final Message message,final  String command) {
         if (!matching(command)) {
             return false;
         }

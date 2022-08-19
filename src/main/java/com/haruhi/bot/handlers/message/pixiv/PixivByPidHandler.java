@@ -33,15 +33,9 @@ public class PixivByPidHandler implements IMessageEvent {
     private PixivService pixivService;
 
     @Override
-    public boolean onMessage(Message message, String command) {
-        String[] split = RegexEnum.PIXIV_PID.getValue().split("\\|");
-        String pid = null;
-        for (String s : split) {
-            if (command.startsWith(s)) {
-                pid = command.replace(s,"");
-                break;
-            }
-        }
+    public boolean onMessage(final Message message,final String command) {
+        String pid = CommonUtil.commandReplaceFirst(command,RegexEnum.PIXIV_PID);
+
         if(Strings.isBlank(pid)){
             return false;
         }
