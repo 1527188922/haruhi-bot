@@ -3,7 +3,6 @@ package com.haruhi.bot.dispenser;
 import com.haruhi.bot.constant.event.MessageEventEnum;
 import com.haruhi.bot.constant.event.NoticeEventEnum;
 import com.haruhi.bot.dto.gocq.response.Message;
-import com.haruhi.bot.event.message.IMessageEventType;
 import com.haruhi.bot.event.notice.INoticeEventType;
 import com.haruhi.bot.event.notice.IPokeEvent;
 import com.haruhi.bot.utils.ApplicationContextProvider;
@@ -33,7 +32,7 @@ public class NoticeDispenser {
     private ApplicationContextProvider applicationContextProvider;
     @PostConstruct
     private void loadEvent(){
-        log.info("加载消息处理类...");
+        log.info("加载通知处理类...");
         for (IPokeEvent value : pokeEventMap.values()) {
             NoticeDispenser.attach(value);
         }
