@@ -6,6 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import javax.annotation.PreDestroy;
 
+/**
+ * 功能/命令文档
+ * https://www.yuque.com/liufang-bx5f9/rt4lg6/yfzt2g
+ */
 @Slf4j
 @SpringBootApplication
 public class HaruhiBotRun {
