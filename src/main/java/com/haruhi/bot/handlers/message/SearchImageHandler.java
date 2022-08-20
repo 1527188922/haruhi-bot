@@ -7,6 +7,7 @@ import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.ThirdPartyURL;
 import com.haruhi.bot.constant.event.MessageEventEnum;
 import com.haruhi.bot.constant.RegexEnum;
+import com.haruhi.bot.dto.gocq.response.HttpResponse;
 import com.haruhi.bot.dto.gocq.response.Message;
 import com.haruhi.bot.dto.gocq.request.ForwardMsg;
 import com.haruhi.bot.dto.searchImage.response.Results;
@@ -177,16 +178,15 @@ public class SearchImageHandler implements IMessageEvent {
 
             if(MessageEventEnum.group.getType().equals(message.getMessage_type())){
                 // 使用合并消息
-                Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG, message.getGroup_id(), forwardMsgs);
+                HttpResponse response = Client.sendRestMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG, message.getGroup_id(), forwardMsgs);
+                if(response.getRetcode() != 0){
+                    forwardMsgs.remove(0);
+                    Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG, message.getGroup_id(), forwardMsgs);
+                }
 
             }else if(MessageEventEnum.privat.getType().equals(message.getMessage_type())){
                 // 私聊
                 for (int i = 1; i < forwardMsgs.size(); i++) {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
                     Client.sendMessage(message.getUser_id(), message.getGroup_id(), MessageEventEnum.privat, forwardMsgs.get(i).getData().getContent(),GocqActionEnum.SEND_MSG,true);
                 }
             }
