@@ -55,8 +55,9 @@ public class GroupBroadcastMessagesHandler implements IPrivateMessageEvent {
                 return;
             }
             for (GroupInfo groupInfo : groupList) {
-                Client.sendMessage(message.getUser_id(),groupInfo.getGroup_id(), MessageEventEnum.group, MessageFormat.format("※来自bot管理员{0}的群广播消息：\n{1}",message.getUser_id(),msg), GocqActionEnum.SEND_MSG,false);
+                Client.sendMessage(message.getUser_id(),groupInfo.getGroup_id(), MessageEventEnum.group, MessageFormat.format("※来自bot管理员的群广播消息：\n{1}",message.getUser_id(),msg), GocqActionEnum.SEND_MSG,false);
             }
+            Client.sendMessage(message.getUser_id(),null, MessageEventEnum.privat, "发送完成", GocqActionEnum.SEND_MSG,false);
         }
     }
 }
