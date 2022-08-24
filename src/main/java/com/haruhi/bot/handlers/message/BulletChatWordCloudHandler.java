@@ -34,6 +34,11 @@ public class BulletChatWordCloudHandler implements IMessageEvent {
         return 89;
     }
 
+    @Override
+    public String funName() {
+        return "弹幕词云";
+    }
+
     @Autowired
     private IEnvConfig envConfig;
     private static String basePath;

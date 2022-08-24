@@ -27,6 +27,11 @@ public class FindChatMessageHandler implements IGroupMessageEvent {
         return 91;
     }
 
+    @Override
+    public String funName() {
+        return "群聊天记录搜索";
+    }
+
     @Autowired
     private GroupChatHistoryService groupChatHistoryService;
 

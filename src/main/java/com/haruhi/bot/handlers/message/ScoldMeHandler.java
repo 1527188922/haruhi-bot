@@ -26,6 +26,12 @@ public class ScoldMeHandler implements IMessageEvent {
     public int weight() {
         return 88;
     }
+
+    @Override
+    public String funName() {
+        return "骂我";
+    }
+
     @Autowired
     private IEnvConfig envConfig;
     private static List<File> fileList;

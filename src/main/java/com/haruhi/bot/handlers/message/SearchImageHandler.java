@@ -39,6 +39,11 @@ public class SearchImageHandler implements IMessageEvent {
         return 98;
     }
 
+    @Override
+    public String funName() {
+        return "识图";
+    }
+
     private static Long timeout = 30L* 1000L;
 
     private static Map<String,Long> timeoutMap = new ConcurrentHashMap<>(6);

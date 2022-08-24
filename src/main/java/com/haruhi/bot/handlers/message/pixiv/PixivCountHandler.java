@@ -23,6 +23,11 @@ public class PixivCountHandler implements IMessageEvent {
         return 101;
     }
 
+    @Override
+    public String funName() {
+        return "pix统计";
+    }
+
     @Autowired
     private PixivService pixivService;
 

@@ -26,6 +26,11 @@ public class WordStripShowHandler implements IGroupMessageEvent {
         return 93;
     }
 
+    @Override
+    public String funName() {
+        return "本群词条";
+    }
+
     @Autowired
     private WordStripService wordStripService;
     public boolean matching(final String command) {

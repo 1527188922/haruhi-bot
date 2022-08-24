@@ -26,6 +26,12 @@ public class WordStripAddHandler implements IGroupMessageEvent {
     public int weight() {
         return 96;
     }
+
+    @Override
+    public String funName() {
+        return "添加词条";
+    }
+
     private String keyWord;
     private String answer;
 

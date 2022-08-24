@@ -18,6 +18,11 @@ public class PixivHandler implements IMessageEvent {
         return 97;
     }
 
+    @Override
+    public String funName() {
+        return "pix根据tag";
+    }
+
     @Autowired
     private PixivService pixivService;
 

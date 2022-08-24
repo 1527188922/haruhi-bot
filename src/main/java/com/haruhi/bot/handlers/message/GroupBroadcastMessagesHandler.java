@@ -27,6 +27,11 @@ public class GroupBroadcastMessagesHandler implements IPrivateMessageEvent {
     }
 
     @Override
+    public String funName() {
+        return "群广播";
+    }
+
+    @Override
     public boolean onPrivate(final Message message,final String command) {
         if(!message.getUser_id().equals(BotConfig.SUPER_USER)){
             return false;

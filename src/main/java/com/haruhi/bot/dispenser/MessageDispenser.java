@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 普通消息分发器
@@ -24,11 +25,17 @@ import java.util.*;
 public class MessageDispenser {
 
     private static Map<String, IMessageEventType> messageEventTypeMap;
+    public static Map<String, IMessageEventType> getMessageEventTypeMap(){
+        return messageEventTypeMap;
+    }
     @Autowired
     public void setMessageEventTypeMap(Map<String, IMessageEventType> messageEventTypeMap){
         MessageDispenser.messageEventTypeMap = messageEventTypeMap;
     }
     private static List<IMessageEventType> container = new ArrayList<>();
+    public static List<IMessageEventType> getContainer(){
+        return container;
+    }
 
     /**
      * 虽没被引用
@@ -47,11 +54,20 @@ public class MessageDispenser {
 
     }
 
+    private void checkWeight(){
+        List<Integer> weights = container.stream().map(IMessageEventType::weight).collect(Collectors.toList());
+        Set<Integer> weightSet = new HashSet<>(weights);
+        if(weightSet.size() != weights.size()){
+            throw new RuntimeException("Duplicate weight appear");
+        }
+    }
+
     /**
      * 根据权重排序
      * @return
      */
     private int sortByWeight(){
+        checkWeight();
         int size = container.size();
         for (int i = 0; i < size - 1; i++) {
             boolean flag = false;

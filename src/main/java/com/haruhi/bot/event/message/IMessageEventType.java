@@ -12,4 +12,5 @@ public interface IMessageEventType {
      */
     int weight();
 
+    String funName();
 }

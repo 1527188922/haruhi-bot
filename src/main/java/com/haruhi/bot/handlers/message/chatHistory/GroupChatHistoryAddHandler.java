@@ -16,6 +16,12 @@ public class GroupChatHistoryAddHandler implements IGroupMessageEvent {
     public int weight() {
         return 997;
     }
+
+    @Override
+    public String funName() {
+        return "群聊记录入库";
+    }
+
     private final static GroupChatHistory param = new GroupChatHistory();
     @Autowired
     private GroupChatHistoryService groupChatHistoryService;

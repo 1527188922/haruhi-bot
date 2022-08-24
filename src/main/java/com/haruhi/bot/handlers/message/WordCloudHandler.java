@@ -25,6 +25,12 @@ public class WordCloudHandler implements IGroupMessageEvent {
     public int weight() {
         return 90;
     }
+
+    @Override
+    public String funName() {
+        return "群词云";
+    }
+
     public static volatile Map<String, Integer> lock = new ConcurrentHashMap<>(4);
 
     @Autowired

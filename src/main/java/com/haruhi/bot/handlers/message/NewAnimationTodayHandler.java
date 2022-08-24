@@ -33,6 +33,12 @@ public class NewAnimationTodayHandler implements IMessageEvent {
     public int weight() {
         return 85;
     }
+
+    @Override
+    public String funName() {
+        return "今日新番";
+    }
+
     @Override
     public boolean onMessage(final Message message,final String command) {
         if(!command.matches(RegexEnum.NEW_ANIMATION_TODAY.getValue())){

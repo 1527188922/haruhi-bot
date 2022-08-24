@@ -22,6 +22,12 @@ public class WordStripHandler implements IGroupMessageEvent {
     public int weight() {
         return 95;
     }
+
+    @Override
+    public String funName() {
+        return "词条监听";
+    }
+
     private String answer;
     public boolean matching(final Message message, final String command) {
         String answer = cache.get(message.getGroup_id() + "-" + command);

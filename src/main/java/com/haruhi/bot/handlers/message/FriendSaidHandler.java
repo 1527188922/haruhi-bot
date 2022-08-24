@@ -22,11 +22,17 @@ import java.util.List;
 public class FriendSaidHandler implements IGroupMessageEvent {
     @Override
     public int weight() {
-        return 99;
+        return 84;
     }
+
+    @Override
+    public String funName() {
+        return "朋友说";
+    }
+
     private String say;
 
-    public boolean matching(final Message message, final String command) {
+    public boolean matching(final String command) {
         String[] split = RegexEnum.FRIEND_SAID.getValue().split("\\|");
         for (String s : split) {
             if (command.startsWith(s)) {
@@ -44,7 +50,7 @@ public class FriendSaidHandler implements IGroupMessageEvent {
 
     @Override
     public boolean onGroup(final Message message,final String command) {
-        if(!matching(message,command)){
+        if(!matching(command)){
             return false;
         }
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(new FriendSaidHandler.SayTask(message,this.say));

@@ -29,6 +29,12 @@ public class PixivByPidHandler implements IMessageEvent {
     public int weight() {
         return 92;
     }
+
+    @Override
+    public String funName() {
+        return "p站图片根据pid";
+    }
+
     @Autowired
     private PixivService pixivService;
 

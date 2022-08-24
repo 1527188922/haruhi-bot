@@ -27,6 +27,12 @@ public class VerbalTricksHandler implements IMessageEvent {
     public int weight() {
         return 2;
     }
+
+    @Override
+    public String funName() {
+        return "话术";
+    }
+
     private static Map<String, List<VerbalTricks>> cache = new ConcurrentHashMap<>();
     public static void setCache(Map<String, List<VerbalTricks>> cache){
         VerbalTricksHandler.cache = cache;

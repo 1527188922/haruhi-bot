@@ -31,6 +31,11 @@ public class SeeFavorabilityHandler implements IGroupMessageEvent {
     }
 
     @Override
+    public String funName() {
+        return "我的好感度";
+    }
+
+    @Override
     public boolean onGroup(final Message message,final String command) {
         if(!matching(command)){
             return false;

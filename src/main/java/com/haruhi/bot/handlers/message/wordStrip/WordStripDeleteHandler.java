@@ -24,6 +24,12 @@ public class WordStripDeleteHandler implements IGroupMessageEvent {
     public int weight() {
         return 94;
     }
+
+    @Override
+    public String funName() {
+        return "删除词条";
+    }
+
     private String keyWord;
     @Autowired
     private WordStripService wordStripService;

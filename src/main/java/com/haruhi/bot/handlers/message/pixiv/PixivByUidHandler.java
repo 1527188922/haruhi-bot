@@ -32,6 +32,12 @@ public class PixivByUidHandler implements IMessageEvent {
     public int weight() {
         return 103;
     }
+
+    @Override
+    public String funName() {
+        return "p站图片根据uid";
+    }
+
     @Autowired
     private PixivService pixivService;
 

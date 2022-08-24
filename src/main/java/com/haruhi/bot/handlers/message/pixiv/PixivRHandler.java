@@ -22,6 +22,11 @@ public class PixivRHandler implements IMessageEvent {
     }
 
     @Override
+    public String funName() {
+        return "pixr根据tag";
+    }
+
+    @Override
     public boolean onMessage(final Message message,final String command) {
         String[] split = RegexEnum.PIXIV_R.getValue().split("\\|");
         boolean flag = false;

@@ -36,6 +36,12 @@ public class AiChatHandler implements IMessageEvent {
     public int weight() {
         return 1;
     }
+
+    @Override
+    public String funName() {
+        return "智障聊天";
+    }
+
     private String[] cqs;
 
     public boolean matching(final Message message, final String command) {

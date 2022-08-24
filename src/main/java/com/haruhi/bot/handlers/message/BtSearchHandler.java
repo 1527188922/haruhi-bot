@@ -33,6 +33,12 @@ public class BtSearchHandler implements IMessageEvent {
     public int weight() {
         return 87;
     }
+
+    @Override
+    public String funName() {
+        return "bt搜索";
+    }
+
     @Override
     public boolean onMessage(final Message message,final String command) {
         Pattern compile = Pattern.compile(RegexEnum.BT_SEARCH_HAS_PAGE.getValue());

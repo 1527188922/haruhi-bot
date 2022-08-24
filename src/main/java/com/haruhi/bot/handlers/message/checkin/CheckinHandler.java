@@ -31,6 +31,11 @@ public class CheckinHandler implements IGroupMessageEvent {
     }
 
     @Override
+    public String funName() {
+        return "签到";
+    }
+
+    @Override
     public boolean onGroup(final Message message,final  String command) {
         if (!matching(command)) {
             return false;
