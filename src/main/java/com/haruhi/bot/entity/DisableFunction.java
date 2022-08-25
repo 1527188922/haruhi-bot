@@ -15,6 +15,7 @@ public class DisableFunction {
     @TableId(value = "id",type = IdType.AUTO)
     private Integer id;
     private String className;
+    private String name;
     private int weight;
     private Date disableTime;
 }

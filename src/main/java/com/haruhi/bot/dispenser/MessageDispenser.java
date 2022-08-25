@@ -33,9 +33,7 @@ public class MessageDispenser {
         MessageDispenser.messageEventTypeMap = messageEventTypeMap;
     }
     private static List<IMessageEventType> container = new ArrayList<>();
-    public static List<IMessageEventType> getContainer(){
-        return container;
-    }
+
 
     /**
      * 虽没被引用
@@ -73,7 +71,7 @@ public class MessageDispenser {
         return container.size();
     }
 
-    public static void attach(IMessageEventType event){
+    public static <T extends IMessageEventType> void attach(T event){
         container.add(event);
     }
 
@@ -81,15 +79,16 @@ public class MessageDispenser {
      * 用于从容器中删除消息处理类
      * 可以实现禁用某命令/功能
      * 这里不能持久化
+     * 该方法参数不能直接为IMessageEventType的实现类对象!
+     * 必须确保是从IOC容器中拿到对象
      * @param clazz
      * @param <T>
      */
-    public static <T> void detach(Class<T> clazz){
+    public static <T extends IMessageEventType> void detach(Class<T> clazz){
         T bean = ApplicationContextProvider.getBean(clazz);
-        if(bean instanceof IMessageEventType){
-            container.remove(bean);
-        }
+        container.remove(bean);
     }
+
 
     public static void onEvent(final Message message,final String command){
         String messageType = message.getMessage_type();
@@ -117,5 +116,50 @@ public class MessageDispenser {
                 }
             }
         }
+    }
+
+    /**
+     * 查找处理类
+     * @param fun 可以是name也可以是id(weight)
+     * @return
+     */
+    public static IMessageEventType findHandler(String fun){
+        Integer funId;
+        IMessageEventType messageEventType;
+        try {
+            funId = Integer.valueOf(fun);
+            messageEventType = findHandlerByWeight(funId.intValue());
+        }catch (Exception e){
+            messageEventType = findHandlerByName(fun);
+        }
+        return messageEventType;
+    }
+    private static IMessageEventType findHandlerByName(String funName){
+        for (Map.Entry<String, IMessageEventType> eventTypeEntry : messageEventTypeMap.entrySet()) {
+            if(eventTypeEntry.getValue().funName().equals(funName)){
+                return eventTypeEntry.getValue();
+            }
+        }
+        return null;
+    }
+    private static IMessageEventType findHandlerByWeight(int weight){
+        for (Map.Entry<String, IMessageEventType> eventTypeEntry : messageEventTypeMap.entrySet()) {
+            if(eventTypeEntry.getValue().weight() == weight){
+                return eventTypeEntry.getValue();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 判断当前功能是否存在
+     * (功能是否禁用)
+     * @param tClass
+     * @param <T>
+     * @return
+     */
+    public static <T extends IMessageEventType> boolean exist(Class<T> tClass){
+        T bean = ApplicationContextProvider.getBean(tClass);
+        return container.contains(bean);
     }
 }

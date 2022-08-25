@@ -52,12 +52,12 @@ public class ShowFunctionHandler implements IMessageEvent {
             for (IMessageEventType eventType : values) {
                 stringBuilder.append("id：").append(eventType.weight()).append("\n");
                 stringBuilder.append("名称：").append(eventType.funName()).append("\n");
-                if (isDisable(eventType)) {
+                if (!MessageDispenser.exist(eventType.getClass())) {
                     stringBuilder.append("禁用中\n");
                 }
                 stringBuilder.append("\n");
             }
-            stringBuilder.append("*可通过命令`禁用id`或`禁用名称`来禁用功能");
+            stringBuilder.append("可通过命令`禁用功能id`或`禁用功能名称`来禁用功能");
             send(stringBuilder.toString(),message);
         }
     }
@@ -70,7 +70,5 @@ public class ShowFunctionHandler implements IMessageEvent {
             Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,message.getGroup_id(),param);
         }
     }
-    private static boolean isDisable(IMessageEventType eventType){
-        return !MessageDispenser.getContainer().contains(eventType);
-    }
+
 }

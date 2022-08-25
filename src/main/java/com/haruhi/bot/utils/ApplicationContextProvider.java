@@ -13,19 +13,18 @@ public class ApplicationContextProvider implements ApplicationContextAware {
         applicationContextSpring = applicationContext;
     }
     public static <T> T getBean(Class<T> clazz) {
-
         return applicationContextSpring.getBean(clazz);
     }
 
-    public static Object getBean(String className) {
-        try {
-            Class<?> aClass = Class.forName(className);
-            return applicationContextSpring.getBean(aClass);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+    /**
+     * 根据类全名查找bean
+     * @param className
+     * @param <T>
+     * @return
+     */
+    public static <T> T getBean(String className) throws ClassNotFoundException {
+        Class<T> aClass = (Class<T>) Class.forName(className);
+        return applicationContextSpring.getBean(aClass);
     }
-
 
 }

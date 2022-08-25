@@ -1,5 +1,6 @@
 package com.haruhi.bot.thread;
 
+import com.haruhi.bot.service.function.DisableFunctionService;
 import com.haruhi.bot.service.pokeReply.PokeReplyService;
 import com.haruhi.bot.service.verbalTricks.VerbalTricksService;
 import com.haruhi.bot.service.wordStrip.WordStripService;
@@ -23,6 +24,8 @@ public class FirstTask implements Runnable{
     private VerbalTricksService verbalTricksService;
     @Autowired
     private PokeReplyService pokeReplyService;
+    @Autowired
+    private DisableFunctionService disableFunctionService;
 
     @Override
     public void run() {
@@ -32,6 +35,8 @@ public class FirstTask implements Runnable{
         verbalTricksService.loadVerbalTricks();
         // 加载戳一戳回复
         pokeReplyService.loadPokeReply();
+        // 加载被禁用的功能
+        disableFunctionService.loadBanFunction();
     }
 
     public void execute(FirstTask self){
