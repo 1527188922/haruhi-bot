@@ -127,6 +127,7 @@
                             <Class-Path>./</Class-Path>
                         </manifestEntries>
                     </archive>
+                    <!-- 排除jar包中的一些目录或文件,jar中只需要纯粹的自己编写的代码 -->
                     <excludes>
                         <exclude>config-meta/**</exclude>
                         <exclude>lib/**</exclude>

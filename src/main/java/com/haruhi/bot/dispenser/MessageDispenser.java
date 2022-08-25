@@ -64,26 +64,13 @@ public class MessageDispenser {
 
     /**
      * 根据权重排序
+     * 降序
      * @return
      */
     private int sortByWeight(){
         checkWeight();
-        int size = container.size();
-        for (int i = 0; i < size - 1; i++) {
-            boolean flag = false;
-            for (int j = 0; j < size - i - 1; j++) {
-                if(container.get(j).weight() < container.get(j + 1).weight()){
-                    IMessageEventType iMessageEventType = container.get(j);
-                    container.set(j,container.get(j + 1));
-                    container.set(j + 1,iMessageEventType);
-                    flag = true;
-                }
-            }
-            if(!flag){
-                break;
-            }
-        }
-        return size;
+        container = container.stream().sorted(Comparator.comparing(IMessageEventType::weight).reversed()).collect(Collectors.toList());
+        return container.size();
     }
 
     public static void attach(IMessageEventType event){
