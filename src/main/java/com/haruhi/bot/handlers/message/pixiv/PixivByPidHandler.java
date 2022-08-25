@@ -85,7 +85,7 @@ public class PixivByPidHandler implements IMessageEvent {
                 String temp = "{0}{1}-{2}.jpg";
                 String noImageTip = "本地库没有pid[{0}]的图片\n试试点击下面这些链接吧\n※如果pid只有1p,只需要点第一个链接,后缀带有数字的链接,多p情况下有效";
                 if(MessageEventEnum.group.getType().equals(message.getMessage_type())){
-                    ArrayList<ForwardMsg> params = new ArrayList<>();
+                    ArrayList<ForwardMsg> params = new ArrayList<>(21);
                     params.add(CommonUtil.createForwardMsgItem(MessageFormat.format(noImageTip,pid),message.getSelf_id(),BotConfig.NAME));
                     params.add(CommonUtil.createForwardMsgItem(MessageFormat.format("{0}{1}.jpg",u,pid),message.getSelf_id(),BotConfig.NAME));
                     for (int i = 2; i <= 20; i++) {

@@ -14,14 +14,15 @@
             PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='签到表';
     </update>
-    <update id="createDisableHandler">
+    <update id="createDisableFunction">
         CREATE TABLE `${tableName}` (
            `id` INT auto_increment NOT NULL,
            `class_name` varchar(100) NOT NULL,
-           `regex` varchar(100) NULL,
-           `disable_time` datetime DEFAULT CURRENT_TIMESTAMP,
+           `name` varchar(30) NOT NULL,
+           `weight` INT NOT NULL,
+           `disable_time` datetime(3),
            PRIMARY KEY (`id`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='禁用的消息处理类表(就是禁用的命令/功能)';
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='禁用的功能表';
     </update>
     <update id="createPixiv">
         CREATE TABLE `${tableName}` (

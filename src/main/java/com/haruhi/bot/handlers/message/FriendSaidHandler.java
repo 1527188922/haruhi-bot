@@ -88,7 +88,7 @@ public class FriendSaidHandler implements IGroupMessageEvent {
          * @param friend
          */
         private void send(GroupMember friend){
-            List<ForwardMsg> params = new ArrayList<>();
+            List<ForwardMsg> params = new ArrayList<>(1);
             params.add(CommonUtil.createForwardMsgItem(this.say,friend.getUser_id(),"朋友"));
             Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,friend.getGroup_id(),params);
         }

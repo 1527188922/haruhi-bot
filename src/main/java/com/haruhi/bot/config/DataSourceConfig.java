@@ -38,7 +38,7 @@ public class DataSourceConfig {
     // 签到表
     public final static String BOT_T_CHECKIN = "t_checkin";
     // 禁用功能表
-    public final static String BOT_T_DISABLE_HANDLER = "t_disable_handler";
+    public final static String BOT_T_DISABLE_FUNCTION = "t_disable_function";
     // pixiv 图库表
     public final static String BOT_T_PIXIV = "t_pixiv";
     // 词条

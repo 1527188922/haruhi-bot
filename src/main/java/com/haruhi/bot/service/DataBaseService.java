@@ -41,8 +41,8 @@ public class DataBaseService {
             if(dataBaseInitMapper.isTableExist(DataSourceConfig.DATA_BASE_BOT,DataSourceConfig.BOT_T_CHECKIN) == 0){
                 tableInitMapper.createCheckin(DataSourceConfig.BOT_T_CHECKIN);
             }
-            if(dataBaseInitMapper.isTableExist(DataSourceConfig.DATA_BASE_BOT,DataSourceConfig.BOT_T_DISABLE_HANDLER) == 0){
-                tableInitMapper.createDisableHandler(DataSourceConfig.BOT_T_DISABLE_HANDLER);
+            if(dataBaseInitMapper.isTableExist(DataSourceConfig.DATA_BASE_BOT,DataSourceConfig.BOT_T_DISABLE_FUNCTION) == 0){
+                tableInitMapper.createDisableFunction(DataSourceConfig.BOT_T_DISABLE_FUNCTION);
             }
             if(dataBaseInitMapper.isTableExist(DataSourceConfig.DATA_BASE_BOT,DataSourceConfig.BOT_T_PIXIV) == 0){
                 tableInitMapper.createPixiv(DataSourceConfig.BOT_T_PIXIV);

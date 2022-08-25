@@ -19,7 +19,7 @@ public interface TableInitMapper {
      * 创建禁用功能表
      * @return
      */
-    int createDisableHandler(@Param("tableName") String tableName);
+    int createDisableFunction(@Param("tableName") String tableName);
 
     /**
      * pixiv图库表
