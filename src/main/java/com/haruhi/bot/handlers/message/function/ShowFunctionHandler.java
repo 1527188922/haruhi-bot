@@ -50,12 +50,13 @@ public class ShowFunctionHandler implements IMessageEvent {
             Collection<IMessageEventType> values = MessageDispenser.getMessageEventTypeMap().values().stream().sorted(Comparator.comparing(IMessageEventType::weight)).collect(Collectors.toList());
             StringBuilder stringBuilder = new StringBuilder("所有功能：\n");
             for (IMessageEventType eventType : values) {
-                stringBuilder.append("id：").append(eventType.weight()).append("\n");
-                stringBuilder.append("名称：").append(eventType.funName()).append("\n");
+                stringBuilder.append("id：").append(eventType.weight());
                 if (!MessageDispenser.exist(eventType.getClass())) {
-                    stringBuilder.append("禁用中\n");
+                    stringBuilder.append("(禁用中)");
                 }
                 stringBuilder.append("\n");
+                stringBuilder.append("名称：").append(eventType.funName()).append("\n");
+
             }
             stringBuilder.append("可通过命令`禁用功能id`或`禁用功能名称`来禁用功能");
             send(stringBuilder.toString(),message);

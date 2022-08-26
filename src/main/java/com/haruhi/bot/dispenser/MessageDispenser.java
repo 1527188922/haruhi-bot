@@ -71,16 +71,25 @@ public class MessageDispenser {
         return container.size();
     }
 
-    public static <T extends IMessageEventType> void attach(T event){
+    private static <T extends IMessageEventType> void attach(T event){
         container.add(event);
+    }
+
+    /**
+     * 对外提供的添加处理类的方法
+     * 添加对象必须是IOC容器中存在的对象
+     * @param clazz 类模板对象 同一个类的模板对象必为唯一
+     * @param <T>
+     */
+    public static <T extends IMessageEventType> void attach(Class<T> clazz){
+        T bean = ApplicationContextProvider.getBean(clazz);
+        container.add(bean);
     }
 
     /**
      * 用于从容器中删除消息处理类
      * 可以实现禁用某命令/功能
-     * 这里不能持久化
-     * 该方法参数不能直接为IMessageEventType的实现类对象!
-     * 必须确保是从IOC容器中拿到对象
+     * 删除对象必须是IOC容器中存在的对象
      * @param clazz
      * @param <T>
      */

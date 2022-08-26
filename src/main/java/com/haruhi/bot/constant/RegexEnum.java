@@ -25,7 +25,8 @@ public enum RegexEnum {
     GROUP_BROADCAST_MESSAGES("群广播：|群广播:"),
     NEW_ANIMATION_TODAY("今日新番"),
     SHOW_ALL_FUNCTION("所有功能|显示所有功能"),
-    DISABLE_FUNCTION("禁用功能");
+    DISABLE_FUNCTION("禁用功能|关闭功能"),
+    ENABLE_FUNCTION("开启功能|启用功能");
 
 
     private String value;

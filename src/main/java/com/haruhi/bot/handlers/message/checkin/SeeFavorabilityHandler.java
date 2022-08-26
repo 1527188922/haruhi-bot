@@ -32,7 +32,7 @@ public class SeeFavorabilityHandler implements IGroupMessageEvent {
 
     @Override
     public String funName() {
-        return "我的好感度";
+        return "查看好感";
     }
 
     @Override
