@@ -149,8 +149,6 @@ public class SearchImageHandler implements IMessageEvent {
                         sendResult(resultList);
                     }
                 }
-            }catch (NullPointerException e){
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), "搜图异常：null",GocqActionEnum.SEND_MSG,true);
             }catch (Exception e){
                 Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), "搜图异常："+e.getMessage(),GocqActionEnum.SEND_MSG,true);
                 log.error("搜图异常",e);
@@ -205,12 +203,36 @@ public class SearchImageHandler implements IMessageEvent {
             if(results.getData().getTitle() != null){
                 strBui.append(MessageFormat.format("标题：{0}\n",results.getData().getTitle()));
             }
+            if(results.getData().getSource() != null){
+                strBui.append(MessageFormat.format("来源：{0}\n",results.getData().getSource()));
+            }
+            if(results.getHeader().getIndex_name() != null){
+                strBui.append(MessageFormat.format("数据来源：{0}\n",results.getHeader().getIndex_name()));
+            }
+            if(results.getData().getJp_name() != null){
+                strBui.append(MessageFormat.format("日语名：{0}\n",results.getData().getJp_name()));
+            }
+            if(results.getData().getMaterial() != null){
+                strBui.append(MessageFormat.format("出处：{0}\n",results.getData().getMaterial()));
+            }
             String pixivId = results.getData().getPixiv_id();
             if(pixivId != null){
                 strBui.append(MessageFormat.format("pid：{0}\n",pixivId));
             }
             if(results.getData().getMember_name() != null){
                 strBui.append(MessageFormat.format("作者：{0}\n",results.getData().getMember_name()));
+            }
+            String creator = results.getData().getCreator();
+            if(creator != null){
+                List list;
+                try{
+                    list = JSONObject.parseObject(creator, List.class);
+                    if(list.size() > 0){
+                        strBui.append(MessageFormat.format("作者：{0}\n",list.get(0)));
+                    }
+                }catch (Exception e){
+                    strBui.append(MessageFormat.format("作者：{0}\n",creator));
+                }
             }
             if(results.getData().getTwitter_user_id() != null){
                 strBui.append(MessageFormat.format("twitter作者id：{0}\n",results.getData().getTwitter_user_id()));
@@ -222,7 +244,7 @@ public class SearchImageHandler implements IMessageEvent {
                 }
             }
             if(results.getHeader().getThumbnail() != null){
-                strBui.append(MessageFormat.format("略缩图：{0}\n",results.getHeader().getThumbnail()));
+                strBui.append(MessageFormat.format("缩略图：{0}\n",results.getHeader().getThumbnail()));
             }
             if(pixivId != null){
                 strBui.append(MessageFormat.format("原图链接：{0}{1}.jpg", PixivByPidHandler.u,pixivId));

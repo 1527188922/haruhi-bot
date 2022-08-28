@@ -13,6 +13,12 @@ public class Data implements Serializable {
     private String twitter_user_id;
     private String twitter_user_handle;
     private Date created_at;
-
+    // 出处
+    private String material;
+    // 漫画结果字段
+    private String source;
+    private String creator;
+    private String eng_name;
+    private String jp_name;
 
 }
