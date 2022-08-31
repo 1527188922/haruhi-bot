@@ -59,7 +59,9 @@ public class ShowFunctionHandler implements IMessageEvent {
 
             }
             stringBuilder.append("可通过命令`禁用功能id`或`禁用功能名称`来禁用功能\n");
-            stringBuilder.append("可通过命令`开启功能id`或`开启功能名称`来开启功能");
+            stringBuilder.append("可通过命令`开启功能id`或`开启功能名称`来开启功能\n");
+            stringBuilder.append("bot功能文档https://blog.csdn.net/cxy152718/article/details/126539271");
+
             send(stringBuilder.toString(),message);
         }
     }
