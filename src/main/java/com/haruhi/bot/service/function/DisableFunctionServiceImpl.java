@@ -54,12 +54,12 @@ public class DisableFunctionServiceImpl extends ServiceImpl<DisableFunctionMappe
             for (Map.Entry<String, List<DisableFunction>> listEntry : map.entrySet()) {
                 List<DisableFunction> value = listEntry.getValue();
                 if(!CollectionUtils.isEmpty(value)){
-                    List<String> classPaths = new ArrayList<>(value.size());
+                    List<String> classNames = new ArrayList<>(value.size());
                     // 遍历map的value,将DisableFunction对象的className都取出来,添加进新的list中去
                     for (DisableFunction item : value) {
-                        classPaths.add(item.getClassName());
+                        classNames.add(item.getClassName());
                     }
-                    res.put(listEntry.getKey(),classPaths);
+                    res.put(listEntry.getKey(),classNames);
                 }
             }
             MessageDispenser.setGroupBanFunction(res);

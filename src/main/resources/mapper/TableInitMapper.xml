@@ -20,8 +20,8 @@
            `class_name` varchar(100) NOT NULL,
            `name` varchar(30) NOT NULL,
            `weight` INT NOT NULL,
-           `global` TINYINT(1) NOT NULL COMMENT '是否为全局禁用',
-           `group_id` varchar(20) COMMENT '群号,若不是全局禁用,则必定为群功能禁用',
+           `global` TINYINT(1) NOT NULL COMMENT '是否为全局禁用,0非(群禁用)1是(全局禁用)',
+           `group_id` varchar(20) COMMENT '群号',
            `disable_time` datetime(3),
            PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='禁用的功能表';

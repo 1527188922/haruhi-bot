@@ -10,7 +10,7 @@ public class ThreadPoolFactory {
     private final static Executor commandHandlerThreadPool = new ThreadPoolExecutor(4,4,1, TimeUnit.HOURS,new ArrayBlockingQueue(10),new CustomizableThreadFactory("pool-command-handler-"),new ThreadPoolExecutor.CallerRunsPolicy());
 //    private static ScheduledThreadPoolExecutor scheduledThreadPool = null;
     private static Executor downloadThreadPool = null;
-    private final static Executor chatHistoryThreadPool = new ThreadPoolExecutor(1,1,30, TimeUnit.MINUTES,new ArrayBlockingQueue(15),new CustomizableThreadFactory("pool-chat-history-"),new ThreadPoolExecutor.CallerRunsPolicy());
+    private final static Executor chatHistoryThreadPool = new ThreadPoolExecutor(1,1,6, TimeUnit.HOURS,new ArrayBlockingQueue(15),new CustomizableThreadFactory("pool-chat-history-"),new ThreadPoolExecutor.CallerRunsPolicy());
 
     public static Executor getCommandHandlerThreadPool(){
         return commandHandlerThreadPool;

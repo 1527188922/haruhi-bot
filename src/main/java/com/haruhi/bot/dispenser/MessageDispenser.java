@@ -45,7 +45,7 @@ public class MessageDispenser {
     public static <T extends IMessageEventType> void setGroupBanFunction(String groupId,Class<T> tClass){
         setGroupBanFunction(groupId,tClass.getName());
     }
-    public static void setGroupBanFunction(String groupId,String className){
+    private static void setGroupBanFunction(String groupId,String className){
         if(groupBanFunction.containsKey(groupId)){
             List<String> classNames = groupBanFunction.get(groupId);
             classNames.add(className);
@@ -57,6 +57,17 @@ public class MessageDispenser {
     }
     public static void setGroupBanFunction(Map<String,List<String>> var){
         groupBanFunction = var;
+    }
+    public static <T extends IMessageEventType> void groupUnbanFunction(String groupId,Class<T> tClass){
+        groupUnbanFunction(groupId,tClass.getName());
+    }
+    private static void groupUnbanFunction(String groupId,String className){
+        if(groupBanFunction.containsKey(groupId)){
+            List<String> classNames = groupBanFunction.get(groupId);
+            if(!CollectionUtils.isEmpty(classNames)){
+                classNames.remove(className);
+            }
+        }
     }
     /**
      * 虽没被引用
@@ -164,20 +175,17 @@ public class MessageDispenser {
      * @param groupId
      * @return
      */
-    public static boolean isBanFunctionByGroup(IMessageEventType event,String groupId){
-        if(groupBanFunction.size() == 0){
-            return false;
-        }
-        if (!groupBanFunction.containsKey(groupId)) {
-            return false;
-        }
-        List<String> classPaths = groupBanFunction.get(groupId);
-        if(CollectionUtils.isEmpty(classPaths)){
-            return false;
-        }
-        String name = event.getClass().getName();
-        return classPaths.contains(name);
+    private static boolean isBanFunctionByGroup(IMessageEventType event,String groupId){
+        return isBanFunctionByGroup(event.getClass(),groupId);
     }
+
+    /**
+     * 公开方法
+     * @param tClass 对外提供的isBanFunctionByGroup方法,不能直接传IMessageEventType对象 必须为Class对象
+     * @param groupId
+     * @param <T>
+     * @return
+     */
     public static <T extends IMessageEventType> boolean isBanFunctionByGroup(Class<T> tClass,String groupId){
         if(groupBanFunction.size() == 0){
             return false;
@@ -226,7 +234,7 @@ public class MessageDispenser {
 
     /**
      * 判断当前功能是否存在
-     * (功能是否禁用)
+     * 不存在表示全局禁用中
      * @param tClass
      * @param <T>
      * @return
