@@ -52,7 +52,12 @@ public class ShowFunctionHandler implements IMessageEvent {
             for (IMessageEventType eventType : values) {
                 stringBuilder.append("id：").append(eventType.weight());
                 if (!MessageDispenser.exist(eventType.getClass())) {
-                    stringBuilder.append("(禁用中)");
+                    stringBuilder.append("(全局禁用中)");
+                }
+                if( MessageEventEnum.group.getType().equals(message.getMessage_type())){
+                    if(MessageDispenser.isBanFunctionByGroup(eventType.getClass(),message.getGroup_id())){
+                        stringBuilder.append("(该群禁用中)");
+                    }
                 }
                 stringBuilder.append("\n");
                 stringBuilder.append("名称：").append(eventType.funName()).append("\n");
@@ -60,6 +65,8 @@ public class ShowFunctionHandler implements IMessageEvent {
             }
             stringBuilder.append("可通过命令`禁用功能id`或`禁用功能名称`来禁用功能\n");
             stringBuilder.append("可通过命令`开启功能id`或`开启功能名称`来开启功能\n");
+            stringBuilder.append("可通过命令`群禁用功能id`或`群禁用功能名称`来针对某个群禁用功能\n");
+            stringBuilder.append("可通过命令`群开启功能id`或`群开启功能名称`来针对某个群开启功能\n");
             stringBuilder.append("bot功能文档https://blog.csdn.net/cxy152718/article/details/126539271");
 
             send(stringBuilder.toString(),message);

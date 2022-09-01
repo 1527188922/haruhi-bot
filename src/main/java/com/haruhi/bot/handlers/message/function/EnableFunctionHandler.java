@@ -75,8 +75,9 @@ public class EnableFunctionHandler implements IMessageEvent {
                     return;
                 }
                 MessageDispenser.attach(aClass);
+                MessageDispenser.sortByWeight();
                 LambdaQueryWrapper<DisableFunction> queryWrapper = new LambdaQueryWrapper<>();
-                queryWrapper.eq(DisableFunction::getClassName,aClass.getName()).eq(DisableFunction::getWeight,messageEventType.weight());
+                queryWrapper.eq(DisableFunction::getClassName,aClass.getName()).eq(DisableFunction::getWeight,messageEventType.weight()).eq(DisableFunction::getGlobal,true);
                 mapper.delete(queryWrapper);
                 Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),MessageFormat.format("启用[{0}]成功",fun), GocqActionEnum.SEND_MSG,true);
             }catch (Exception e){

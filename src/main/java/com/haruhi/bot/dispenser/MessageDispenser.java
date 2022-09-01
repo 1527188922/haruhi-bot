@@ -10,6 +10,7 @@ import com.haruhi.bot.utils.ApplicationContextProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
@@ -34,7 +35,29 @@ public class MessageDispenser {
     }
     private static List<IMessageEventType> container = new ArrayList<>();
 
-
+    /**
+     * 群禁用的功能
+     * key:群号
+     * value:禁用的消息处理类的类名集合
+     * element:类名(全路径)
+     */
+    private static Map<String,List<String>> groupBanFunction = new HashMap<>(0);
+    public static <T extends IMessageEventType> void setGroupBanFunction(String groupId,Class<T> tClass){
+        setGroupBanFunction(groupId,tClass.getName());
+    }
+    public static void setGroupBanFunction(String groupId,String className){
+        if(groupBanFunction.containsKey(groupId)){
+            List<String> classNames = groupBanFunction.get(groupId);
+            classNames.add(className);
+        }else{
+            List<String> classNames = new ArrayList<>();
+            classNames.add(className);
+            groupBanFunction.put(groupId,classNames);
+        }
+    }
+    public static void setGroupBanFunction(Map<String,List<String>> var){
+        groupBanFunction = var;
+    }
     /**
      * 虽没被引用
      * 但不可删除
@@ -47,6 +70,7 @@ public class MessageDispenser {
         for (IMessageEventType value : messageEventTypeMap.values()) {
             MessageDispenser.attach(value);
         }
+        checkWeight();
         int size = sortByWeight();
         log.info("加载了{}个消息处理类",size);
 
@@ -65,8 +89,7 @@ public class MessageDispenser {
      * 降序
      * @return
      */
-    private int sortByWeight(){
-        checkWeight();
+    public static int sortByWeight(){
         container = container.stream().sorted(Comparator.comparing(IMessageEventType::weight).reversed()).collect(Collectors.toList());
         return container.size();
     }
@@ -105,6 +128,11 @@ public class MessageDispenser {
         for (IMessageEventType element : container) {
             if(element instanceof IMessageEvent){
                 IMessageEvent event = (IMessageEvent) element;
+                if(MessageEventEnum.group.getType().equals(messageType)){
+                    if(isBanFunctionByGroup(event,message.getGroup_id())){
+                        continue;
+                    }
+                }
                 if(event.onMessage(message,command)){
                     break;
                 }
@@ -112,6 +140,9 @@ public class MessageDispenser {
             if(MessageEventEnum.group.getType().equals(messageType)){
                 if(element instanceof IGroupMessageEvent){
                     IGroupMessageEvent event = (IGroupMessageEvent) element;
+                    if(isBanFunctionByGroup(event,message.getGroup_id())){
+                        continue;
+                    }
                     if(event.onGroup(message,command)){
                         break;
                     }
@@ -127,6 +158,39 @@ public class MessageDispenser {
         }
     }
 
+    /**
+     * 群功能是否被禁用
+     * @param event
+     * @param groupId
+     * @return
+     */
+    public static boolean isBanFunctionByGroup(IMessageEventType event,String groupId){
+        if(groupBanFunction.size() == 0){
+            return false;
+        }
+        if (!groupBanFunction.containsKey(groupId)) {
+            return false;
+        }
+        List<String> classPaths = groupBanFunction.get(groupId);
+        if(CollectionUtils.isEmpty(classPaths)){
+            return false;
+        }
+        String name = event.getClass().getName();
+        return classPaths.contains(name);
+    }
+    public static <T extends IMessageEventType> boolean isBanFunctionByGroup(Class<T> tClass,String groupId){
+        if(groupBanFunction.size() == 0){
+            return false;
+        }
+        if (!groupBanFunction.containsKey(groupId)) {
+            return false;
+        }
+        List<String> classPaths = groupBanFunction.get(groupId);
+        if(CollectionUtils.isEmpty(classPaths)){
+            return false;
+        }
+        return classPaths.contains(tClass.getName());
+    }
     /**
      * 查找处理类
      * @param fun 可以是name也可以是id(weight)

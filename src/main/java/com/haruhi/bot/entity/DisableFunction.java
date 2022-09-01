@@ -17,5 +17,7 @@ public class DisableFunction {
     private String className;
     private String name;
     private int weight;
+    private Boolean global;
+    private String groupId;
     private Date disableTime;
 }

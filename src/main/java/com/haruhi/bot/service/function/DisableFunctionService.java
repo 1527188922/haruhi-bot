@@ -5,5 +5,13 @@ import com.haruhi.bot.entity.DisableFunction;
 
 public interface DisableFunctionService extends IService<DisableFunction> {
 
-    void loadBanFunction();
+    /**
+     * 从数据库加载全局禁用的功能
+     */
+    void loadGlobalBanFunction();
+
+    /**
+     * 从数据库加载群禁用的功能
+     */
+    void loadGroupBanFunction();
 }
