@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 处理戳一戳
@@ -21,7 +22,7 @@ import java.util.*;
 @Component
 public class PokeHandler implements IPokeEvent {
 
-    public volatile static List<String> cache = new ArrayList<>();
+    public volatile static List<String> cache = new CopyOnWriteArrayList<>();
 
     @Override
     public boolean onPoke(final Message message) {

@@ -29,8 +29,7 @@ public class SystemCommandLineRunner implements CommandLineRunner {
         // 开启job
         jobManage.startAllJob();
         log.info("开始连接go-cqhttp...");
-        Client instance = Client.getInstance();
-        if(instance == null){
+        if(!Client.connect()){
             Client.reConnection();
         }else{
             log.info("连接go-cqhttp成功");

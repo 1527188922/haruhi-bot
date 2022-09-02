@@ -13,9 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -50,7 +50,7 @@ public class DisableFunctionServiceImpl extends ServiceImpl<DisableFunctionMappe
         if(!CollectionUtils.isEmpty(banFuns)){
             // 根据群号分组转map
             Map<String, List<DisableFunction>> map = banFuns.stream().collect(Collectors.groupingBy(DisableFunction::getGroupId, Collectors.toList()));
-            Map<String, List<String>> res = new HashMap<>(map.size());
+            Map<String, List<String>> res = new ConcurrentHashMap<>(map.size());
             for (Map.Entry<String, List<DisableFunction>> listEntry : map.entrySet()) {
                 List<DisableFunction> value = listEntry.getValue();
                 if(!CollectionUtils.isEmpty(value)){

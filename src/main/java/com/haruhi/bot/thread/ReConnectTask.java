@@ -13,7 +13,7 @@ public class ReConnectTask implements Runnable {
     @Override
     public void run() {
         while (true){
-            if(Client.getInstance() != null){
+            if(Client.connect()){
                 log.info("连接成功:{}", WebSocketConfig.GOCQ_WS);
                 break;
             }else{

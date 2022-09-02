@@ -45,8 +45,6 @@ public class NoticeDispenser {
 
     public static void onEvent(final Message message){
         String subType = message.getSub_type();
-
-
         if(NoticeEventEnum.poke.toString().equals(subType)){
             setMessageType(message);
             for (IPokeEvent value : pokeEventMap.values()) {

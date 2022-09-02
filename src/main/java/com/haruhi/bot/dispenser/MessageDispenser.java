@@ -14,6 +14,8 @@ import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 /**
@@ -33,7 +35,7 @@ public class MessageDispenser {
     public void setMessageEventTypeMap(Map<String, IMessageEventType> messageEventTypeMap){
         MessageDispenser.messageEventTypeMap = messageEventTypeMap;
     }
-    private static List<IMessageEventType> container = new ArrayList<>();
+    private static List<IMessageEventType> container = new CopyOnWriteArrayList<>();
 
     /**
      * 群禁用的功能
@@ -41,7 +43,7 @@ public class MessageDispenser {
      * value:禁用的消息处理类的类名集合
      * element:类名(全路径)
      */
-    private static Map<String,List<String>> groupBanFunction = new HashMap<>(0);
+    private static Map<String,List<String>> groupBanFunction = new ConcurrentHashMap<>(0);
     public static <T extends IMessageEventType> void setGroupBanFunction(String groupId,Class<T> tClass){
         setGroupBanFunction(groupId,tClass.getName());
     }

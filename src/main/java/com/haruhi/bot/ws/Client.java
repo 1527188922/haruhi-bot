@@ -6,13 +6,14 @@ import com.haruhi.bot.config.WebSocketConfig;
 import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.event.MessageEventEnum;
 import com.haruhi.bot.constant.PostTypeEnum;
-import com.haruhi.bot.dispenser.NoticeDispenser;
+import com.haruhi.bot.constant.event.MetaEventEnum;
 import com.haruhi.bot.dto.gocq.response.HttpResponse;
 import com.haruhi.bot.dto.gocq.response.Message;
 import com.haruhi.bot.dto.gocq.request.Answer;
 import com.haruhi.bot.dto.gocq.request.AnswerBox;
 import com.haruhi.bot.dto.gocq.request.ForwardMsg;
-import com.haruhi.bot.dispenser.MessageDispenser;
+import com.haruhi.bot.factory.ThreadPoolFactory;
+import com.haruhi.bot.thread.OnEventTask;
 import com.haruhi.bot.thread.ReConnectTask;
 import com.haruhi.bot.utils.RestUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -35,49 +36,38 @@ public class Client {
     private Client(String url) throws DeploymentException, IOException {
         session = ContainerProvider.getWebSocketContainer().connectToServer(this, URI.create(url));
     }
-    private static Client instance = null;
-    public synchronized static Client getInstance() {
+    private static Client INSTANCE;
+    public synchronized static boolean connect(){
         try {
-            if(instance == null){
-                instance = new Client(WebSocketConfig.GOCQ_WS);
+            if(INSTANCE == null){
+                INSTANCE = new Client(WebSocketConfig.GOCQ_WS);
             }
-            return instance;
+            return true;
         }catch (Exception e){
             log.error("连接失败:{}",e.getMessage());
-            return null;
+            return false;
         }
     }
 
     @OnMessage
     public void onMessage(final String message){
         try {
-            Message messageBean = JSONObject.parseObject(message, Message.class);
-
-            if(PostTypeEnum.message.toString().equals(messageBean.getPost_type())){
-                // 普通消息
-                final String command = messageBean.getMessage();
-                if(command != null){
-                    MessageDispenser.onEvent(messageBean,command);
-                }
-
-            }else if(PostTypeEnum.notice.toString().equals(messageBean.getPost_type())){
-                // bot通知
-                NoticeDispenser.onEvent(messageBean);
-            } else if(PostTypeEnum.meta_event.toString().equals(messageBean.getPost_type())){
-                // 系统消息 心跳包、
-            }else{
-
+            final Message messageBean = JSONObject.parseObject(message, Message.class);
+            if(PostTypeEnum.meta_event.toString().equals(messageBean.getPost_type()) && MetaEventEnum.heartbeat.toString().equals(messageBean.getMeta_event_type())){
+                // 心跳包
+                return;
             }
+            ThreadPoolFactory.getEventThreadPool().execute(new OnEventTask(messageBean));
         }catch (Exception e){
-            log.error("收到消息时发生异常",e);
+            log.error("收到消息时发生异常,消息:{}",message,e);
         }
     }
 
     private static void sendMessage(String msg){
         try {
-            Client.getInstance().session.getAsyncRemote().sendText(msg);
+            INSTANCE.session.getAsyncRemote().sendText(msg);
         } catch (Exception e){
-            log.error("发送消息时异常",e);
+            log.error("发送消息时异常,消息:{}",msg,e);
         }
     }
     public static <T> void sendMessage(AnswerBox<T> box){
@@ -167,18 +157,18 @@ public class Client {
 
     @OnClose
     public void onClose(Session session){
-        log.info("连接断开,请检查go-cqhttp是否正常启动;检查go-cqhttp ws配置是否与bot一致;开始重连...");
+        log.info("连接断开,请检查go-cqhttp是否正常启动;开始重连...");
         reConnection();
     }
 
     @OnError
     public void onError(Session session,Throwable error){
-        log.error("连接发生异常",error);
+        log.error("连接发生异常,开始重连",error);
         reConnection();
     }
 
     public static void reConnection(){
-        instance = null;
+        INSTANCE = null;
         ReConnectTask.execute();
     }
 }
