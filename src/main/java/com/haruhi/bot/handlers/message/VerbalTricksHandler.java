@@ -43,19 +43,7 @@ public class VerbalTricksHandler implements IMessageEvent {
         if(cache.size() == 0){
             return false;
         }
-        // 群聊是否at了bot；是否私聊(私聊直接通过)
-        boolean flag = false;
-        if(MessageEventEnum.privat.getType().equals(message.getMessage_type())){
-            flag = true;
-        }else if(MessageEventEnum.group.getType().equals(message.getMessage_type())){
-            if (CommonUtil.isAt(message.getSelf_id(),command)) {
-                flag = true;
-            }
-        }
-        if(!flag){
-            return false;
-        }
-        // 开始匹配
+
         String cmd = new String(command);
         cmd = cmd.replaceAll(RegexEnum.CQ_CODE_REPLACR.getValue(), "").trim();
 
