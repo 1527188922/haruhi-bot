@@ -26,7 +26,7 @@ public class PokeHandler implements IPokeEvent {
 
     @Override
     public boolean onPoke(final Message message) {
-        if(message.getSelf_id().equals(message.getUser_id()) || cache.size() == 0){
+        if(!message.getSelf_id().equals(message.getTarget_id()) || message.getSelf_id().equals(message.getUser_id()) || cache.size() == 0){
             return false;
         }
 
@@ -43,6 +43,7 @@ public class PokeHandler implements IPokeEvent {
                         Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group,reply, GocqActionEnum.SEND_MSG,true);
                     }
                 }else if(MessageEventEnum.privat.getType().equals(message.getMessage_type())){
+                    // gocq私聊不能发送给戳一戳 所以这里只回复文字
                     Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.privat,reply, GocqActionEnum.SEND_MSG,true);
                 }
             }

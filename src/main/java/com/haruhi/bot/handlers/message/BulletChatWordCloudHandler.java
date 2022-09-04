@@ -87,6 +87,7 @@ public class BulletChatWordCloudHandler implements IMessageEvent {
             try {
                 String bv = getBv(param);
                 if(Strings.isBlank(bv)){
+                    log.error("bv号获取失败");
                     return;
                 }
                 PlayerInfoResp playerInfoResp = WordCloudUtil.getPlayerInfo(bv);
