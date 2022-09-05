@@ -52,7 +52,7 @@ public class MessageDispenser {
             List<String> classNames = groupBanFunction.get(groupId);
             classNames.add(className);
         }else{
-            List<String> classNames = new ArrayList<>();
+            List<String> classNames = new ArrayList<>(1);
             classNames.add(className);
             groupBanFunction.put(groupId,classNames);
         }

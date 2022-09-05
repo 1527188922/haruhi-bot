@@ -31,8 +31,8 @@ public class FileUtil {
         return getDirectoryList(new File(path));
     }
     public static List<File> getDirectoryList(File file){
-        ArrayList<File> res = new ArrayList<>();
         File[] allFileList = getAllFileList(file);
+        ArrayList<File> res = new ArrayList<>(allFileList.length);
         for (File file1 : allFileList) {
             if(file1.isDirectory()){
                 res.add(file1);
@@ -41,8 +41,8 @@ public class FileUtil {
         return res;
     }
     public static List<File> getFileList(File file){
-        ArrayList<File> res = new ArrayList<>();
         File[] allFileList = getAllFileList(file);
+        ArrayList<File> res = new ArrayList<>(allFileList.length);
         for (File file1 : allFileList) {
             if(file1.isFile()){
                 res.add(file1);

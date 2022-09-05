@@ -22,7 +22,7 @@ public class GocqRequestUtil {
      * @return
      */
     public static Message getMsg(String messageId){
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>(1);
         map.put("message_id",messageId);
         String s = RestUtil.sendGetRequest(RestUtil.getRestTemplate(), BotConfig.HTTP_URL + "/" + GocqActionEnum.GET_MSG.getAction(), map, String.class);
         if (Strings.isNotBlank(s)) {
@@ -39,7 +39,7 @@ public class GocqRequestUtil {
      * @return
      */
     public static List<GroupMember> getGroupMemberList(String groupId,String... exclude){
-        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>(1);
         params.put("group_id",groupId);
         String responseStr = RestUtil.sendPostRequest(RestUtil.getRestTemplate(), BotConfig.HTTP_URL + "/" + GocqActionEnum.GET_GROUP_MEMBER_LIST.getAction(), params, null, String.class);
         if (responseStr == null) {
@@ -48,7 +48,7 @@ public class GocqRequestUtil {
         JSONObject responseJsonObj = JSONObject.parseObject(responseStr);
         List<GroupMember> data = JSONArray.parseArray(responseJsonObj.getString("data"), GroupMember.class);
         if(exclude != null && exclude.length > 0){
-            List<GroupMember> excludeList = new ArrayList<>();
+            List<GroupMember> excludeList = new ArrayList<>(exclude.length);
             for (GroupMember datum : data) {
                 for (String s : exclude) {
                     if(datum != null && s.equals(datum.getUser_id())){
@@ -69,7 +69,7 @@ public class GocqRequestUtil {
      * @return
      */
     public static List<String> getWordSlices(String content){
-        Map<String, Object> req = new HashMap<>();
+        Map<String, Object> req = new HashMap<>(1);
         req.put("content",content);
         HttpResponse httpResponse = RestUtil.sendPostRequest(RestUtil.getRestTemplate(10 * 1000), BotConfig.HTTP_URL + "/" + GocqActionEnum.GET_WORD_SLICES.getAction(), req, null, HttpResponse.class);
         if(httpResponse != null && httpResponse.getRetcode() == 0 ){

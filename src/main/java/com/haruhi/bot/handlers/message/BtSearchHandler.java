@@ -88,7 +88,7 @@ public class BtSearchHandler implements IMessageEvent {
                     noData(message,keyword);
                     return;
                 }
-                List<String> res = new ArrayList<>();
+                List<String> res = new ArrayList<>(list.size());
                 for (Element element : list) {
                     Elements a = element.getElementsByTag("a");
                     if (a == null || a.size() == 0) {
@@ -128,7 +128,7 @@ public class BtSearchHandler implements IMessageEvent {
         }
     }
     private static void sendGroup(List<String> res,Message message){
-        List<ForwardMsg> param = new ArrayList<>();
+        List<ForwardMsg> param = new ArrayList<>(res.size());
         for (String re : res) {
             param.add(CommonUtil.createForwardMsgItem(re,message.getSelf_id(),BotConfig.NAME));
         }

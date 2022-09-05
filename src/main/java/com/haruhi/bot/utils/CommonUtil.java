@@ -77,7 +77,7 @@ public class CommonUtil {
         KQCodeUtils instance = KQCodeUtils.getInstance();
         String[] cqs = instance.getCqs(message, typeEnum.getType());
         if (cqs != null && cqs.length > 0) {
-            params = new ArrayList<>();
+            params = new ArrayList<>(cqs.length);
             for (String cq : cqs) {
                 String paramVal = instance.getParam(cq, paramKey);
                 if(Strings.isNotBlank(paramVal)){

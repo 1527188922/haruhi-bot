@@ -75,7 +75,7 @@ public class PixivByPidHandler implements IMessageEvent {
             List<Pixiv> list = pixivService.list(queryWrapper);
             if(list != null && list.size() > 0){
                 if(MessageEventEnum.group.getType().equals(message.getMessage_type())){
-                    List<ForwardMsg> params = new ArrayList<>();
+                    List<ForwardMsg> params = new ArrayList<>(list.size() + 1);
                     params.add(CommonUtil.createForwardMsgItem(MessageFormat.format("pid：{0}\n※原图链接不需要翻墙，直接点击",pid),message.getSelf_id(), BotConfig.NAME));
                     pixivService.groupSend(list,params,message);
                 }else if(MessageEventEnum.privat.getType().equals(message.getMessage_type())){

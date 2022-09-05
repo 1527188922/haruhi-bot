@@ -44,7 +44,7 @@ public class DownloadPixivJob extends AbstractJob {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         if(param == null){
-            param = new HashMap<>();
+            param = new HashMap<>(2);
             param.put("num",20);
             param.put("r18",0);
         }
@@ -52,7 +52,7 @@ public class DownloadPixivJob extends AbstractJob {
             ThreadPoolFactory.getDownloadThreadPool().execute(new DownloadPixivJob.downloadTask(pixivService,param));
         }
         if(paramR18 == null){
-            paramR18 = new HashMap<>();
+            paramR18 = new HashMap<>(2);
             paramR18.put("num",20);
             paramR18.put("r18",1);
         }

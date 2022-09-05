@@ -37,7 +37,7 @@ public class PixivServiceImpl extends ServiceImpl<PixivMapper, Pixiv> implements
             }
             int size = pixivs.size();
             if(size > num){
-                pixivHashSet = new HashSet<>();
+                pixivHashSet = new HashSet<>(num);
                 while (pixivHashSet.size() < num){
                     pixivHashSet.add(pixivs.get(CommonUtil.randomInt(0,size - 1)));
                 }
@@ -45,7 +45,7 @@ public class PixivServiceImpl extends ServiceImpl<PixivMapper, Pixiv> implements
         }
 
         if (MessageEventEnum.group.getType().equals(message.getMessage_type())) {
-            List<ForwardMsg> params = new ArrayList<>();
+            List<ForwardMsg> params = new ArrayList<>(pixivHashSet.size() + 1);
             params.add(CommonUtil.createForwardMsgItem(MessageFormat.format("tag：{0}\n※原图链接不需要翻墙，直接点",tag),message.getSelf_id(), BotConfig.NAME));
             if(pixivHashSet != null && pixivHashSet.size() > 0){
                 groupSend(pixivHashSet,params,message);

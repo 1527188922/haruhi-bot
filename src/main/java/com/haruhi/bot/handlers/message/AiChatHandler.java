@@ -90,7 +90,7 @@ public class AiChatHandler implements IMessageEvent {
                 return;
             }
 
-            HashMap<String, Object> urlParam = new HashMap<>();
+            HashMap<String, Object> urlParam = new HashMap<>(3);
             urlParam.put("key","free");
             urlParam.put("appid",0);
             urlParam.put("msg",s);

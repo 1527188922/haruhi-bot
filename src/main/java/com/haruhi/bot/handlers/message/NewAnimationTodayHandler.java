@@ -87,7 +87,7 @@ public class NewAnimationTodayHandler implements IMessageEvent {
     }
 
     private static void sendGroup(List<NewAnimationTodayResp> data,Message message){
-        ArrayList<ForwardMsg> param = new ArrayList<>();
+        ArrayList<ForwardMsg> param = new ArrayList<>(data.size());
         for (NewAnimationTodayResp datum : data) {
             param.add(CommonUtil.createForwardMsgItem(splicingParam(datum),message.getSelf_id(), BotConfig.NAME));
         }

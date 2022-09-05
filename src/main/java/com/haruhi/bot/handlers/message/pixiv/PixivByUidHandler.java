@@ -88,7 +88,7 @@ public class PixivByUidHandler implements IMessageEvent {
                 pixivSet = list.stream().collect(Collectors.toSet());
             }
             if(MessageEventEnum.group.getType().equals(message.getMessage_type())){
-                ArrayList<ForwardMsg> params = new ArrayList<>();
+                ArrayList<ForwardMsg> params = new ArrayList<>(pixivSet.size() + 1);
                 params.add(CommonUtil.createForwardMsgItem(MessageFormat.format("uid：{0}\n※原图链接不需要翻墙，直接点",uid),message.getSelf_id(), BotConfig.NAME));
                 pixivService.groupSend(pixivSet,params,message);
             }else if(MessageEventEnum.privat.getType().equals(message.getMessage_type())){

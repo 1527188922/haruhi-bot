@@ -96,7 +96,7 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
         }
     }
     private void partSend(List<GroupChatHistory> chatList, Message message){
-        ArrayList<ForwardMsg> params = new ArrayList<>();
+        ArrayList<ForwardMsg> params = new ArrayList<>(chatList.size());
         for (GroupChatHistory e : chatList) {
             params.add(CommonUtil.createForwardMsgItem(e.getContent(),e.getUserId(),getName(e)));
         }
@@ -148,6 +148,8 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
      */
     @Override
     public void sendWordCloudImage(WordCloudHandler.RegexEnum regexEnum,Message message) {
+        // 解析查询条件
+        log.info("群[{}]开始生成词云图...",message.getGroup_id());
         Date date = limitDate(regexEnum);
         LambdaQueryWrapper<GroupChatHistory> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(GroupChatHistory::getGroupId,message.getGroup_id()).gt(GroupChatHistory::getCreateTime,date.getTime());
@@ -159,6 +161,7 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
         if (userIds != null && userIds.size() > 0) {
             queryWrapper.in(GroupChatHistory::getUserId,userIds);
         }
+        // 从数据库查询聊天记录
         List<GroupChatHistory> corpus = groupChatHistoryMapper.selectList(queryWrapper);
         if (corpus == null || corpus.size() == 0) {
             Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("该条件下没有聊天记录,无法生成",corpus.size()),GocqActionEnum.SEND_MSG,true);
@@ -166,29 +169,35 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
             return;
         }
 
-        Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("词云图片将从{0}条聊天记录中生成...",corpus.size()),GocqActionEnum.SEND_MSG,true);
+        Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("词云图片将从{0}条聊天记录中生成,开始分词...",corpus.size()),GocqActionEnum.SEND_MSG,true);
         try{
+            // 开始分词
             long l = System.currentTimeMillis();
             List<String> collect = corpus.stream().map(GroupChatHistory::getContent).collect(Collectors.toList());
             List<String> strings = WordSlicesTask.execute(collect);
             if(strings == null || strings.size() == 0){
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, "有效词料为0，本次不生成词云图",GocqActionEnum.SEND_MSG,true);
+                Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, "分词为0，本次不生成词云图",GocqActionEnum.SEND_MSG,true);
                 generateComplete(message,null);
                 return;
             }
-            Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("词料生成完成:{0}条\n耗时:{1}毫秒\n开始生成图片...",strings.size(),System.currentTimeMillis() - l),GocqActionEnum.SEND_MSG,true);
+            // 开始设置词语权重 设置权重很快,就不发送提示消息了
+            long l1 = System.currentTimeMillis();
+            Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("分词完成:{0}条\n耗时:{1}毫秒\n开始生成图片...",strings.size(),l1 - l),GocqActionEnum.SEND_MSG,true);
             Map<String, Integer> map = WordCloudUtil.setFrequency(strings);
-
+            log.info("最终词料数量:{},开始生成图片...",map.size());
+            // 开始生成图片
             String fileName = regexEnum.getUnit().toString() + "-" + message.getGroup_id() + ".png";
             outPutPath = basePath + File.separator + fileName;
             WordCloudUtil.generateWordCloudImage(map,outPutPath);
+            log.info("生成词云图完成,耗时:{}",System.currentTimeMillis() - l1);
+            // 生成图片完成,发送图片
             KQCodeUtils instance = KQCodeUtils.getInstance();
             String imageCq = instance.toCq(CqCodeTypeEnum.image.getType(), "file=file:///" + outPutPath);
             // 走http发送，这样go-cqhttp发送完成之后，连接才会结束
             Client.sendRestMessage(message.getUser_id(), message.getGroup_id(), MessageEventEnum.group, imageCq, GocqActionEnum.SEND_MSG, false);
         }catch (Exception e){
-            Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("发送词云图片异常：{0}",e.getMessage()),GocqActionEnum.SEND_MSG,true);
-            log.error("发送词云图片异常",e);
+            Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("生成词云图片异常：{0}",e.getMessage()),GocqActionEnum.SEND_MSG,true);
+            log.error("生成词云图片异常",e);
         }finally {
             generateComplete(message,outPutPath);
         }

@@ -53,7 +53,7 @@ public class SearchImageHandler implements IMessageEvent {
         String cq = replySearch(message);
         String key = null;
         if(Strings.isNotBlank(cq)){
-            start(message,cq,key);
+            start(message,cq,null);
         }else{
             KQCodeUtils utils = KQCodeUtils.getInstance();
             cq = utils.getCq(command, CqCodeTypeEnum.image.getType(), 0);
@@ -173,7 +173,7 @@ public class SearchImageHandler implements IMessageEvent {
             }
         }
         private void sendResult(List<Results> resultList){
-            ArrayList<ForwardMsg> forwardMsgs = new ArrayList<>();
+            ArrayList<ForwardMsg> forwardMsgs = new ArrayList<>(resultList.size() + 1);
             forwardMsgs.add(CommonUtil.createForwardMsgItem(cq,message.getSelf_id(), BotConfig.NAME));
             for (Results results : resultList) {
                 forwardMsgs.add(CommonUtil.createForwardMsgItem(getItemMsg(results),message.getSelf_id(), BotConfig.NAME));

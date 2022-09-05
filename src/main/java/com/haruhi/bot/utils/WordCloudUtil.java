@@ -78,7 +78,7 @@ public class WordCloudUtil {
      * @param pngOutputPath 图片输出路径 png结尾
      */
     public static void generateWordCloudImage(Map<String,Integer> corpus, String pngOutputPath) {
-        final List<WordFrequency> wordFrequencies = new ArrayList<>();
+        final List<WordFrequency> wordFrequencies = new ArrayList<>(corpus.size());
         // 加载词云有两种方式，一种是在txt文件中统计词出现的个数，另一种是直接给出每个词出现的次数，这里使用第二种
         // 文件格式如下
         for (Map.Entry<String, Integer> item : corpus.entrySet()) {
@@ -115,7 +115,7 @@ public class WordCloudUtil {
      * @return
      */
     public static PlayerInfoResp getPlayerInfo(String bv){
-        Map<String, Object> param = new HashMap<>();
+        Map<String, Object> param = new HashMap<>(2);
         param.put("bvid",bv);
         param.put("jsonp","jsonp");
         String responseStr = RestUtil.sendGetRequest(RestUtil.getRestTemplate(), ThirdPartyURL.PLAYER_CID, param, String.class);

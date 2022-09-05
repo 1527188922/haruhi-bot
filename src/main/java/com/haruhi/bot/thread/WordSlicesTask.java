@@ -25,7 +25,7 @@ public class WordSlicesTask implements Callable<List<String>> {
 
     @Override
     public List<String> call() throws Exception {
-        List<String> res = new ArrayList<>();
+        List<String> res = new ArrayList<>(data.size() * 2);
         for (String item : data) {
             List<String> strings = WordCloudUtil.wordSlices(item);
             if(strings == null || strings.size() == 0){
@@ -37,11 +37,11 @@ public class WordSlicesTask implements Callable<List<String>> {
     }
 
     public static List<String> execute(List<String> corpus){
-        List<String> strings = new ArrayList<>();
+        List<String> strings = new ArrayList<>(corpus.size() * 3);
         // 根据线程池大小，计算每个线程需要跑几个词语 确保不会有线程空闲
         int limit = CommonUtil.averageAssignNum(corpus.size(),poolSize);
-        List<FutureTask<List<String>>> futureTasks = new ArrayList<>();
         List<List<String>> lists = CommonUtil.averageAssignList(corpus, limit);
+        List<FutureTask<List<String>>> futureTasks = new ArrayList<>(lists.size());
         for (List<String> list : lists) {
             FutureTask<List<String>> listFutureTask = new FutureTask<>(new WordSlicesTask(list));
             futureTasks.add(listFutureTask);
