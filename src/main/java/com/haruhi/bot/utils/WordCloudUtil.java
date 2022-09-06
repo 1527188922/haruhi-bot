@@ -1,10 +1,8 @@
 package com.haruhi.bot.utils;
 
 import com.alibaba.fastjson.JSONObject;
-import com.chenlb.mmseg4j.ComplexSeg;
-import com.chenlb.mmseg4j.Seg;
+import com.chenlb.mmseg4j.*;
 import com.chenlb.mmseg4j.Dictionary;
-import com.chenlb.mmseg4j.MMSeg;
 import com.haruhi.bot.constant.RegexEnum;
 import com.haruhi.bot.constant.ThirdPartyURL;
 import com.haruhi.bot.dto.xml.bilibili.PlayerInfoResp;
@@ -32,6 +30,19 @@ import java.util.regex.Pattern;
 public class WordCloudUtil {
     private WordCloudUtil(){}
 
+    private static Dictionary dic;
+    static {
+        initDictionary();
+    }
+
+    /**
+     * 将 haruhi-bot/lib/mmseg4j-core-1.10.0.jar!/data 目录提前生成完成
+     */
+    private synchronized static void initDictionary(){
+        log.info("开始初始化分词词库文件...");
+        dic = Dictionary.getInstance();
+        log.info("初始化分词词库完成");
+    }
     private static String noSupport = "你的QQ暂不支持查看&#91;转发多条消息&#93;，请期待后续版本。";
     /**
      * 请求gocq接口进行分词
@@ -188,12 +199,11 @@ public class WordCloudUtil {
             return null;
         }
         StringReader input = null;
-        List<String> wordList = null;
+        List<String> wordList;
         try {
             input = new StringReader(replace);
-            Dictionary dic = Dictionary.getInstance();
             Seg seg = new ComplexSeg(dic);//Complex分词
-            //seg = new SimpleSeg(dic);//Simple分词
+            // Seg seg = new SimpleSeg(dic);//Simple分词
             MMSeg mmSeg = new MMSeg(input, seg);
             com.chenlb.mmseg4j.Word word;
             wordList = new ArrayList<>();
@@ -201,14 +211,14 @@ public class WordCloudUtil {
                 //word是单个分出的词
                 wordList.add(word.getString());
             }
+            return wordList;
         } catch (IOException e) {
             log.error("mmseg4j分词发生异常",e);
+            return null;
         } finally {
             if(input != null){
                 input.close();
             }
         }
-        return wordList;
     }
-
 }
