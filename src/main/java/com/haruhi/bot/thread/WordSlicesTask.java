@@ -4,6 +4,7 @@ import com.haruhi.bot.utils.CommonUtil;
 import com.haruhi.bot.utils.WordCloudUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +28,9 @@ public class WordSlicesTask implements Callable<List<String>> {
     public List<String> call() throws Exception {
         List<String> res = new ArrayList<>(data.size() * 2);
         for (String item : data) {
-            List<String> strings = WordCloudUtil.wordSlices(item);
-            if(strings == null || strings.size() == 0){
+            // List<String> strings = WordCloudUtil.gocqWordSlices(item);
+            List<String> strings = WordCloudUtil.mmsegWordSlices(item);
+            if(CollectionUtils.isEmpty(strings)){
                 continue;
             }
             res.addAll(strings);
@@ -53,7 +55,7 @@ public class WordSlicesTask implements Callable<List<String>> {
             }
             return strings;
         }catch (Exception e){
-            log.error("分词异常",e);
+            log.error("获取分词结果异常",e);
             return null;
         }
 

@@ -1,6 +1,10 @@
 package com.haruhi.bot.utils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.chenlb.mmseg4j.ComplexSeg;
+import com.chenlb.mmseg4j.Seg;
+import com.chenlb.mmseg4j.Dictionary;
+import com.chenlb.mmseg4j.MMSeg;
 import com.haruhi.bot.constant.RegexEnum;
 import com.haruhi.bot.constant.ThirdPartyURL;
 import com.haruhi.bot.dto.xml.bilibili.PlayerInfoResp;
@@ -13,9 +17,12 @@ import com.kennycason.kumo.image.AngleGenerator;
 import com.kennycason.kumo.palette.ColorPalette;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.text.StrBuilder;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 
 import java.awt.*;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -31,14 +38,14 @@ public class WordCloudUtil {
      * @param originCorpus 还未分词的词料
      * @return
      */
-    public static List<String> wordSlices(List<String> originCorpus){
+    public static List<String> gocqWordSlices(List<String> originCorpus){
         StrBuilder strBuilder = new StrBuilder();
         for (String e : originCorpus) {
             strBuilder.append(replace(e));
         }
         return request(strBuilder.toString());
     }
-    public static List<String> wordSlices(String s){
+    public static List<String> gocqWordSlices(String s){
         return request(replace(s));
     }
     private static String replace(String s){
@@ -164,6 +171,44 @@ public class WordCloudUtil {
             }
         }
         return null;
+    }
+    /**
+     * mmseg4j 分词
+     * https://www.jianshu.com/p/8ac06d2eef0d
+     * https://blog.csdn.net/weixin_45248225/article/details/120847907
+     * @param s
+     * @return
+     */
+    public static List<String> mmsegWordSlices(String s){
+        if(StringUtils.isBlank(s)){
+            return null;
+        }
+        String replace = replace(s);
+        if(StringUtils.isBlank(replace)){
+            return null;
+        }
+        StringReader input = null;
+        List<String> wordList = null;
+        try {
+            input = new StringReader(replace);
+            Dictionary dic = Dictionary.getInstance();
+            Seg seg = new ComplexSeg(dic);//Complex分词
+            //seg = new SimpleSeg(dic);//Simple分词
+            MMSeg mmSeg = new MMSeg(input, seg);
+            com.chenlb.mmseg4j.Word word;
+            wordList = new ArrayList<>();
+            while ((word = mmSeg.next()) != null) {
+                //word是单个分出的词
+                wordList.add(word.getString());
+            }
+        } catch (IOException e) {
+            log.error("mmseg4j分词发生异常",e);
+        } finally {
+            if(input != null){
+                input.close();
+            }
+        }
+        return wordList;
     }
 
 }
