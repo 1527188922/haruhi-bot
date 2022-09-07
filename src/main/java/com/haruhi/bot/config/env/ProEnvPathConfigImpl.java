@@ -10,10 +10,10 @@ import java.io.File;
 @Slf4j
 @Component
 @ConditionalOnProperty(name = "env.active",havingValue = "pro")
-public class ProEnvConfigImpl implements IEnvConfig{
+public class ProEnvPathConfigImpl implements IEnvPathConfig {
 
-    public ProEnvConfigImpl(){
-        log.info("当前启动环境为:pro");
+    public ProEnvPathConfigImpl(){
+        log.info("env active : pro");
     }
 
     private static String homePath;
@@ -22,7 +22,7 @@ public class ProEnvConfigImpl implements IEnvConfig{
 
     static {
         // 加载根目录路径
-        ApplicationHome ah = new ApplicationHome(ProEnvConfigImpl.class);
+        ApplicationHome ah = new ApplicationHome(ProEnvPathConfigImpl.class);
         homePath = ah.getSource().getParentFile().toString();
 
         // 创建image路径

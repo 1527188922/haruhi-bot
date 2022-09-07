@@ -1,6 +1,6 @@
 package com.haruhi.bot.handlers.message;
 
-import com.haruhi.bot.config.env.IEnvConfig;
+import com.haruhi.bot.config.env.IEnvPathConfig;
 import com.haruhi.bot.constant.CqCodeTypeEnum;
 import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.RegexEnum;
@@ -40,7 +40,7 @@ public class BulletChatWordCloudHandler implements IMessageEvent {
     }
 
     @Autowired
-    private IEnvConfig envConfig;
+    private IEnvPathConfig envConfig;
     private static String basePath;
     @PostConstruct
     private void mkdirs(){

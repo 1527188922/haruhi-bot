@@ -1,5 +1,6 @@
 package com.haruhi.bot.config.env;
 
+import com.haruhi.bot.config.BotConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.system.ApplicationHome;
@@ -11,9 +12,10 @@ import java.io.IOException;
 @Slf4j
 @Component
 @ConditionalOnProperty(name = "env.active",havingValue = "dev")
-public class DevEnvConfigImpl implements IEnvConfig{
-    public DevEnvConfigImpl(){
-        log.info("当前启动环境为:dev");
+public class DevEnvPathConfigImpl implements IEnvPathConfig {
+    public DevEnvPathConfigImpl(){
+        BotConfig.PRO.set(false);
+        log.info("env active : dev");
     }
     // directory 拿到resources目录路径
     public static File directory = new File("src/main/resources");
@@ -28,7 +30,7 @@ public class DevEnvConfigImpl implements IEnvConfig{
     }
 
     private static void setHomePath(){
-        ApplicationHome ah = new ApplicationHome(DevEnvConfigImpl.class);
+        ApplicationHome ah = new ApplicationHome(DevEnvPathConfigImpl.class);
         homePath = ah.getSource().getParentFile().toString();
     }
     private static void setImagePath(){

@@ -3,7 +3,11 @@ package com.haruhi.bot.utils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 
+import java.beans.Encoder;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,5 +59,41 @@ public class FileUtil {
             return file.listFiles();
         }
         return null;
+    }
+
+    /**
+     * 往文件中写入文本(覆盖原内容)
+     * 不存在则创建文件
+     * @param file
+     * @param text
+     */
+    public static void writeText(File file,String text){
+        if (file == null || text == null) {
+            throw new NullPointerException("file or text is null");
+        }
+        FileOutputStream fos = null;
+        try {
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            fos = new FileOutputStream(file);
+            fos.write(text.getBytes(StandardCharsets.UTF_8));
+        }catch (IOException e){
+            log.error("写入文本异常",e);
+        }finally {
+            try {
+                fos.flush();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            try {
+                fos.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+    public static void writeText(String file,String text){
+        writeText(new File(file),text);
     }
 }

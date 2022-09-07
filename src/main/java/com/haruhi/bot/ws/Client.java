@@ -168,6 +168,12 @@ public class Client {
     }
 
     public static void reConnection(){
+        try {
+            INSTANCE.session.close();
+            INSTANCE.session = null;
+        }catch (Exception e){
+
+        }
         INSTANCE = null;
         ReConnectTask.execute();
     }

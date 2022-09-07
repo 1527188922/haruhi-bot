@@ -1,5 +1,6 @@
 package com.haruhi.bot.thread;
 
+import com.haruhi.bot.service.SystemService;
 import com.haruhi.bot.service.function.DisableFunctionService;
 import com.haruhi.bot.service.pokeReply.PokeReplyService;
 import com.haruhi.bot.service.verbalTricks.VerbalTricksService;
@@ -24,6 +25,8 @@ public class FirstTask implements Runnable{
     private PokeReplyService pokeReplyService;
     @Autowired
     private DisableFunctionService disableFunctionService;
+    @Autowired
+    private SystemService systemService;
 
     @Override
     public void run() {
@@ -38,6 +41,8 @@ public class FirstTask implements Runnable{
             disableFunctionService.loadGlobalBanFunction();
             // 加载群禁用功能
             disableFunctionService.loadGroupBanFunction();
+            // 创建stop脚本
+            systemService.writeStopScript();
         }catch (Exception e){
             log.error("初始化数据异常",e);
         }
