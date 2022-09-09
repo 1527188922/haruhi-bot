@@ -13,6 +13,7 @@ import com.haruhi.bot.ws.Client;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.text.MessageFormat;
 import java.util.*;
@@ -27,21 +28,25 @@ public class PixivServiceImpl extends ServiceImpl<PixivMapper, Pixiv> implements
     public void roundSend(int num, Boolean isR18, String tag, Message message) {
         List<Pixiv> pixivs = null;
         HashSet<Pixiv> pixivHashSet = null;
-        if (Strings.isBlank(tag)) {
+        boolean noTag = Strings.isBlank(tag);
+        if (noTag) {
             pixivs = pixivMapper.roundByTagLimit(num, isR18, null);
         } else {
             pixivs = pixivMapper.roundByTagAll(isR18, tag.trim());
-            if (pixivs == null || pixivs.size() == 0) {
-                Client.sendMessage(message.getUser_id(), message.getGroup_id(), message.getMessage_type(), MessageFormat.format("没有[{0}]的图片，换一个tag试试吧~", tag), GocqActionEnum.SEND_MSG, true);
-                return;
+
+        }
+        if (CollectionUtils.isEmpty(pixivs)) {
+            noDataSend(noTag,tag,message);
+            return;
+        }
+        int size = pixivs.size();
+        if(size > num){
+            pixivHashSet = new HashSet<>(num);
+            while (pixivHashSet.size() < num){
+                pixivHashSet.add(pixivs.get(CommonUtil.randomInt(0,size - 1)));
             }
-            int size = pixivs.size();
-            if(size > num){
-                pixivHashSet = new HashSet<>(num);
-                while (pixivHashSet.size() < num){
-                    pixivHashSet.add(pixivs.get(CommonUtil.randomInt(0,size - 1)));
-                }
-            }
+        }else if(size == num || size > 0){
+            pixivHashSet = new HashSet<>(pixivs);
         }
 
         if (MessageEventEnum.group.getType().equals(message.getMessage_type())) {
@@ -61,7 +66,13 @@ public class PixivServiceImpl extends ServiceImpl<PixivMapper, Pixiv> implements
 
         }
     }
-
+    private void noDataSend(boolean noTag,String tag,Message message){
+        if(noTag){
+            Client.sendMessage(message.getUser_id(), message.getGroup_id(), message.getMessage_type(),"pix图库还没有图片~", GocqActionEnum.SEND_MSG, true);
+        }else{
+            Client.sendMessage(message.getUser_id(), message.getGroup_id(), message.getMessage_type(), MessageFormat.format("没有[{0}]的图片，换一个tag试试吧~", tag), GocqActionEnum.SEND_MSG, true);
+        }
+    }
     @Override
     public void privateSend(Collection<Pixiv> pixivs,Message message) {
         for (Pixiv pixiv : pixivs) {
