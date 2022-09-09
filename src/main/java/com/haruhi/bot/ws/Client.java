@@ -48,6 +48,9 @@ public class Client {
             return false;
         }
     }
+    public static boolean connected(){
+        return INSTANCE != null && INSTANCE.session != null && INSTANCE.session.isOpen();
+    }
 
     @OnMessage
     public void onMessage(final String message){

@@ -59,6 +59,9 @@ public class DataBaseService {
             if(dataBaseInitMapper.isTableExist(DataSourceConfig.DATA_BASE_BOT,DataSourceConfig.BOT_T_POKE_REPLY) == 0){
                 tableInitMapper.createPokeReply(DataSourceConfig.BOT_T_POKE_REPLY);
             }
+            if(dataBaseInitMapper.isTableExist(DataSourceConfig.DATA_BASE_BOT,DataSourceConfig.BOT_T_SUBSCRIBE_NEWS) == 0){
+                tableInitMapper.createSubscribeNews(DataSourceConfig.BOT_T_SUBSCRIBE_NEWS);
+            }
 
             log.info("初始化数据库完成");
         }catch (Exception e){

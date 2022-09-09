@@ -3,7 +3,9 @@ package com.haruhi.bot.service;
 import com.haruhi.bot.config.BotConfig;
 import com.haruhi.bot.config.env.IEnvPathConfig;
 import com.haruhi.bot.constant.OSEnum;
+import com.haruhi.bot.dto.gocq.response.SelfInfo;
 import com.haruhi.bot.utils.FileUtil;
+import com.haruhi.bot.utils.GocqRequestUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,17 @@ public class SystemService {
                 FileUtil.writeText(file,s);
             }
             log.info("生成停止脚本完成:{}",scriptName);
+        }
+    }
+
+    /**
+     * 加载登录的qq号信息
+     * 每次连接上go-cqhttp都要执行一次
+     */
+    public static void loadLoginInfo(boolean reConnect){
+        if (StringUtils.isBlank(BotConfig.SELF_ID) || reConnect) {
+            SelfInfo loginInfo = GocqRequestUtil.getLoginInfo();
+            BotConfig.SELF_ID = loginInfo.getUser_id();
         }
     }
 }

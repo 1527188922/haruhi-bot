@@ -24,7 +24,11 @@ bot:
   # Saucenao的API_KEY，通过 https://saucenao.com/user.php?page=search-api 注册获取
   search-image-key:
 cron:
+  # 每15分钟
   downloadPixivJob: 0/15 * * * * ?
+  # 每天7点
+  newsJob: 0 0 7 * * ?
+
 #########################  以下配置项勿改  #########################
 
 server:

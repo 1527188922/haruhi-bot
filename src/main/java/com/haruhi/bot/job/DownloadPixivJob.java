@@ -35,7 +35,7 @@ public class DownloadPixivJob extends AbstractJob {
         return cron;
     }
 
-    @Autowired
+//    @Autowired
     private PixivService pixivService;
 
     private static Map<String,Object> param;

@@ -18,4 +18,6 @@ public class ThirdPartyURL {
     public static final String BT_SEARCH = "http://www.eclzz.win";
     // agefans.tv 今日新番使用
     public static final String AGEFANSTV = "https://www.agemys.cc";
+    // 网易新闻
+    public static final String NEWS_163 = "http://c.m.163.com/nc/article/headline/T1348647853363/0-40.html";
 }

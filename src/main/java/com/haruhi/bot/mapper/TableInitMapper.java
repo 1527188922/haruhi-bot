@@ -56,4 +56,10 @@ public interface TableInitMapper {
      */
     int createPokeReply(@Param("tableName") String tableName);
 
+    /**
+     * 订阅新闻表
+     * @param tableName
+     * @return
+     */
+    int createSubscribeNews(@Param("tableName") String tableName);
 }

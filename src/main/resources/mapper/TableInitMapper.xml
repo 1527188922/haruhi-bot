@@ -84,4 +84,14 @@
             PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='戳一戳回复表';
     </update>
+    <update id="createSubscribeNews">
+        CREATE TABLE `${tableName}` (
+            `id` INT auto_increment NOT NULL,
+            `subscriber` varchar(20),
+            `group_id` varchar(20),
+            `type` INT NOT NULL,
+            create_time datetime(3),
+            PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='戳一戳回复表';
+    </update>
 </mapper>

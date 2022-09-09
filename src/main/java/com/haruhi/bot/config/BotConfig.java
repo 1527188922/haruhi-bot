@@ -18,6 +18,7 @@ public class BotConfig {
     public static AtomicBoolean PRO;
     public static OSEnum osName;
     public static String PID;
+    public static String SELF_ID;
     public static String SUPER_USER = "";
     public static String NAME = "";
     public static String SEARCH_IMAGE_KEY = "";
