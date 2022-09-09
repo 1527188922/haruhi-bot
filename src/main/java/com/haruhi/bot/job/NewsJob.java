@@ -54,7 +54,7 @@ public class NewsJob extends AbstractJob {
                     findByPrivate.eq(SubscribeNews::getType,2);
                     List<SubscribeNews> listByPrivate = subscribeNewsService.list(findByPrivate);
                     if(!CollectionUtils.isEmpty(listByPrivate)){
-                        List<String> collect = listByPrivate.stream().map(SubscribeNews::getGroupId).collect(Collectors.toList());
+                        List<String> collect = listByPrivate.stream().map(SubscribeNews::getSubscriber).collect(Collectors.toList());
                         subscribeNewsService.sendPrivate(newsBy163Resps,collect);
                     }
                 }

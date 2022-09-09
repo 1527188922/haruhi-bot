@@ -71,24 +71,41 @@ public class SubscribeNewsServiceImpl extends ServiceImpl<SubscribeNewsMapper, S
         List<ForwardMsg> forwardMsgs = new ArrayList<>(list.size());
         KQCodeUtils instance = KQCodeUtils.getInstance();
         for (NewsBy163Resp e : list) {
-            StringBuilder stringBuilder = new StringBuilder("【");
-            stringBuilder.append(e.getTitle()).append("】\n[");
-            stringBuilder.append(DateTimeUtil.dateTimeFormat(e.getLmodify(),DateTimeUtil.FormatEnum.yyyyMMddHHmmss)).append("]\n");
-            stringBuilder.append(e.getDigest()).append("\n");
-            if(StringUtils.isNotBlank(e.getImgsrc())){
-                String cq = instance.toCq(CqCodeTypeEnum.image.getType(), "file=" + e.getImgsrc());
-                stringBuilder.append(cq).append("\n");
-            }
-            if(StringUtils.isNotBlank(e.getUrl())){
-                stringBuilder.append("详情:").append(e.getUrl());
-            }
-            forwardMsgs.add(CommonUtil.createForwardMsgItem(stringBuilder.toString(),BotConfig.SELF_ID, BotConfig.NAME));
+            String newsItemMessage = createNewsItemMessage(e, instance);
+            forwardMsgs.add(CommonUtil.createForwardMsgItem(newsItemMessage,BotConfig.SELF_ID, BotConfig.NAME));
         }
         return forwardMsgs;
+    }
+    private String createNewsItemMessage(NewsBy163Resp e,KQCodeUtils instance){
+        StringBuilder stringBuilder = new StringBuilder("【");
+        stringBuilder.append(e.getTitle()).append("】\n[");
+        stringBuilder.append(DateTimeUtil.dateTimeFormat(e.getLmodify(),DateTimeUtil.FormatEnum.yyyyMMddHHmmss)).append("]\n");
+        stringBuilder.append(e.getDigest()).append("\n");
+        if(StringUtils.isNotBlank(e.getImgsrc())){
+            String cq = instance.toCq(CqCodeTypeEnum.image.getType(), "file=" + e.getImgsrc());
+            stringBuilder.append(cq).append("\n");
+        }
+        if(StringUtils.isNotBlank(e.getUrl())){
+            stringBuilder.append("详情:").append(e.getUrl());
+        }
+        return stringBuilder.toString();
+    }
+    private String createNewsPrivateMessage(List<NewsBy163Resp> list){
+        StringBuilder stringBuilder = new StringBuilder();
+        KQCodeUtils instance = KQCodeUtils.getInstance();
+        for (NewsBy163Resp e : list) {
+            stringBuilder.append(createNewsItemMessage(e,instance)).append("\n");
+        }
+        return stringBuilder.toString();
     }
 
     @Override
     public void sendPrivate(List<NewsBy163Resp> list,List<String> userIds) {
-
+        List<List<NewsBy163Resp>> lists = CommonUtil.averageAssignList(list, 10);
+        for (String userId : userIds) {
+            for (List<NewsBy163Resp> newsBy163Resps : lists) {
+                Client.sendMessage(userId,null,MessageEventEnum.privat,createNewsPrivateMessage(newsBy163Resps),GocqActionEnum.SEND_MSG,false);
+            }
+        }
     }
 }
