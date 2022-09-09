@@ -28,7 +28,9 @@ public enum RegexEnum {
     DISABLE_FUNCTION("禁用功能|关闭功能"),
     ENABLE_FUNCTION("开启功能|启用功能"),
     GROUP_DISABLE_FUNCTION("群禁用功能|群关闭功能"),
-    GROUP_ENABLE_FUNCTION("群开启功能|群启用功能");
+    GROUP_ENABLE_FUNCTION("群开启功能|群启用功能"),
+    SUBSCRIBE_NEWS("订阅新闻"),
+    UN_SUBSCRIBE_NEWS("取消订阅新闻");
 
 
     private String value;

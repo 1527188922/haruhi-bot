@@ -89,9 +89,9 @@
             `id` INT auto_increment NOT NULL,
             `subscriber` varchar(20),
             `group_id` varchar(20),
-            `type` INT NOT NULL,
+            `type` INT NOT NULL COMMENT '1:群 2:私',
             create_time datetime(3),
             PRIMARY KEY (`id`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='戳一戳回复表';
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='订阅新闻表';
     </update>
 </mapper>
