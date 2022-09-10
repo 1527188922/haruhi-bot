@@ -14,27 +14,26 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-
 @Slf4j
 @Component
-public class SubscribeNewsHandler implements IMessageEvent {
+public class UnSubscribeNewsHandler implements IMessageEvent {
+
 
     @Override
     public int weight() {
-        return 83;
+        return 82;
     }
 
     @Override
     public String funName() {
-        return "订阅新闻";
+        return "取消订阅新闻";
     }
     @Autowired
     private SubscribeNewsService subscribeNewsService;
 
     @Override
     public boolean onMessage(final Message message,final String command) {
-        if(!command.matches(RegexEnum.SUBSCRIBE_NEWS.getValue())){
+        if (!command.matches(RegexEnum.UN_SUBSCRIBE_NEWS.getValue())) {
             return false;
         }
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(()->{
@@ -48,33 +47,24 @@ public class SubscribeNewsHandler implements IMessageEvent {
                     queryWrapper.eq(SubscribeNews::getSubscriber,message.getUser_id()).eq(SubscribeNews::getType,2);
                 }
                 int count = subscribeNewsService.count(queryWrapper);
-                if(count > 0){
+                if(count == 0){
                     String tip = "";
                     if(isGroup){
-                        tip = "本群已订阅新闻";
+                        tip = "本群还未订阅新闻";
                     }else{
-                        tip = "你已订阅新闻";
+                        tip = "你还未订阅新闻";
                     }
                     Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),tip, GocqActionEnum.SEND_MSG,true);
                     return;
                 }
 
-                SubscribeNews param = new SubscribeNews();
-                param.setSubscriber(message.getUser_id());
-                param.setCreateTime(new Date());
-                if(isGroup){
-                    param.setGroupId(message.getGroup_id());
-                    param.setType(1);
-                }else{
-                    param.setType(2);
-                }
-                subscribeNewsService.save(param);
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"订阅成功", GocqActionEnum.SEND_MSG,true);
+                subscribeNewsService.remove(queryWrapper);
+                Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"取消订阅成功", GocqActionEnum.SEND_MSG,true);
+
             }catch (Exception e){
-                log.error("订阅新闻异常",e);
+                log.error("取消订阅新闻异常",e);
             }
         });
-
         return true;
     }
 }
