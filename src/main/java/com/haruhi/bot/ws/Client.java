@@ -2,7 +2,6 @@ package com.haruhi.bot.ws;
 
 import com.alibaba.fastjson.JSONObject;
 import com.haruhi.bot.config.BotConfig;
-import com.haruhi.bot.config.WebSocketConfig;
 import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.event.MessageEventEnum;
 import com.haruhi.bot.constant.PostTypeEnum;
@@ -40,7 +39,7 @@ public class Client {
     public synchronized static boolean connect(){
         try {
             if(INSTANCE == null){
-                INSTANCE = new Client(WebSocketConfig.GOCQ_WS);
+                INSTANCE = new Client(BotConfig.WS_URL);
             }
             return true;
         }catch (Exception e){

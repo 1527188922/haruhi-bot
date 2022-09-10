@@ -23,6 +23,7 @@ public class BotConfig {
     public static String NAME = "";
     public static String SEARCH_IMAGE_KEY = "";
     public static String HTTP_URL = "";
+    public static String WS_URL = "";
     static {
         SLEEP = new AtomicBoolean(false);
         PRO = new AtomicBoolean(true);
@@ -45,7 +46,10 @@ public class BotConfig {
     public void setHttpUrl(@Value("${gocq.http}") String httpUrl){
         HTTP_URL = httpUrl;
     }
-
+    @Autowired
+    public void setGocqWs(@Value("${gocq.ws}") String wsUrl) {
+        WS_URL = wsUrl;
+    }
     private static String getPID(){
         RuntimeMXBean bean = ManagementFactory.getRuntimeMXBean();
         String pid = bean.getName().split("@")[0];

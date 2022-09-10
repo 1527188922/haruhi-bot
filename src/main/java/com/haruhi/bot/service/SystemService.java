@@ -47,8 +47,12 @@ public class SystemService {
      */
     public static void loadLoginInfo(boolean reConnect){
         if (StringUtils.isBlank(BotConfig.SELF_ID) || reConnect) {
-            SelfInfo loginInfo = GocqRequestUtil.getLoginInfo();
-            BotConfig.SELF_ID = loginInfo.getUser_id();
+            try {
+                SelfInfo loginInfo = GocqRequestUtil.getLoginInfo();
+                BotConfig.SELF_ID = loginInfo.getUser_id();
+            }catch (Exception e){
+                log.error("请求bot信息异常",e);
+            }
         }
     }
 }
