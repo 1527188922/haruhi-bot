@@ -10,7 +10,7 @@ public interface SubscribeNewsService extends IService<SubscribeNews> {
 
     List<NewsBy163Resp> requestNewsBy163();
 
-    void sendGroup(List<NewsBy163Resp> list,List<String> groupIds);
+    void sendGroup(List<NewsBy163Resp> list,String... groupIds);
 
-    void sendPrivate(List<NewsBy163Resp> list,List<String> userIds);
+    void sendPrivate(List<NewsBy163Resp> list,String... userIds);
 }

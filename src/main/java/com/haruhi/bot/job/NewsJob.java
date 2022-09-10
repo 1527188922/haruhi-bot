@@ -47,8 +47,8 @@ public class NewsJob extends AbstractJob {
                     findByGroup.eq(SubscribeNews::getType,1);
                     List<SubscribeNews> listByGroup = subscribeNewsService.list(findByGroup);
                     if(!CollectionUtils.isEmpty(listByGroup)){
-                        List<String> collect = listByGroup.stream().map(SubscribeNews::getGroupId).collect(Collectors.toList());
-                        subscribeNewsService.sendGroup(newsBy163Resps,collect);
+                        String[] strings = listByGroup.stream().map(SubscribeNews::getGroupId).toArray(String[]::new);
+                        subscribeNewsService.sendGroup(newsBy163Resps,strings);
                     }
 
                     // 对私聊订阅的用户进行发送
@@ -56,8 +56,8 @@ public class NewsJob extends AbstractJob {
                     findByPrivate.eq(SubscribeNews::getType,2);
                     List<SubscribeNews> listByPrivate = subscribeNewsService.list(findByPrivate);
                     if(!CollectionUtils.isEmpty(listByPrivate)){
-                        List<String> collect = listByPrivate.stream().map(SubscribeNews::getSubscriber).collect(Collectors.toList());
-                        subscribeNewsService.sendPrivate(newsBy163Resps,collect);
+                        String[] strings = listByPrivate.stream().map(SubscribeNews::getSubscriber).toArray(String[]::new);
+                        subscribeNewsService.sendPrivate(newsBy163Resps,strings);
                     }
                 }
                 log.info("定时任务:发送每日新闻 执行完成");

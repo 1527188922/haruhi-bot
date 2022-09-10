@@ -59,17 +59,19 @@ public class SubscribeNewsServiceImpl extends ServiceImpl<SubscribeNewsMapper, S
     }
 
     @Override
-    public void sendGroup(List<NewsBy163Resp> list,List<String> groupIds) {
-        List<ForwardMsg> newsGroupMessage = createNewsGroupMessage(list);
-        for (String groupId : groupIds) {
-            Client.sendRestMessage(null,groupId, MessageEventEnum.group,"今日新闻",GocqActionEnum.SEND_MSG,true);
-            Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,groupId,newsGroupMessage);
+    public void sendGroup(List<NewsBy163Resp> list,String... groupIds) {
+        if(groupIds != null){
+            List<ForwardMsg> newsGroupMessage = createNewsGroupMessage(list);
+            for (String groupId : groupIds) {
+                Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,groupId,newsGroupMessage);
+            }
         }
     }
 
     private List<ForwardMsg> createNewsGroupMessage(List<NewsBy163Resp> list){
-        List<ForwardMsg> forwardMsgs = new ArrayList<>(list.size());
+        List<ForwardMsg> forwardMsgs = new ArrayList<>(list.size() + 1);
         KQCodeUtils instance = KQCodeUtils.getInstance();
+        forwardMsgs.add(CommonUtil.createForwardMsgItem("今日新闻",BotConfig.SELF_ID, BotConfig.NAME));
         for (NewsBy163Resp e : list) {
             String newsItemMessage = createNewsItemMessage(e, instance);
             forwardMsgs.add(CommonUtil.createForwardMsgItem(newsItemMessage,BotConfig.SELF_ID, BotConfig.NAME));
@@ -100,12 +102,15 @@ public class SubscribeNewsServiceImpl extends ServiceImpl<SubscribeNewsMapper, S
     }
 
     @Override
-    public void sendPrivate(List<NewsBy163Resp> list,List<String> userIds) {
-        List<List<NewsBy163Resp>> lists = CommonUtil.averageAssignList(list, 10);
-        for (String userId : userIds) {
-            for (List<NewsBy163Resp> newsBy163Resps : lists) {
-                Client.sendMessage(userId,null,MessageEventEnum.privat,createNewsPrivateMessage(newsBy163Resps),GocqActionEnum.SEND_MSG,false);
+    public void sendPrivate(List<NewsBy163Resp> list,String... userIds) {
+        if(userIds != null){
+            List<List<NewsBy163Resp>> lists = CommonUtil.averageAssignList(list, 10);
+            for (String userId : userIds) {
+                for (List<NewsBy163Resp> newsBy163Resps : lists) {
+                    Client.sendMessage(userId,null,MessageEventEnum.privat,createNewsPrivateMessage(newsBy163Resps),GocqActionEnum.SEND_MSG,false);
+                }
             }
         }
+
     }
 }
