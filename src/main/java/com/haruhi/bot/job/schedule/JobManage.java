@@ -27,6 +27,7 @@ public class JobManage implements ApplicationContextAware {
     }
 
     public void startAllJob(){
+        int count = 0;
         log.info("开始启动定时任务...");
         Scheduler scheduler = schedulerFactoryBean.getScheduler();
         Map<String, AbstractJob> beansOfType = applicationContext.getBeansOfType(AbstractJob.class);
@@ -37,8 +38,8 @@ public class JobManage implements ApplicationContextAware {
             String group = value.getClass().getSimpleName() + "_group";
 
             JobDetail detail = JobBuilder.newJob(value.getClass()).withIdentity(name, group).build();
-
-            Trigger build = TriggerBuilder.newTrigger().withIdentity(trigger, group).withSchedule(CronScheduleBuilder.cronSchedule(value.cronExpression())).build();
+            String cronExpression = value.cronExpression();
+            Trigger build = TriggerBuilder.newTrigger().withIdentity(trigger, group).withSchedule(CronScheduleBuilder.cronSchedule(cronExpression)).build();
 
             JobKey jobKey = new JobKey(name, group);
 
@@ -53,11 +54,13 @@ public class JobManage implements ApplicationContextAware {
 
             try {
                 scheduler.scheduleJob(detail,build);
-                log.info("定时任务：{}启动成功",name);
+                count++;
+                log.info("定时任务：{}启动成功，{}",name,cronExpression);
             } catch (SchedulerException e) {
-                log.error("定时任务启动异常{}",name);
+                log.error("定时任务启动异常{}，{}",name,cronExpression);
                 e.printStackTrace();
             }
         }
+        log.info("开启了{}个定时任务",count);
     }
 }

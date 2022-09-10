@@ -16,6 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.text.MessageFormat;
@@ -24,10 +27,11 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-//@Component
+@Component
+@ConditionalOnProperty(name = "job.downloadPixiv.enable",havingValue = "1")
 public class DownloadPixivJob extends AbstractJob {
 
-//    @Value("${cron.downloadPixivJob}")
+    @Value("${job.downloadPixiv.cron}")
     private String cron;
 
     @Override
@@ -35,26 +39,24 @@ public class DownloadPixivJob extends AbstractJob {
         return cron;
     }
 
-//    @Autowired
+    @Autowired
     private PixivService pixivService;
 
     private static Map<String,Object> param;
     private static Map<String,Object> paramR18;
+    static {
+        param = new HashMap<>(2);
+        param.put("num",20);
+        param.put("r18",0);
 
+        paramR18 = new HashMap<>(2);
+        paramR18.put("num",20);
+        paramR18.put("r18",1);
+    }
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        if(param == null){
-            param = new HashMap<>(2);
-            param.put("num",20);
-            param.put("r18",0);
-        }
         for (int i = 0; i < 2; i++) {
             ThreadPoolFactory.getDownloadThreadPool().execute(new DownloadPixivJob.downloadTask(pixivService,param));
-        }
-        if(paramR18 == null){
-            paramR18 = new HashMap<>(2);
-            paramR18.put("num",20);
-            paramR18.put("r18",1);
         }
         ThreadPoolFactory.getDownloadThreadPool().execute(new DownloadPixivJob.downloadTask(pixivService,paramR18));
     }

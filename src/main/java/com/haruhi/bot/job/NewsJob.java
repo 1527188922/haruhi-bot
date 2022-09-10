@@ -11,6 +11,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -19,9 +20,10 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
+@ConditionalOnProperty(name = "job.news.enable",havingValue = "1")
 public class NewsJob extends AbstractJob {
 
-    @Value("${cron.newsJob}")
+    @Value("${job.news.cron}")
     private String cron;
 
     @Override

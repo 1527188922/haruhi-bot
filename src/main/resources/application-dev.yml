@@ -23,11 +23,15 @@ bot:
   name: 春日酱
   # Saucenao的API_KEY，通过 https://saucenao.com/user.php?page=search-api 注册获取
   search-image-key:
-cron:
-  # 每15分钟
-  downloadPixivJob: 0/15 * * * * ?
-  # 每天7点
-  newsJob: 0 0 7 * * ?
+job:
+  # 下载色图的定时爬虫 每15秒 enable是否开启这个定时任务 0非 1是
+  downloadPixiv:
+    cron: 0/15 * * * * ?
+    enable: 0
+  # 订阅新闻job 每天7点 注意：如果关闭这个job，即使订阅了新闻也不会定时发新闻了
+  news:
+    cron: 0 0 7 * * ?
+    enable: 1
 
 #########################  以下配置项勿改  #########################
 
