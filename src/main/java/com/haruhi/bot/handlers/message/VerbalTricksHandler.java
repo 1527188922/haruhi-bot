@@ -43,9 +43,10 @@ public class VerbalTricksHandler implements IMessageEvent {
         if(cache.size() == 0){
             return false;
         }
-
         String cmd = new String(command);
-        cmd = cmd.replaceAll(RegexEnum.CQ_CODE_REPLACR.getValue(), "").trim();
+        if (CommonUtil.isAt(message.getSelf_id(),command)) {
+            cmd = cmd.replaceAll(RegexEnum.CQ_CODE_REPLACR.getValue(), "").replace(" ","");
+        }
 
         List<VerbalTricks> answerObj = null;
         for (Map.Entry<String, List<VerbalTricks>> item : this.cache.entrySet()) {

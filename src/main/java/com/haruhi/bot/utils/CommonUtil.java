@@ -5,6 +5,7 @@ import com.haruhi.bot.constant.RegexEnum;
 import com.haruhi.bot.dto.gocq.request.ForwardMsg;
 import com.simplerobot.modules.utils.KQCodeUtils;
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,13 +43,11 @@ public class CommonUtil {
     }
 
     public static boolean isAt(String userId,final String context) {
-        KQCodeUtils instance = KQCodeUtils.getInstance();
-        String[] cqs = instance.getCqs(context, CqCodeTypeEnum.at.getType());
-        if (cqs == null || cqs.length == 0){
+        List<String> qqs = getCqParams(context, CqCodeTypeEnum.at, "qq");
+        if(CollectionUtils.isEmpty(qqs)){
             return false;
         }
-        for (String cq : cqs) {
-            String qq = instance.getParam(cq, "qq");
+        for (String qq : qqs) {
             if(userId.equals(qq)){
                 return true;
             }
