@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -64,6 +63,8 @@ public class NewsJob extends AbstractJob {
             }catch (Exception e){
                 log.error("定时任务:发送每日新闻异常",e);
             }
+        }else{
+            log.info("未连接gocq，本次定时任务不执行");
         }
     }
 }

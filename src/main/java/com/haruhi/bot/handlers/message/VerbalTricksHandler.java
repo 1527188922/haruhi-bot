@@ -1,7 +1,6 @@
 package com.haruhi.bot.handlers.message;
 
 import com.haruhi.bot.constant.GocqActionEnum;
-import com.haruhi.bot.constant.event.MessageEventEnum;
 import com.haruhi.bot.constant.RegexEnum;
 import com.haruhi.bot.dto.gocq.response.Message;
 import com.haruhi.bot.entity.VerbalTricks;
@@ -18,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 话术
- * 这个功能其实就是在所有群都生效的 词条 功能
+ * 这个功能其实就是在所有群都生效的词条功能
  */
 @Slf4j
 @Component
