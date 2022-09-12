@@ -38,6 +38,7 @@ public class NewsJob extends AbstractJob {
         if (Client.connected()) {
             log.info("定时任务:发送每日新闻 开始执行");
             try {
+                long l = System.currentTimeMillis();
                 int count = subscribeNewsService.count(null);
                 if(count > 0){
                     List<NewsBy163Resp> newsBy163Resps = subscribeNewsService.requestNewsBy163();
@@ -59,7 +60,7 @@ public class NewsJob extends AbstractJob {
                         subscribeNewsService.sendPrivate(newsBy163Resps,strings);
                     }
                 }
-                log.info("定时任务:发送每日新闻 执行完成");
+                log.info("定时任务:发送每日新闻 执行完成,耗时：{}",System.currentTimeMillis() - l);
             }catch (Exception e){
                 log.error("定时任务:发送每日新闻异常",e);
             }

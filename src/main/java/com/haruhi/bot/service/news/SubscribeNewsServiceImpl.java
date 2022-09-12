@@ -63,7 +63,7 @@ public class SubscribeNewsServiceImpl extends ServiceImpl<SubscribeNewsMapper, S
         if(groupIds != null){
             List<ForwardMsg> newsGroupMessage = createNewsGroupMessage(list);
             for (String groupId : groupIds) {
-                Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,groupId,newsGroupMessage);
+                Client.sendRestMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,groupId,newsGroupMessage);
             }
         }
     }
@@ -89,6 +89,18 @@ public class SubscribeNewsServiceImpl extends ServiceImpl<SubscribeNewsMapper, S
         }
         if(StringUtils.isNotBlank(e.getUrl())){
             stringBuilder.append("详情:").append(e.getUrl());
+        }else{
+            boolean hasUrl = false;
+            if(StringUtils.isNotBlank(e.getPostid())){
+                hasUrl = true;
+                e.setUrl("https://3g.163.com/dy/article/" + e.getPostid() + ".html");
+            }else if(StringUtils.isNotBlank(e.getDocid())){
+                hasUrl = true;
+                e.setUrl("https://3g.163.com/dy/article/" + e.getDocid() + ".html");
+            }
+            if(hasUrl){
+                stringBuilder.append("详情:").append(e.getUrl());
+            }
         }
         return stringBuilder.toString();
     }
