@@ -7,11 +7,11 @@ import java.util.concurrent.*;
 
 public class ThreadPoolFactory {
     private ThreadPoolFactory(){}
-    private final static Executor commandHandlerThreadPool = new ThreadPoolExecutor(4,4,1, TimeUnit.HOURS,new ArrayBlockingQueue(10),new CustomizableThreadFactory("pool-command-"),new ThreadPoolExecutor.CallerRunsPolicy());
+    private final static Executor commandHandlerThreadPool = new ThreadPoolExecutor(4,4,36, TimeUnit.HOURS,new ArrayBlockingQueue(10),new CustomizableThreadFactory("pool-command-"),new ThreadPoolExecutor.CallerRunsPolicy());
 //    private static ScheduledThreadPoolExecutor scheduledThreadPool = null;
     private static Executor downloadThreadPool = null;
-    private final static Executor chatHistoryThreadPool = new ThreadPoolExecutor(1,1,5, TimeUnit.HOURS,new ArrayBlockingQueue(15),new CustomizableThreadFactory("pool-chat-"),new ThreadPoolExecutor.CallerRunsPolicy());
-    private final static Executor eventThreadPool = new ThreadPoolExecutor(5,5,6, TimeUnit.HOURS,new ArrayBlockingQueue(15),new CustomizableThreadFactory("pool-event-"),new ThreadPoolExecutor.CallerRunsPolicy());
+    private final static Executor chatHistoryThreadPool = new ThreadPoolExecutor(1,1,42, TimeUnit.HOURS,new ArrayBlockingQueue(15),new CustomizableThreadFactory("pool-chat-"),new ThreadPoolExecutor.CallerRunsPolicy());
+    private final static Executor eventThreadPool = new ThreadPoolExecutor(5,5,48, TimeUnit.HOURS,new ArrayBlockingQueue(15),new CustomizableThreadFactory("pool-event-"),new ThreadPoolExecutor.CallerRunsPolicy());
     public static Executor getCommandHandlerThreadPool(){
         return commandHandlerThreadPool;
     }
