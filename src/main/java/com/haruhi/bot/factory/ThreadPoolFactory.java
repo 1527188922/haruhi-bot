@@ -7,11 +7,11 @@ import java.util.concurrent.*;
 
 public class ThreadPoolFactory {
     private ThreadPoolFactory(){}
-    private final static Executor commandHandlerThreadPool = new ThreadPoolExecutor(4,4,36, TimeUnit.HOURS,new ArrayBlockingQueue(10),new CustomizableThreadFactory("pool-command-"),new ThreadPoolExecutor.CallerRunsPolicy());
+    private final static Executor commandHandlerThreadPool = new ThreadPoolExecutor(5,20,36, TimeUnit.HOURS,new ArrayBlockingQueue(120),new CustomizableThreadFactory("pool-command-"),new ThreadPoolExecutor.CallerRunsPolicy());
 //    private static ScheduledThreadPoolExecutor scheduledThreadPool = null;
     private static Executor downloadThreadPool = null;
-    private final static Executor chatHistoryThreadPool = new ThreadPoolExecutor(1,1,42, TimeUnit.HOURS,new ArrayBlockingQueue(15),new CustomizableThreadFactory("pool-chat-"),new ThreadPoolExecutor.CallerRunsPolicy());
-    private final static Executor eventThreadPool = new ThreadPoolExecutor(5,5,48, TimeUnit.HOURS,new ArrayBlockingQueue(15),new CustomizableThreadFactory("pool-event-"),new ThreadPoolExecutor.CallerRunsPolicy());
+    private final static Executor chatHistoryThreadPool = new ThreadPoolExecutor(2,10,42, TimeUnit.HOURS,new ArrayBlockingQueue(150),new CustomizableThreadFactory("pool-chat-"),new ThreadPoolExecutor.CallerRunsPolicy());
+    private final static Executor eventThreadPool = new ThreadPoolExecutor(5,16,48, TimeUnit.HOURS,new ArrayBlockingQueue(140),new CustomizableThreadFactory("pool-event-"),new ThreadPoolExecutor.CallerRunsPolicy());
     public static Executor getCommandHandlerThreadPool(){
         return commandHandlerThreadPool;
     }
@@ -26,7 +26,7 @@ public class ThreadPoolFactory {
 
     public synchronized static Executor getDownloadThreadPool(){
         if(downloadThreadPool == null){
-            downloadThreadPool = new ThreadPoolExecutor(4,4,60, TimeUnit.SECONDS,new ArrayBlockingQueue(5),new CustomizableThreadFactory("pool-download-"),new ThreadPoolExecutor.CallerRunsPolicy());
+            downloadThreadPool = new ThreadPoolExecutor(4,8,60, TimeUnit.SECONDS,new ArrayBlockingQueue(30),new CustomizableThreadFactory("pool-download-"),new ThreadPoolExecutor.CallerRunsPolicy());
         }
         return downloadThreadPool;
     }
