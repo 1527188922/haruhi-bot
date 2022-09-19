@@ -99,8 +99,14 @@ public class BtSearchHandler implements IMessageEvent {
                     String detailHref = title.attr("href");
                     // 追加标题
                     strBuilder.append(title.text()).append("\n");
-                    // 请求详情链接
-                    requestDetail(strBuilder,detailHref);
+                    String s = ThirdPartyURL.BT_SEARCH + detailHref;
+                    try {
+                        // 请求详情链接
+                        requestDetail(strBuilder,s);
+                    }catch (Exception e){
+                        log.error("bt获取详情异常:{}",s,e);
+                        continue;
+                    }
                     res.add(strBuilder.toString());
                 }
                 if(res.size() == 0){
@@ -140,24 +146,17 @@ public class BtSearchHandler implements IMessageEvent {
      * @param detailHref
      * @return
      */
-    public static void requestDetail(StringBuilder strBuilder,String detailHref){
-        try {
-            String html = HttpClientUtil.doGet(ThirdPartyURL.BT_SEARCH + detailHref, null, 5 * 1000);
-            if (Strings.isBlank(html)) {
-                return;
-            }
-            Document document = Jsoup.parse(html);
-            Element fileDetail = document.getElementsByClass("fileDetail").get(0);
-            Element size = fileDetail.getElementsByTag("p").get(1);
-            Element time = fileDetail.getElementsByTag("p").get(2);
-            Element magnetLink = fileDetail.getElementById("down-url");
-            strBuilder.append(size.text()).append("\n");
-            strBuilder.append(time.text()).append("\n");
-            strBuilder.append(magnetLink.text()).append("：\n");
-            strBuilder.append(magnetLink.attr("href"));
-        }catch (Exception e){
-            log.error("bt获取详情异常",e);
-        }
-    }
+    public static void requestDetail(StringBuilder strBuilder,String detailHref) throws Exception{
 
+        String html = HttpClientUtil.doGet(detailHref, null, 5 * 1000);
+        Document document = Jsoup.parse(html);
+        Element fileDetail = document.getElementsByClass("fileDetail").get(0);
+        Element size = fileDetail.getElementsByTag("p").get(1);
+        Element time = fileDetail.getElementsByTag("p").get(2);
+        Element magnetLink = fileDetail.getElementById("down-url");
+        strBuilder.append(size.text()).append("\n");
+        strBuilder.append(time.text()).append("\n");
+        strBuilder.append(magnetLink.text()).append("：\n");
+        strBuilder.append(magnetLink.attr("href"));
+    }
 }
