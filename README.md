@@ -37,17 +37,20 @@
 6. 执行startup.bat文件（linux执行startup.sh文件）
 7. windows关闭bot：关闭cmd窗口即可
 8. linux关闭bot：使用命令`jps`可以查看当前服务器上运行的所有java进程，找到进程名为haruhiBot-server.jar的pid，`kill -9 pid`
-#### 使用说明
+## 如果需要的话，但又不会装
+可以加群，我可以免费帮忙装
+![输入图片说明](https://gitee.com/Lelouch-cc/resources-image/raw/master/haruhi-bot/QQ%E5%9B%BE%E7%89%8720220920090612.jpg)
+
+# 使用说明
 
 1.  xxxx
 2.  xxxx
 3.  xxxx
 
-#### 参与贡献
+# 参与贡献
 
 ...
 
-
-#### 特技
+# 特技
 
 ....
