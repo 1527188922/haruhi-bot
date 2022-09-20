@@ -37,7 +37,12 @@
 
 # 使用说明
 
-...
+## 已实现功能
+功能文档：https://blog.csdn.net/cxy152718/article/details/126539271  
+![输入图片说明](https://gitee.com/Lelouch-cc/resources-image/raw/master/haruhi-bot/function/%E5%8A%9F%E8%83%BD1.jpg)
+![输入图片说明](https://gitee.com/Lelouch-cc/resources-image/raw/master/haruhi-bot/function/%E5%8A%9F%E8%83%BD2.jpg)
+![输入图片说明](https://gitee.com/Lelouch-cc/resources-image/raw/master/haruhi-bot/function/%E5%8A%9F%E8%83%BD3.jpg)  
+
 
 # 参与贡献
 
