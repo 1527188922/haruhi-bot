@@ -25,20 +25,27 @@ import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class WordCloudUtil {
     private WordCloudUtil(){}
-
     private static Dictionary dic;
+    private static List<String> exclusionsList;
     static {
         initDictionary();
+        initExclusionsWord();
+
+    }
+    private static void initExclusionsWord(){
+        final String[] exclusions = new String[]{"怎么","还能","也是","还不","了吧","应该","哪里","那个","过了","我想","这种","就是","为了","一下","其他","只有","一点","下来","一样","真是","倒是","的话","至少","以为","时候","反正","还好","个月","我的","只要","来着","居然","看过","之类","不起","要是","看到","那不","还行","看了","这么","是个","罢了","就不","也没","是不是","不是","又不","甚至","有个","给我","可以","所以","他是","都是","不用","之前","之后","三个","还是","让我","你这","或者","很多","很少","就会","那种","是一","多了","看不","用的","两个","一名","一只","一些","是真","什么","就好","这是","这样","惨的","写的","不住","但是","也有","好像","这个","住了","但到","跟我","一个","好多","好少","他之","你的","1k","不过","经常","一起","是谁","有些","他的","那就","来个","打不","你是","我是","也不","不了","自己的","那么","不出","更有","也能","人的","14","31","几个","只是","除了","下一","下了","之主","到了","来的","请使用","大笑","获取","一代","都有","有点","内容","那些","其实","一条","我都","主要"};
+        exclusionsList = Arrays.asList(exclusions);
     }
 
     /**
      * 将 haruhi-bot/lib/mmseg4j-core-1.10.0.jar!/data 目录提前生成完成
      */
-    private synchronized static void initDictionary(){
+    private static void initDictionary(){
         log.info("开始初始化分词词库文件...");
         dic = Dictionary.getInstance();
         log.info("初始化分词词库完成");
@@ -77,9 +84,6 @@ public class WordCloudUtil {
     public static Map<String,Integer> setFrequency(List<String> corpus){
         Map<String, Integer> map = new HashMap<>();
         for (String e : corpus) {
-            if(e.length() <= 1){
-                continue;
-            }
             if(map.containsKey(e)){
                 Integer frequency = map.get(e) + 1;
                 map.put(e,frequency);
@@ -89,13 +93,34 @@ public class WordCloudUtil {
         }
         return map;
     }
-
+    private static Map<String,Integer> exclusionsWord(Map<String,Integer> corpus){
+        corpus = corpus.entrySet().stream().filter(e -> exclusionsWord(e.getKey())).collect(Collectors.toMap(e -> e.getKey(),e -> e.getValue()));
+        return corpus;
+    }
+    private static boolean exclusionsWord(String word){
+        if(StringUtils.isBlank(word)){
+            return false;
+        }
+        if(word.length() <= 1){
+            return false;
+        }
+        try {
+            Integer.valueOf(word);
+            return false;
+        }catch (Exception e){}
+        if(exclusionsList.contains(word)){
+            return false;
+        }
+        return true;
+    }
     /**
      * 生成词云图片
      * @param corpus
      * @param pngOutputPath 图片输出路径 png结尾
      */
     public static void generateWordCloudImage(Map<String,Integer> corpus, String pngOutputPath) {
+        corpus = exclusionsWord(corpus);
+        log.info("开始生成词云图,词料数量:{}",corpus.size());
         final List<WordFrequency> wordFrequencies = new ArrayList<>(corpus.size());
         // 加载词云有两种方式，一种是在txt文件中统计词出现的个数，另一种是直接给出每个词出现的次数，这里使用第二种
         // 文件格式如下

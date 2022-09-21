@@ -184,7 +184,6 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
             long l1 = System.currentTimeMillis();
             Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("分词完成:{0}条\n耗时:{1}毫秒\n开始生成图片...",strings.size(),l1 - l),GocqActionEnum.SEND_MSG,true);
             Map<String, Integer> map = WordCloudUtil.setFrequency(strings);
-            log.info("最终词料数量:{},开始生成图片...",map.size());
             // 开始生成图片
             String fileName = regexEnum.getUnit().toString() + "-" + message.getGroup_id() + ".png";
             outPutPath = basePath + File.separator + fileName;
