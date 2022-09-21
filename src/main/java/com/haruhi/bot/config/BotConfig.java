@@ -36,7 +36,7 @@ public class BotConfig {
     }
     @Autowired
     public void setName(@Value("${bot.name}") String name) {
-        NAME = Strings.isBlank(name) ? "春日酱1" : name;
+        NAME = Strings.isBlank(name) ? "春日酱" : name;
     }
     @Autowired
     public void setSearchImageKey(@Value("${bot.search-image-key}") String searchImageKey){
