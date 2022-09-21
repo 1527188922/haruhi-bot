@@ -3,7 +3,12 @@ package com.haruhi.bot.utils;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.*;
+
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.util.LinkedMultiValueMap;
@@ -17,7 +22,7 @@ public class RestUtil {
     private RestUtil(){}
 
     public static <T> T sendGetRequest(RestTemplate restTemplate, String url,Map<String, Object> urlRequestParam, Class<T> type){
-        return RestUtil.sendRequest(restTemplate,url,HttpMethod.GET,null,urlRequestParam,type);
+        return RestUtil.sendRequest(restTemplate,url, HttpMethod.GET,null,urlRequestParam,type);
     }
     public static <T,O> T sendPostRequest(RestTemplate restTemplate, String url,O msgBody, Map<String, Object> urlRequestParam, Class<T> type){
         return RestUtil.sendRequest(restTemplate,url,HttpMethod.POST,msgBody,urlRequestParam,type);

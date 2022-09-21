@@ -41,18 +41,23 @@ public class SystemService {
         }
     }
 
+    public static void loadLoginInfo(boolean reConnect){
+        if (StringUtils.isBlank(BotConfig.SELF_ID) || reConnect) {
+            loadLoginInfo();
+        }
+    }
+
     /**
      * 加载登录的qq号信息
      * 每次连接上go-cqhttp都要执行一次
      */
-    public static void loadLoginInfo(boolean reConnect){
-        if (StringUtils.isBlank(BotConfig.SELF_ID) || reConnect) {
-            try {
-                SelfInfo loginInfo = GocqRequestUtil.getLoginInfo();
-                BotConfig.SELF_ID = loginInfo.getUser_id();
-            }catch (Exception e){
-                log.error("请求bot信息异常",e);
-            }
+    public static void loadLoginInfo(){
+        try {
+            SelfInfo loginInfo = GocqRequestUtil.getLoginInfo();
+            BotConfig.SELF_ID = loginInfo.getUser_id();
+            log.info("self_id:{}",BotConfig.SELF_ID);
+        }catch (Exception e){
+            log.error("请求bot信息异常",e);
         }
     }
 }

@@ -12,12 +12,21 @@ import com.haruhi.bot.dto.gocq.request.Answer;
 import com.haruhi.bot.dto.gocq.request.AnswerBox;
 import com.haruhi.bot.dto.gocq.request.ForwardMsg;
 import com.haruhi.bot.factory.ThreadPoolFactory;
+import com.haruhi.bot.service.SystemService;
 import com.haruhi.bot.thread.OnEventTask;
 import com.haruhi.bot.thread.ReConnectTask;
 import com.haruhi.bot.utils.RestUtil;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.websocket.*;
+
+import javax.websocket.ClientEndpoint;
+import javax.websocket.ContainerProvider;
+import javax.websocket.DeploymentException;
+import javax.websocket.OnClose;
+import javax.websocket.OnError;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
@@ -35,20 +44,28 @@ public class Client {
     private Client(String url) throws DeploymentException, IOException {
         session = ContainerProvider.getWebSocketContainer().connectToServer(this, URI.create(url));
     }
+    private volatile static boolean connecting = false;
     private static Client INSTANCE;
     public synchronized static boolean connect(){
         try {
             if(INSTANCE == null){
                 INSTANCE = new Client(BotConfig.WS_URL);
             }
+            connecting = false;
             return true;
         }catch (Exception e){
-            log.error("连接失败:{}",e.getMessage());
+            log.error("WebSocket连接失败:{}",e.getMessage());
             return false;
         }
     }
     public static boolean connected(){
         return INSTANCE != null && INSTANCE.session != null && INSTANCE.session.isOpen();
+    }
+
+    @OnOpen
+    public void onOpen(Session session){
+        log.info("WebSocket连接go-cqhttp成功:{}",BotConfig.WS_URL);
+        SystemService.loadLoginInfo();
     }
 
     @OnMessage
@@ -169,14 +186,15 @@ public class Client {
         reConnection();
     }
 
-    public static void reConnection(){
-        try {
-            INSTANCE.session.close();
-            INSTANCE.session = null;
-        }catch (Exception e){
-
+    public synchronized static void reConnection(){
+        if(!connecting){
+            connecting = true;
+            try {
+                INSTANCE.session.close();
+                INSTANCE.session = null;
+            }catch (Exception e){}
+            INSTANCE = null;
+            ReConnectTask.execute();
         }
-        INSTANCE = null;
-        ReConnectTask.execute();
     }
 }

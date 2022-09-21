@@ -1,8 +1,11 @@
 package com.haruhi.bot.utils;
 
 import com.alibaba.fastjson.JSONObject;
-import com.chenlb.mmseg4j.*;
+
+import com.chenlb.mmseg4j.ComplexSeg;
 import com.chenlb.mmseg4j.Dictionary;
+import com.chenlb.mmseg4j.MMSeg;
+import com.chenlb.mmseg4j.Seg;
 import com.haruhi.bot.constant.RegexEnum;
 import com.haruhi.bot.constant.ThirdPartyURL;
 import com.haruhi.bot.dto.xml.bilibili.PlayerInfoResp;
@@ -18,11 +21,17 @@ import org.apache.commons.lang.text.StrBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 
-import java.awt.*;
+
+import java.awt.Color;
+import java.awt.Dimension;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;

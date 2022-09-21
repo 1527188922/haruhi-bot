@@ -4,12 +4,21 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.haruhi.bot.config.BotConfig;
 import com.haruhi.bot.constant.GocqActionEnum;
-import com.haruhi.bot.dto.gocq.response.*;
+
+import com.haruhi.bot.dto.gocq.response.GroupInfo;
+import com.haruhi.bot.dto.gocq.response.GroupMember;
+import com.haruhi.bot.dto.gocq.response.HttpResponse;
+import com.haruhi.bot.dto.gocq.response.Message;
+import com.haruhi.bot.dto.gocq.response.SelfInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 @Slf4j
 public class GocqRequestUtil {
@@ -36,7 +45,7 @@ public class GocqRequestUtil {
      * @param exclude 需要排除的成员qq号
      * @return
      */
-    public static List<GroupMember> getGroupMemberList(String groupId,String... exclude){
+    public static List<GroupMember> getGroupMemberList(String groupId, String... exclude){
         Map<String, Object> params = new HashMap<>(1);
         params.put("group_id",groupId);
         String responseStr = RestUtil.sendPostRequest(RestUtil.getRestTemplate(), BotConfig.HTTP_URL + "/" + GocqActionEnum.GET_GROUP_MEMBER_LIST.getAction(), params, null, String.class);

@@ -14,7 +14,11 @@ import com.haruhi.bot.handlers.message.WordCloudHandler;
 import com.haruhi.bot.handlers.message.chatHistory.FindChatMessageHandler;
 import com.haruhi.bot.mapper.GroupChatHistoryMapper;
 import com.haruhi.bot.thread.WordSlicesTask;
-import com.haruhi.bot.utils.*;
+
+import com.haruhi.bot.utils.CommonUtil;
+import com.haruhi.bot.utils.DateTimeUtil;
+import com.haruhi.bot.utils.FileUtil;
+import com.haruhi.bot.utils.WordCloudUtil;
 import com.haruhi.bot.ws.Client;
 import com.simplerobot.modules.utils.KQCodeUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +30,17 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.text.MessageFormat;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.Map;
+
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -43,7 +55,7 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
 
     private static String basePath;
 
-    private static Executor pool =  new ThreadPoolExecutor(2,2,60L,TimeUnit.SECONDS,new ArrayBlockingQueue(8),new CustomizableThreadFactory("pool-chat-history-"),new ThreadPoolExecutor.CallerRunsPolicy());
+    private static Executor pool =  new ThreadPoolExecutor(2,2,60L, TimeUnit.SECONDS,new ArrayBlockingQueue(8),new CustomizableThreadFactory("pool-chat-history-"),new ThreadPoolExecutor.CallerRunsPolicy());
 
     @PostConstruct
     private void mkdirs(){

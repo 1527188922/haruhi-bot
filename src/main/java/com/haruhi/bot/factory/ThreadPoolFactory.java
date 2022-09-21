@@ -3,7 +3,11 @@ package com.haruhi.bot.factory;
 
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
-import java.util.concurrent.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 
 public class ThreadPoolFactory {
     private ThreadPoolFactory(){}

@@ -16,7 +16,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+
 
 @Service
 public class PixivServiceImpl extends ServiceImpl<PixivMapper, Pixiv> implements PixivService{
@@ -74,7 +78,7 @@ public class PixivServiceImpl extends ServiceImpl<PixivMapper, Pixiv> implements
         }
     }
     @Override
-    public void privateSend(Collection<Pixiv> pixivs,Message message) {
+    public void privateSend(Collection<Pixiv> pixivs, Message message) {
         for (Pixiv pixiv : pixivs) {
             Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), MessageFormat.format("标题：{0}\n作者：{1}\nuid：{2}\npid：{3}\nr18：{4}\n原图：{5}", pixiv.getTitle(), pixiv.getAuthor(),pixiv.getUid(), pixiv.getPid(), pixiv.getIsR18() ? "是" : "否", pixiv.getImgUrl()), GocqActionEnum.SEND_MSG,true);
         }

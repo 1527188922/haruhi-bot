@@ -2,7 +2,6 @@ package com.haruhi.bot;
 
 import com.haruhi.bot.job.schedule.JobManage;
 import com.haruhi.bot.service.DataBaseService;
-import com.haruhi.bot.service.SystemService;
 import com.haruhi.bot.thread.FirstTask;
 import com.haruhi.bot.ws.Client;
 import lombok.extern.slf4j.Slf4j;
@@ -28,9 +27,6 @@ public class SystemCommandLineRunner implements CommandLineRunner {
         log.info("开始连接go-cqhttp...");
         if(!Client.connect()){
             Client.reConnection();
-        }else{
-            SystemService.loadLoginInfo(false);
-            log.info("连接go-cqhttp成功");
         }
         // 执行项目首次启动需要执行的任务 比如从库里加载一些数据到内存
         firstTask.execute(firstTask);
