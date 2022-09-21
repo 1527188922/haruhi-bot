@@ -1,6 +1,6 @@
 package com.haruhi.bot.thread;
 
-import com.haruhi.bot.constant.PostTypeEnum;
+import com.haruhi.bot.constant.event.PostTypeEnum;
 import com.haruhi.bot.dispenser.MessageDispenser;
 import com.haruhi.bot.dispenser.NoticeDispenser;
 import com.haruhi.bot.dto.gocq.response.Message;

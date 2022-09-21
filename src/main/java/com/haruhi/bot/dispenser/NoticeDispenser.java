@@ -1,7 +1,7 @@
 package com.haruhi.bot.dispenser;
 
 import com.haruhi.bot.constant.event.MessageEventEnum;
-import com.haruhi.bot.constant.event.NoticeEventEnum;
+import com.haruhi.bot.constant.event.SubTypeEnum;
 import com.haruhi.bot.dto.gocq.response.Message;
 import com.haruhi.bot.event.notice.INoticeEventType;
 import com.haruhi.bot.event.notice.IPokeEvent;
@@ -11,10 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 
 /**
  * qq通知分发器
@@ -24,19 +23,19 @@ import java.util.Set;
 @Component
 public class NoticeDispenser {
 
-    private static Map<String, IPokeEvent> pokeEventMap;
+    private static Map<String, INoticeEventType> noticeEventTypeMap;
     @Autowired
-    public void setMessageEventTypeMap(Map<String, IPokeEvent> pokeEventMap){
-        NoticeDispenser.pokeEventMap = pokeEventMap;
+    public void setMessageEventTypeMap(Map<String, INoticeEventType> pokeEventMap){
+        NoticeDispenser.noticeEventTypeMap = pokeEventMap;
     }
-    private static Set<INoticeEventType> container = new HashSet<>();
+    private static List<INoticeEventType> container = new ArrayList<>();
 
     @Autowired
     private ApplicationContextProvider applicationContextProvider;
     @PostConstruct
     private void loadEvent(){
         log.info("加载通知处理类...");
-        for (IPokeEvent value : pokeEventMap.values()) {
+        for (INoticeEventType value : noticeEventTypeMap.values()) {
             NoticeDispenser.attach(value);
         }
         log.info("加载了{}个通知处理类",container.size());
@@ -47,16 +46,18 @@ public class NoticeDispenser {
     }
 
     public static void onEvent(final Message message){
+        setMessageType(message);
         String subType = message.getSub_type();
-        if(NoticeEventEnum.poke.toString().equals(subType)){
-            setMessageType(message);
-            for (IPokeEvent value : pokeEventMap.values()) {
-                if(value.onPoke(message)){
-                    break;
+        for (INoticeEventType value : container) {
+            if(SubTypeEnum.poke.toString().equals(subType)){
+                if(value instanceof IPokeEvent){
+                    IPokeEvent pokeEvent = (IPokeEvent) value;
+                    pokeEvent.onPoke(message);
                 }
             }
         }
     }
+
     private static void setMessageType(final Message message){
         if(message.getGroup_id() != null){
             message.setMessage_type(MessageEventEnum.group.getType());

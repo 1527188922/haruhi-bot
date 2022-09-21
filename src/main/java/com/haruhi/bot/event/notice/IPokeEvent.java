@@ -7,5 +7,5 @@ import com.haruhi.bot.dto.gocq.response.Message;
  */
 public interface IPokeEvent extends INoticeEventType{
 
-    boolean onPoke(Message message);
+    void onPoke(Message message);
 }

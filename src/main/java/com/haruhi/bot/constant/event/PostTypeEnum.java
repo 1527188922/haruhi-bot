@@ -1,4 +1,4 @@
-package com.haruhi.bot.constant;
+package com.haruhi.bot.constant.event;
 
 public enum PostTypeEnum {
     // 普通消息

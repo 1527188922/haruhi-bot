@@ -26,9 +26,9 @@ public class PokeHandler implements IPokeEvent {
     public volatile static List<String> cache = new CopyOnWriteArrayList<>();
 
     @Override
-    public boolean onPoke(final Message message) {
+    public void onPoke(final Message message) {
         if(!message.getSelf_id().equals(message.getTarget_id()) || message.getSelf_id().equals(message.getUser_id()) || cache.size() == 0){
-            return false;
+            return;
         }
 
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(()->{
@@ -50,6 +50,5 @@ public class PokeHandler implements IPokeEvent {
             }
 
         });
-        return true;
     }
 }

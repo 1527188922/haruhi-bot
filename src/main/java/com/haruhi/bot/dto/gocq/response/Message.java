@@ -10,6 +10,7 @@ public class Message implements Serializable {
     private String post_type;
     private String meta_event_type;
     private String message_type;
+    private String notice_type;
     private Long time;
     private String self_id;
     private String sub_type;

@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.haruhi.bot.config.BotConfig;
 import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.event.MessageEventEnum;
-import com.haruhi.bot.constant.PostTypeEnum;
+import com.haruhi.bot.constant.event.PostTypeEnum;
 import com.haruhi.bot.constant.event.MetaEventEnum;
 import com.haruhi.bot.dto.gocq.response.HttpResponse;
 import com.haruhi.bot.dto.gocq.response.Message;
@@ -76,6 +76,7 @@ public class Client {
                 // 心跳包
                 return;
             }
+            log.info("消息:{}",message);
             ThreadPoolFactory.getEventThreadPool().execute(new OnEventTask(messageBean));
         }catch (Exception e){
             log.error("收到消息时发生异常,消息:{}",message,e);
