@@ -10,6 +10,8 @@ bin-release/
 .settings/
 *.project
 *.classpath
+*.class
+*.log
 target
 logs
 test
