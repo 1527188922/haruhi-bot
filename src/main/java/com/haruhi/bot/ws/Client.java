@@ -76,7 +76,6 @@ public class Client {
                 // 心跳包
                 return;
             }
-            log.info("消息:{}",message);
             ThreadPoolFactory.getEventThreadPool().execute(new OnEventTask(messageBean));
         }catch (Exception e){
             log.error("收到消息时发生异常,消息:{}",message,e);

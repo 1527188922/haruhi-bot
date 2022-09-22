@@ -1,12 +1,16 @@
 package com.haruhi.bot.dispenser;
 
 import com.haruhi.bot.constant.event.MessageEventEnum;
+import com.haruhi.bot.constant.event.NoticeTypeEnum;
 import com.haruhi.bot.constant.event.SubTypeEnum;
 import com.haruhi.bot.dto.gocq.response.Message;
+import com.haruhi.bot.event.notice.IGroupDecreaseEvent;
+import com.haruhi.bot.event.notice.IGroupIncreaseEvent;
 import com.haruhi.bot.event.notice.INoticeEventType;
 import com.haruhi.bot.event.notice.IPokeEvent;
 import com.haruhi.bot.utils.ApplicationContextProvider;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -48,21 +52,31 @@ public class NoticeDispenser {
     public static void onEvent(final Message message){
         setMessageType(message);
         String subType = message.getSub_type();
+        String noticeType = message.getNotice_type();
         for (INoticeEventType value : container) {
-            if(SubTypeEnum.poke.toString().equals(subType)){
+            if(NoticeTypeEnum.notify.toString().equals(noticeType) && SubTypeEnum.poke.toString().equals(subType)){
                 if(value instanceof IPokeEvent){
-                    IPokeEvent pokeEvent = (IPokeEvent) value;
-                    pokeEvent.onPoke(message);
+                   ((IPokeEvent) value).onPoke(message);
+                }
+            }else if(NoticeTypeEnum.group_increase.toString().equals(noticeType)){
+                if(value instanceof IGroupIncreaseEvent){
+                    ((IGroupIncreaseEvent) value).onGroupIncrease(message);
+                }
+            }else if(NoticeTypeEnum.group_decrease.toString().equals(noticeType)){
+                if (value instanceof IGroupDecreaseEvent) {
+                    ((IGroupDecreaseEvent)value).onGroupDecrease(message);
                 }
             }
         }
     }
 
     private static void setMessageType(final Message message){
-        if(message.getGroup_id() != null){
-            message.setMessage_type(MessageEventEnum.group.getType());
-        }else if(message.getGroup_id() == null && message.getUser_id() != null){
-            message.setMessage_type(MessageEventEnum.privat.getType());
+        if(StringUtils.isBlank(message.getMessage_type())){
+            if(message.getGroup_id() != null){
+                message.setMessage_type(MessageEventEnum.group.getType());
+            }else if(message.getGroup_id() == null && message.getUser_id() != null){
+                message.setMessage_type(MessageEventEnum.privat.getType());
+            }
         }
     }
 }

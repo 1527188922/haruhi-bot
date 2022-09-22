@@ -11,6 +11,8 @@ public class Message implements Serializable {
     private String meta_event_type;
     private String message_type;
     private String notice_type;
+    // 操作人id 比如群管理员a踢了一个人,那么该值为a的qq号
+    private String operator_id;
     private Long time;
     private String self_id;
     private String sub_type;
