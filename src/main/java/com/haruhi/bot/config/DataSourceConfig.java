@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class DataSourceConfig {
 
-    // 主数据库 数据源名称
-    public final static String DATA_SOURCE_MASTER_NAME = "master";
+    // 系统数据源名称
+    public final static String DATA_SOURCE_SYSTEM = "system";
     // 主数据库名称 必须为mysql 这是mysql的系统库
     public static String DATA_BASE_MASTER_NAME = "";
     // 驱动类全命名 reference
@@ -23,7 +23,7 @@ public class DataSourceConfig {
 
     public static String jdbcUrlTemplate = "jdbc:mysql://{0}:{1}/{2}?useUnicode=true&characterEncoding=utf-8&useSSL=false";
     // bot数据源名称
-    public final static String DATA_SOURCE_BOT_NAME = "bot";
+    public final static String DATA_SOURCE_MASTER = "master";
     // bot数据库名称
     public static String DATA_BASE_BOT = "";
     // 数据库用户名

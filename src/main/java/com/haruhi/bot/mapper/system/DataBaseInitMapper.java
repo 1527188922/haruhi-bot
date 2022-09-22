@@ -1,4 +1,4 @@
-package com.haruhi.bot.mapper;
+package com.haruhi.bot.mapper.system;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.haruhi.bot.config.DataSourceConfig;
@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 @Mapper
-@DS(value = DataSourceConfig.DATA_SOURCE_MASTER_NAME)
+@DS(value = DataSourceConfig.DATA_SOURCE_SYSTEM)
 public interface DataBaseInitMapper {
 
     /**
@@ -15,7 +15,7 @@ public interface DataBaseInitMapper {
      * @param dbName
      * @return
      */
-    int isDataBaseExist(@Param("dbName") String dbName);
+    int dataBaseIsExist(@Param("dbName") String dbName);
 
     /**
      * 创建数据库
@@ -27,5 +27,5 @@ public interface DataBaseInitMapper {
     /**
      * 判断表是否存在，存在则返回1，不存在则返回0
      */
-    int isTableExist(@Param("dbName") String dbName, @Param("tableName") String tableName);
+    int tableIsExist(@Param("dbName") String dbName, @Param("tableName") String tableName);
 }

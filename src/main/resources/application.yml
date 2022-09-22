@@ -1,5 +1,4 @@
 spring:
   profiles:
-    # 打包之后默认使用pro配置文件，跟这里无关
-    # 打包后启动一定要用pro环境 在application.yml文件中配置(打包默认就是pro,所以不用动)
+    # 打包会自动使用application-pro的配置
     active: dev
