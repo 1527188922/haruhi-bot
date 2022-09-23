@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
@@ -96,7 +97,7 @@ public class BulletChatWordCloudHandler implements IMessageEvent {
                     return;
                 }
                 List<String> chatList = WordCloudUtil.getChatList(playerInfoResp.getCid());
-                if(chatList == null || chatList.size() == 0){
+                if(CollectionUtils.isEmpty(chatList)){
                     Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), "弹幕数为0，不生成", GocqActionEnum.SEND_MSG,true);
                     return;
                 }
@@ -108,10 +109,11 @@ public class BulletChatWordCloudHandler implements IMessageEvent {
                 }
                 Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), MessageFormat.format("获取弹幕成功，数量：{0}\n开始生成...\n标题：{1}{2}",chatList.size(),playerInfoResp.getPart(),cq), GocqActionEnum.SEND_MSG,false);
                 List<String> list = WordSlicesTask.execute(chatList);
-                if(list == null || list.size() == 0){
+                Map<String, Integer> map = WordCloudUtil.exclusionsWord(WordCloudUtil.setFrequency(list));
+                if(CollectionUtils.isEmpty(map)){
                     Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), "有效词料为0，不生成", GocqActionEnum.SEND_MSG,true);
+                    return;
                 }
-                Map<String, Integer> map = WordCloudUtil.setFrequency(list);
                 String fileName = bv + "-" + CommonUtil.uuid() + ".png";
                 outPutPath = basePath + File.separator + fileName;
                 WordCloudUtil.generateWordCloudImage(map,outPutPath);

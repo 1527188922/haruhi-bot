@@ -19,6 +19,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -84,14 +85,14 @@ public class BtSearchHandler implements IMessageEvent {
                 }
                 Document document = Jsoup.parse(htmlStr);
                 Elements list = document.getElementsByClass("search-item");
-                if (list == null || list.size() == 0) {
+                if (CollectionUtils.isEmpty(list)) {
                     noData(message,keyword);
                     return;
                 }
                 List<String> res = new ArrayList<>(list.size());
                 for (Element element : list) {
                     Elements a = element.getElementsByTag("a");
-                    if (a == null || a.size() == 0) {
+                    if (CollectionUtils.isEmpty(a)) {
                         continue;
                     }
                     StringBuilder strBuilder = new StringBuilder();

@@ -26,6 +26,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
@@ -78,7 +79,7 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
         LambdaQueryWrapper<GroupChatHistory> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(GroupChatHistory::getGroupId,message.getGroup_id()).gt(GroupChatHistory::getCreateTime,date.getTime());
         List<String> userIds = CommonUtil.getCqParams(message.getMessage(), CqCodeTypeEnum.at, "qq");
-        if(userIds != null && userIds.size() > 0){
+        if(!CollectionUtils.isEmpty(userIds)){
             queryWrapper.in(GroupChatHistory::getUserId,userIds);
         }
         if(FindChatMessageHandler.MessageType.IMAGE.equals(param.getMessageType())){
@@ -90,7 +91,7 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
         // 升序
         queryWrapper.orderByAsc(GroupChatHistory::getCreateTime);
         List<GroupChatHistory> chatList = groupChatHistoryMapper.selectList(queryWrapper);
-        if(chatList != null && chatList.size() > 0){
+        if(!CollectionUtils.isEmpty(chatList)){
             int limit = 80;
             if(chatList.size() > limit){
                 // 记录条数多于80张,分开发送
@@ -170,12 +171,12 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
         }
         String outPutPath = null;
         List<String> userIds = CommonUtil.getCqParams(message.getMessage(), CqCodeTypeEnum.at, "qq");
-        if (userIds != null && userIds.size() > 0) {
+        if (!CollectionUtils.isEmpty(userIds)) {
             queryWrapper.in(GroupChatHistory::getUserId,userIds);
         }
         // 从数据库查询聊天记录
         List<GroupChatHistory> corpus = groupChatHistoryMapper.selectList(queryWrapper);
-        if (corpus == null || corpus.size() == 0) {
+        if (CollectionUtils.isEmpty(corpus)) {
             Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("该条件下没有聊天记录,无法生成",corpus.size()),GocqActionEnum.SEND_MSG,true);
             generateComplete(message,null);
             return;
@@ -187,15 +188,15 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
             long l = System.currentTimeMillis();
             List<String> collect = corpus.stream().map(GroupChatHistory::getContent).collect(Collectors.toList());
             List<String> strings = WordSlicesTask.execute(collect);
-            if(strings == null || strings.size() == 0){
+            // 设置权重和排除指定词语
+            Map<String, Integer> map = WordCloudUtil.exclusionsWord(WordCloudUtil.setFrequency(strings));
+            if(CollectionUtils.isEmpty(map)){
                 Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, "分词为0，本次不生成词云图",GocqActionEnum.SEND_MSG,true);
                 generateComplete(message,null);
                 return;
             }
-            // 开始设置词语权重 设置权重很快,就不发送提示消息了
             long l1 = System.currentTimeMillis();
             Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("分词完成:{0}条\n耗时:{1}毫秒\n开始生成图片...",strings.size(),l1 - l),GocqActionEnum.SEND_MSG,true);
-            Map<String, Integer> map = WordCloudUtil.setFrequency(strings);
             // 开始生成图片
             String fileName = regexEnum.getUnit().toString() + "-" + message.getGroup_id() + ".png";
             outPutPath = basePath + File.separator + fileName;

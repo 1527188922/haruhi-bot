@@ -14,6 +14,7 @@ import com.haruhi.bot.ws.Client;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.text.MessageFormat;
 import java.util.List;
@@ -55,7 +56,7 @@ public class GroupBroadcastMessagesHandler implements IPrivateMessageEvent {
         @Override
         public void run() {
             List<GroupInfo> groupList = GocqRequestUtil.getGroupList();
-            if(groupList == null || groupList.size() == 0){
+            if(CollectionUtils.isEmpty(groupList)){
                 Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.privat, MessageFormat.format("{0}还没有加任何群。。",BotConfig.NAME), GocqActionEnum.SEND_MSG,true);
                 return;
             }

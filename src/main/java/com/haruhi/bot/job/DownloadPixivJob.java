@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.io.Serializable;
 import java.text.MessageFormat;
@@ -79,7 +80,7 @@ public class DownloadPixivJob extends AbstractJob {
                     return;
                 }
                 List<PixivItem> data = response.getData();
-                if(data == null || data.size() == 0){
+                if(CollectionUtils.isEmpty(data)){
                     Client.sendMessage(BotConfig.SUPER_USER,null, MessageEventEnum.privat, MessageFormat.format("no data\n本次请求data为null或者size为0\n线程：{0}",Thread.currentThread().getName()), GocqActionEnum.SEND_MSG,true);
                     return;
                 }

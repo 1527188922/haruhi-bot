@@ -11,7 +11,6 @@ import com.haruhi.bot.dto.gocq.response.HttpResponse;
 import com.haruhi.bot.dto.gocq.response.Message;
 import com.haruhi.bot.dto.gocq.response.SelfInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 
 import java.util.ArrayList;
@@ -104,7 +103,7 @@ public class GocqRequestUtil {
 
     public static SelfInfo getLoginInfo(){
         String responseStr = RestUtil.sendGetRequest(RestUtil.getRestTemplate(),BotConfig.HTTP_URL + "/" + GocqActionEnum.GET_LOGIN_INGO.getAction(), null, String.class);
-        if (StringUtils.isNotBlank(responseStr)) {
+        if (Strings.isNotBlank(responseStr)) {
             JSONObject jsonObject = JSONObject.parseObject(responseStr);
             SelfInfo data = JSONObject.parseObject(jsonObject.getString("data"), SelfInfo.class);
             return data;

@@ -10,7 +10,7 @@ import com.haruhi.bot.event.notice.INoticeEventType;
 import com.haruhi.bot.event.notice.IPokeEvent;
 import com.haruhi.bot.utils.ApplicationContextProvider;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -71,10 +71,10 @@ public class NoticeDispenser {
     }
 
     private static void setMessageType(final Message message){
-        if(StringUtils.isBlank(message.getMessage_type())){
+        if(Strings.isBlank(message.getMessage_type())){
             if(message.getGroup_id() != null){
                 message.setMessage_type(MessageEventEnum.group.getType());
-            }else if(message.getGroup_id() == null && message.getUser_id() != null){
+            }else if(message.getUser_id() != null){
                 message.setMessage_type(MessageEventEnum.privat.getType());
             }
         }

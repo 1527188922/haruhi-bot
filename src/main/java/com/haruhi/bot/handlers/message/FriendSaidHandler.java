@@ -13,6 +13,7 @@ import com.haruhi.bot.utils.GocqRequestUtil;
 import com.haruhi.bot.ws.Client;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +70,7 @@ public class FriendSaidHandler implements IGroupMessageEvent {
         public void run() {
             try {
                 List<GroupMember> groupMemberList = GocqRequestUtil.getGroupMemberList(message.getGroup_id(), message.getUser_id(), message.getSelf_id());
-                if(groupMemberList == null || groupMemberList.size() == 0){
+                if(CollectionUtils.isEmpty(groupMemberList)){
                     Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group,"你哪来的朋友？",GocqActionEnum.SEND_MSG,true);
                     return;
                 }

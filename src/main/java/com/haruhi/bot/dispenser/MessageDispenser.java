@@ -217,7 +217,7 @@ public class MessageDispenser {
         IMessageEventType messageEventType;
         try {
             funId = Integer.valueOf(fun);
-            messageEventType = findHandlerByWeight(funId.intValue());
+            messageEventType = findHandlerByWeight(funId);
         }catch (Exception e){
             messageEventType = findHandlerByName(fun);
         }

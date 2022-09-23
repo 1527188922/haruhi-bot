@@ -11,9 +11,9 @@ import com.haruhi.bot.factory.ThreadPoolFactory;
 import com.haruhi.bot.service.wordStrip.WordStripService;
 import com.haruhi.bot.ws.Client;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.text.StrBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.text.MessageFormat;
 import java.util.List;
@@ -46,7 +46,7 @@ public class WordStripShowHandler implements IGroupMessageEvent {
             LambdaQueryWrapper<WordStrip> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(WordStrip::getGroupId,message.getGroup_id());
             List<WordStrip> list = wordStripService.list(queryWrapper);
-            if(list == null || list.size() == 0){
+            if(CollectionUtils.isEmpty(list)){
                 Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group,"本群没有词条", GocqActionEnum.SEND_MSG,true);
                 return;
             }
@@ -56,10 +56,10 @@ public class WordStripShowHandler implements IGroupMessageEvent {
     }
 
     private String processWordStrip(List<WordStrip> list){
-        StrBuilder strBuilder = new StrBuilder("本群词条：\n");
+        StringBuilder stringBuilder = new StringBuilder("本群词条：\n");
         for (WordStrip wordStrip : list) {
-            strBuilder.append(MessageFormat.format("[{0}]-[{1}] 创建人：{2}\n",wordStrip.getKeyWord(),wordStrip.getAnswer(),wordStrip.getUserId()));
+            stringBuilder.append(MessageFormat.format("[{0}]-[{1}] 创建人：{2}\n",wordStrip.getKeyWord(),wordStrip.getAnswer(),wordStrip.getUserId()));
         }
-        return strBuilder.toString();
+        return stringBuilder.toString();
     }
 }

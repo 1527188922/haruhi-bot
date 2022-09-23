@@ -7,7 +7,7 @@ import com.haruhi.bot.dto.gocq.response.SelfInfo;
 import com.haruhi.bot.utils.FileUtil;
 import com.haruhi.bot.utils.GocqRequestUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +33,7 @@ public class SystemService {
                 s = MessageFormat.format("taskkill /pid {0} -t -f",BotConfig.PID);
                 scriptName = "stop.bat";
             }
-            if (StringUtils.isNotBlank(s)) {
+            if (Strings.isNotBlank(s)) {
                 File file = new File(envConfig.applicationHomePath() + File.separator + scriptName);
                 FileUtil.writeText(file,s);
             }
@@ -42,7 +42,7 @@ public class SystemService {
     }
 
     public static void loadLoginInfo(boolean reConnect){
-        if (StringUtils.isBlank(BotConfig.SELF_ID) || reConnect) {
+        if (Strings.isBlank(BotConfig.SELF_ID) || reConnect) {
             loadLoginInfo();
         }
     }

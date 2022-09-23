@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -73,7 +74,7 @@ public class PixivByUidHandler implements IMessageEvent {
             LambdaQueryWrapper<Pixiv> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(Pixiv::getUid,uid);
             List<Pixiv> list = pixivService.list(queryWrapper);
-            if(list == null || list.size() == 0){
+            if(CollectionUtils.isEmpty(list)){
                 Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), MessageFormat.format("没有uid[{0}]的图片...",uid), GocqActionEnum.SEND_MSG,true);
                 return;
             }

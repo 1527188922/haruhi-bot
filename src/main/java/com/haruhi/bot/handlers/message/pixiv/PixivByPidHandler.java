@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -73,7 +74,7 @@ public class PixivByPidHandler implements IMessageEvent {
             LambdaQueryWrapper<Pixiv> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(Pixiv::getPid,pid);
             List<Pixiv> list = pixivService.list(queryWrapper);
-            if(list != null && list.size() > 0){
+            if(!CollectionUtils.isEmpty(list)){
                 if(MessageEventEnum.group.getType().equals(message.getMessage_type())){
                     List<ForwardMsg> params = new ArrayList<>(list.size() + 1);
                     params.add(CommonUtil.createForwardMsgItem(MessageFormat.format("pid：{0}\n※原图链接不需要翻墙，直接点击",pid),message.getSelf_id(), BotConfig.NAME));

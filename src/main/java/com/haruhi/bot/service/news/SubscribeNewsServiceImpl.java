@@ -18,7 +18,7 @@ import com.haruhi.bot.utils.RestUtil;
 import com.haruhi.bot.ws.Client;
 import com.simplerobot.modules.utils.KQCodeUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -39,7 +39,7 @@ public class SubscribeNewsServiceImpl extends ServiceImpl<SubscribeNewsMapper, S
         String sourceId = "T1348647853363";
         try {
             String responseStr = RestUtil.sendGetRequest(RestUtil.getRestTemplate(2 * 1000), ThirdPartyURL.NEWS_163, null, String.class);
-            if (StringUtils.isNotBlank(responseStr)) {
+            if (Strings.isNotBlank(responseStr)) {
                 JSONObject responseJson = JSONObject.parseObject(responseStr);
                 JSONArray jsonArray = responseJson.getJSONArray(sourceId);
                 if(!CollectionUtils.isEmpty(jsonArray)){
@@ -83,18 +83,18 @@ public class SubscribeNewsServiceImpl extends ServiceImpl<SubscribeNewsMapper, S
         stringBuilder.append(e.getTitle()).append("】\n[");
         stringBuilder.append(DateTimeUtil.dateTimeFormat(e.getLmodify(),DateTimeUtil.FormatEnum.yyyyMMddHHmmss)).append("]\n");
         stringBuilder.append(e.getDigest()).append("\n");
-        if(StringUtils.isNotBlank(e.getImgsrc())){
+        if(Strings.isNotBlank(e.getImgsrc())){
             String cq = instance.toCq(CqCodeTypeEnum.image.getType(), "file=" + e.getImgsrc());
             stringBuilder.append(cq).append("\n");
         }
-        if(StringUtils.isNotBlank(e.getUrl())){
+        if(Strings.isNotBlank(e.getUrl())){
             stringBuilder.append("详情:").append(e.getUrl());
         }else{
             boolean hasUrl = false;
-            if(StringUtils.isNotBlank(e.getPostid())){
+            if(Strings.isNotBlank(e.getPostid())){
                 hasUrl = true;
                 e.setUrl("https://3g.163.com/dy/article/" + e.getPostid() + ".html");
-            }else if(StringUtils.isNotBlank(e.getDocid())){
+            }else if(Strings.isNotBlank(e.getDocid())){
                 hasUrl = true;
                 e.setUrl("https://3g.163.com/dy/article/" + e.getDocid() + ".html");
             }

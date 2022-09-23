@@ -6,6 +6,7 @@ import com.haruhi.bot.handlers.message.wordStrip.WordStripHandler;
 import com.haruhi.bot.mapper.WordStripMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class WordStripServiceImpl extends ServiceImpl<WordStripMapper, WordStrip
     @Override
     public void loadWordStrip(){
         List<WordStrip> wordStrips = wordStripMapper.selectList(null);
-        if (wordStrips != null && wordStrips.size() > 0){
+        if (!CollectionUtils.isEmpty(wordStrips)){
             for (WordStrip element : wordStrips) {
                 WordStripHandler.cache.put(element.getGroupId() + "-" + element.getKeyWord(),element.getAnswer());
             }

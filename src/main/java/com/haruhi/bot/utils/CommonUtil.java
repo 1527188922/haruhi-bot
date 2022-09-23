@@ -95,7 +95,7 @@ public class CommonUtil {
      */
     public static <T> List<List<T>> averageAssignList(List<T> source, int splitItemNum) {
         List<List<T>> result = new ArrayList<List<T>>();
-        if (source != null && source.size() > 0 && splitItemNum > 0) {
+        if (!CollectionUtils.isEmpty(source) && splitItemNum > 0) {
             if (source.size() <= splitItemNum) {
                 // 源List元素数量小于等于目标分组数量
                 result.add(source);

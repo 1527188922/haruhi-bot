@@ -6,6 +6,7 @@ import com.haruhi.bot.handlers.notice.PokeHandler;
 import com.haruhi.bot.mapper.PokeReplyMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class PokeReplyServiceImpl extends ServiceImpl<PokeReplyMapper, PokeReply
     @Override
     public void loadPokeReply() {
         List<PokeReply> list = pokeReplyMapper.selectList(null);
-        if(list != null && list.size() > 0){
+        if(!CollectionUtils.isEmpty(list)){
             for (PokeReply pokeReply : list) {
                 PokeHandler.cache.add(pokeReply.getReply());
             }

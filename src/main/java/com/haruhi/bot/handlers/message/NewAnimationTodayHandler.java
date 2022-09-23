@@ -17,6 +17,7 @@ import com.haruhi.bot.ws.Client;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -64,7 +65,7 @@ public class NewAnimationTodayHandler implements IMessageEvent {
                     if (matcher.find()) {
                         String group = matcher.group(1);
                         List<NewAnimationTodayResp> data = JSONArray.parseArray(group, NewAnimationTodayResp.class);
-                        if (data == null || data.size() == 0) {
+                        if (CollectionUtils.isEmpty(data)) {
                             return;
                         }
                         data = data.stream().filter(e -> e.getIsnew()).collect(Collectors.toList());

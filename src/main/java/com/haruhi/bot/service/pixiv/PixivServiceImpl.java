@@ -56,13 +56,13 @@ public class PixivServiceImpl extends ServiceImpl<PixivMapper, Pixiv> implements
         if (MessageEventEnum.group.getType().equals(message.getMessage_type())) {
             List<ForwardMsg> params = new ArrayList<>(pixivHashSet.size() + 1);
             params.add(CommonUtil.createForwardMsgItem(MessageFormat.format("tag：{0}\n※原图链接不需要翻墙，直接点",tag),message.getSelf_id(), BotConfig.NAME));
-            if(pixivHashSet != null && pixivHashSet.size() > 0){
+            if(pixivHashSet.size() > 0){
                 groupSend(pixivHashSet,params,message);
             }else{
                 groupSend(pixivs,params,message);
             }
         } else if (MessageEventEnum.privat.getType().equals(message.getMessage_type())) {
-            if(pixivHashSet != null && pixivHashSet.size() > 0){
+            if(pixivHashSet.size() > 0){
                 privateSend(pixivHashSet,message);
             }else{
                 privateSend(pixivs,message);
