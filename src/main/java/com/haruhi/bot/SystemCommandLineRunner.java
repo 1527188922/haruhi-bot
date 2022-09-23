@@ -23,7 +23,7 @@ public class SystemCommandLineRunner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         // 初始化数据库
-        dataBaseService.dataBaseInit();
+        dataBaseService.initDataBase();
         log.info("开始连接go-cqhttp...");
         if(!Client.connect()){
             Client.reConnection();
