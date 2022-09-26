@@ -41,12 +41,13 @@ public class JobManage implements ApplicationContextAware {
         Scheduler scheduler = schedulerFactoryBean.getScheduler();
         Map<String, AbstractJob> beansOfType = applicationContext.getBeansOfType(AbstractJob.class);
         for (AbstractJob value : beansOfType.values()) {
+            Class<? extends AbstractJob> jobClass = value.getClass();
+            String simpleName = jobClass.getSimpleName();
+            String name = simpleName + "_job";
+            String trigger = simpleName + "_trigger";
+            String group = simpleName + "_group";
 
-            String name = value.getClass().getSimpleName() + "_job";
-            String trigger = value.getClass().getSimpleName() + "_trigger";
-            String group = value.getClass().getSimpleName() + "_group";
-
-            JobDetail detail = JobBuilder.newJob(value.getClass()).withIdentity(name, group).build();
+            JobDetail detail = JobBuilder.newJob(jobClass).withIdentity(name, group).build();
             String cronExpression = value.cronExpression();
             Trigger build = TriggerBuilder.newTrigger().withIdentity(trigger, group).withSchedule(CronScheduleBuilder.cronSchedule(cronExpression)).build();
 
