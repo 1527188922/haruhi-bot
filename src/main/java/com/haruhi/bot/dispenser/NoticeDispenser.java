@@ -53,16 +53,22 @@ public class NoticeDispenser {
         setMessageType(message);
         String subType = message.getSub_type();
         String noticeType = message.getNotice_type();
-        for (INoticeEventType value : container) {
-            if(NoticeTypeEnum.notify.toString().equals(noticeType) && SubTypeEnum.poke.toString().equals(subType)){
+
+        if(NoticeTypeEnum.notify.toString().equals(noticeType) && SubTypeEnum.poke.toString().equals(subType)){
+            for (INoticeEventType value : container){
                 if(value instanceof IPokeEvent){
-                   ((IPokeEvent) value).onPoke(message);
+                    ((IPokeEvent) value).onPoke(message);
                 }
-            }else if(NoticeTypeEnum.group_increase.toString().equals(noticeType)){
+            }
+
+        }else if(NoticeTypeEnum.group_increase.toString().equals(noticeType)){
+            for (INoticeEventType value : container){
                 if(value instanceof IGroupIncreaseEvent){
                     ((IGroupIncreaseEvent) value).onGroupIncrease(message);
                 }
-            }else if(NoticeTypeEnum.group_decrease.toString().equals(noticeType)){
+            }
+        }else if(NoticeTypeEnum.group_decrease.toString().equals(noticeType)){
+            for (INoticeEventType value : container){
                 if (value instanceof IGroupDecreaseEvent) {
                     ((IGroupDecreaseEvent)value).onGroupDecrease(message);
                 }

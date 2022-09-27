@@ -144,20 +144,17 @@ public class MessageDispenser {
     public static void onEvent(final Message message,final String command){
         String messageType = message.getMessage_type();
 
-        for (IMessageEventType element : container) {
-            if(element instanceof IMessageEvent){
-                IMessageEvent event = (IMessageEvent) element;
-                if(MessageEventEnum.group.getType().equals(messageType)){
+        if(MessageEventEnum.group.getType().equals(messageType)){
+            for (IMessageEventType element : container){
+                if(element instanceof IMessageEvent){
+                    IMessageEvent event = (IMessageEvent) element;
                     if(isBanFunctionByGroup(event,message.getGroup_id())){
                         continue;
                     }
-                }
-                if(event.onMessage(message,command)){
-                    break;
-                }
-            }
-            if(MessageEventEnum.group.getType().equals(messageType)){
-                if(element instanceof IGroupMessageEvent){
+                    if(event.onMessage(message,command)){
+                        break;
+                    }
+                }else if(element instanceof IGroupMessageEvent){
                     IGroupMessageEvent event = (IGroupMessageEvent) element;
                     if(isBanFunctionByGroup(event,message.getGroup_id())){
                         continue;
@@ -166,8 +163,15 @@ public class MessageDispenser {
                         break;
                     }
                 }
-            }else if(MessageEventEnum.privat.getType().equals(messageType)){
-                if(element instanceof IPrivateMessageEvent){
+            }
+        }else if(MessageEventEnum.privat.getType().equals(messageType)){
+            for (IMessageEventType element : container){
+                if(element instanceof IMessageEvent){
+                    IMessageEvent event = (IMessageEvent) element;
+                    if(event.onMessage(message,command)){
+                        break;
+                    }
+                }else if(element instanceof IPrivateMessageEvent){
                     IPrivateMessageEvent event = (IPrivateMessageEvent) element;
                     if(event.onPrivate(message,command)){
                         break;
@@ -175,6 +179,7 @@ public class MessageDispenser {
                 }
             }
         }
+
     }
 
     /**
