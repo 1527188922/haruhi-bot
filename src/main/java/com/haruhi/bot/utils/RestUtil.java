@@ -16,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 public class RestUtil {
@@ -105,17 +106,29 @@ public class RestUtil {
     }
 
     /**
-     * 获取指定连接时间的RestTemplate
+     * 存放RestTemplate对象
+     * key:timeout
+     */
+    private static Map<Integer,RestTemplate> restTemplateCache = new ConcurrentHashMap<>();
+    /**
+     * 获取指定超时时间的RestTemplate
      * @param timeout
      * @return
      */
     public static RestTemplate getRestTemplate(int timeout) {
+        RestTemplate restTemp = restTemplateCache.get(timeout);
+        if(restTemp != null){
+            return restTemp;
+        }
+
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
         requestFactory.setConnectTimeout(timeout);
         requestFactory.setReadTimeout(timeout);
-        RestTemplate restTemp = new RestTemplate();
+        restTemp = new RestTemplate();
         restTemp.setRequestFactory(requestFactory);
         restTemp.getMessageConverters().set(1, new StringHttpMessageConverter(StandardCharsets.UTF_8));
+
+        restTemplateCache.put(timeout,restTemp);
         return restTemp;
     }
 }

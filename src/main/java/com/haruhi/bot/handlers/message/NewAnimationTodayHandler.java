@@ -58,7 +58,7 @@ public class NewAnimationTodayHandler implements IMessageEvent {
         @Override
         public void run() {
             try {
-                String responseHtml = HttpClientUtil.doGet(ThirdPartyURL.AGEFANSTV, null, 10 * 1000);
+                String responseHtml = HttpClientUtil.doGet(HttpClientUtil.getHttpClient(10 * 1000),ThirdPartyURL.AGEFANSTV, null);
                 if (Strings.isNotBlank(responseHtml)) {
                     Pattern compile = Pattern.compile("var new_anime_list = (.*?);");
                     Matcher matcher = compile.matcher(responseHtml);

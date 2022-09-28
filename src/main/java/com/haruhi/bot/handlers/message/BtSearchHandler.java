@@ -78,7 +78,7 @@ public class BtSearchHandler implements IMessageEvent {
         @Override
         public void run() {
             try {
-                String htmlStr = HttpClientUtil.doGet(MessageFormat.format(ThirdPartyURL.BT_SEARCH + "/s/{0}_rel_{1}.html", keyword, page), null,10 * 1000);
+                String htmlStr = HttpClientUtil.doGet(HttpClientUtil.getHttpClient(10 * 1000),MessageFormat.format(ThirdPartyURL.BT_SEARCH + "/s/{0}_rel_{1}.html", keyword, page), null);
                 if(Strings.isBlank(htmlStr)){
                     Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"bt搜索请求发生异常", GocqActionEnum.SEND_MSG,true);
                     return;
@@ -149,7 +149,7 @@ public class BtSearchHandler implements IMessageEvent {
      */
     public static void requestDetail(StringBuilder strBuilder,String detailHref) throws Exception{
 
-        String html = HttpClientUtil.doGet(detailHref, null, 5 * 1000);
+        String html = HttpClientUtil.doGet(HttpClientUtil.getHttpClient(5 * 1000),detailHref, null);
         Document document = Jsoup.parse(html);
         Element fileDetail = document.getElementsByClass("fileDetail").get(0);
         Element size = fileDetail.getElementsByTag("p").get(1);

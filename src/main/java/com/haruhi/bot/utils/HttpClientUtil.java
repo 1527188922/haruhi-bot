@@ -12,27 +12,40 @@ import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 public class HttpClientUtil {
     private HttpClientUtil(){}
     private static CloseableHttpClient defaultHttpClient = HttpClientBuilder.create().build();
+    public static CloseableHttpClient getHttpClient(){
+        return defaultHttpClient;
+    }
 
-    public static String doGet(String url, Map<String,Object> urlParams,int timeout){
-        CloseableHttpClient httpClient = null;
-        if(timeout > 0){
-            RequestConfig requestConfig = RequestConfig.custom()
-                    .setSocketTimeout(timeout)
-                    .setConnectTimeout(timeout)
-                    .setConnectionRequestTimeout(timeout)
-                    .setStaleConnectionCheckEnabled(true)
-                    .build();
-            httpClient = HttpClients.custom()
-                    .setDefaultRequestConfig(requestConfig)
-                    .build();
-        }else{
-            httpClient = defaultHttpClient;
+    private static Map<Integer,CloseableHttpClient> httpClientCache = new ConcurrentHashMap<>();
+
+    public static CloseableHttpClient getHttpClient(int timeout){
+
+        CloseableHttpClient httpClient = httpClientCache.get(timeout);
+        if(httpClient != null){
+            return httpClient;
         }
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setSocketTimeout(timeout)
+                .setConnectTimeout(timeout)
+                .setConnectionRequestTimeout(timeout)
+                .setStaleConnectionCheckEnabled(true)
+                .build();
+        httpClient = HttpClients.custom()
+                .setDefaultRequestConfig(requestConfig)
+                .build();
+
+        httpClientCache.put(timeout,httpClient);
+        return httpClient;
+    }
+
+
+    public static String doGet(CloseableHttpClient httpClient,String url, Map<String,Object> urlParams){
 
         CloseableHttpResponse response = null;
         try {
