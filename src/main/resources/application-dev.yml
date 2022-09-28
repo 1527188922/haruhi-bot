@@ -57,4 +57,7 @@ logging:
     com.haruhi.bot.mapper: debug
 env:
   active: dev
+log:
+  level: info
+  path: ./logs
 

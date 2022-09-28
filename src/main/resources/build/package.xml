@@ -22,8 +22,16 @@
         </fileSet>
 
         <fileSet>
+            <directory>${project.basedir}/src/main/resources</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>logback-spring.xml</include>
+            </includes>
+        </fileSet>
+
+        <fileSet>
             <directory>${project.basedir}/src/main/resources/build/script</directory>
-            <outputDirectory></outputDirectory>
+            <outputDirectory>/</outputDirectory>
             <includes>
                 <include>*.bat</include>
                 <include>*.sh</include>
@@ -31,15 +39,15 @@
         </fileSet>
         <fileSet>
             <directory>${project.basedir}/src/main/resources/build/image</directory>
-            <outputDirectory>image</outputDirectory>
+            <outputDirectory>/image</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>${project.basedir}/src/main/resources/build/audio</directory>
-            <outputDirectory>audio</outputDirectory>
+            <outputDirectory>/audio</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>${project.build.directory}</directory>
-            <outputDirectory></outputDirectory>
+            <outputDirectory>/</outputDirectory>
             <includes>
                 <include>*.jar</include>
             </includes>
