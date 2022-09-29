@@ -1,5 +1,6 @@
 package com.haruhi.bot.config;
 
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -65,6 +66,9 @@ public class DataSourceConfig {
     @Autowired
     public void setBotDbname(@Value("${mysql.dbName}") String dbName) {
         DATA_BASE_BOT = dbName;
+        if (Strings.isBlank(DATA_BASE_BOT)) {
+            throw new NullPointerException("未配置数据名称！");
+        }
     }
 
     @Autowired

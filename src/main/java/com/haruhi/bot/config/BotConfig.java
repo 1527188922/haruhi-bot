@@ -33,6 +33,9 @@ public class BotConfig {
     @Autowired
     public void setSuperUser(@Value("${bot.super-user}") String superUser) {
         SUPER_USER = superUser;
+        if(Strings.isBlank(SUPER_USER)){
+            log.warn("未配置超级用户qq");
+        }
     }
     @Autowired
     public void setName(@Value("${bot.name}") String name) {
@@ -41,14 +44,23 @@ public class BotConfig {
     @Autowired
     public void setSearchImageKey(@Value("${bot.search-image-key}") String searchImageKey){
         SEARCH_IMAGE_KEY = searchImageKey;
+        if(Strings.isBlank(SEARCH_IMAGE_KEY)){
+            log.warn("未配置识图key,无法使用识图功能");
+        }
     }
     @Autowired
     public void setHttpUrl(@Value("${gocq.http}") String httpUrl){
         HTTP_URL = httpUrl;
+        if(Strings.isBlank(HTTP_URL)){
+            throw new NullPointerException("未配置gocq.http！");
+        }
     }
     @Autowired
     public void setGocqWs(@Value("${gocq.ws}") String wsUrl) {
         WS_URL = wsUrl;
+        if(Strings.isBlank(WS_URL)){
+            throw new NullPointerException("未配置gocq.ws！");
+        }
     }
     private static String getPID(){
         RuntimeMXBean bean = ManagementFactory.getRuntimeMXBean();

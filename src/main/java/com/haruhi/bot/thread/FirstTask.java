@@ -44,7 +44,7 @@ public class FirstTask implements Runnable{
             // 创建stop脚本
             systemService.writeStopScript();
         }catch (Exception e){
-            log.error("初始化数据异常",e);
+            log.error("初始任务执行异常",e);
         }
     }
 
