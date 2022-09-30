@@ -1,6 +1,7 @@
 package com.haruhi.bot.handlers.message;
 
 import com.alibaba.fastjson.JSONObject;
+import com.haruhi.bot.cache.CacheSet;
 import com.haruhi.bot.config.BotConfig;
 import com.haruhi.bot.constant.CqCodeTypeEnum;
 import com.haruhi.bot.constant.GocqActionEnum;
@@ -22,14 +23,12 @@ import com.simplerobot.modules.utils.KQCodeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
@@ -44,58 +43,54 @@ public class SearchImageHandler implements IMessageEvent {
     public String funName() {
         return "识图";
     }
+    private static int size = 20;
 
-    private static Long timeout = 30L* 1000L;
+    private static CacheSet<String> cache = new CacheSet<>(30,TimeUnit.SECONDS,size);
 
-    private static Map<String,Long> timeoutMap = new ConcurrentHashMap<>(6);
-
+    private String getKey(String userId,String groupId){
+        return userId + "-" + groupId;
+    }
     @Override
     public boolean onMessage(final Message message,final String command) {
         String cq = replySearch(message);
         String key = null;
         if(Strings.isNotBlank(cq)){
-            start(message,cq,null);
+            // 回复式识图
+            startSearch(message,cq,null);
         }else{
             KQCodeUtils utils = KQCodeUtils.getInstance();
             cq = utils.getCq(command, CqCodeTypeEnum.image.getType(), 0);
-            key = CommonUtil.getKey(message.getUser_id(), message.getGroup_id());
+            key = getKey(message.getUser_id(), message.getGroup_id());
             boolean matches = false;
-            if(timeoutMap.get(key) != null ){
-                if(System.currentTimeMillis() - timeoutMap.get(key) < timeout){
-                    if(cq != null){
+            if(cache.contains(key) && cq != null){
+                // 存在缓存 并且 图片cq码不为空
+                startSearch(message,cq,key);
+            }else{
+                String[] split = RegexEnum.SEARCH_IMAGE.getValue().split("\\|");
+                for (String s : split) {
+                    if(command.startsWith(s)){
                         matches = true;
+                        break;
                     }
-                }else{
-                    timeoutMap.remove(key);
+                }
+                if(matches && cq == null){
+                    cache.add(key);
+                    Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"图呢！", GocqActionEnum.SEND_MSG,true);
+                    return true;
+                }else if(matches){
+                    startSearch(message,cq,key);
+                    return true;
                 }
             }
-
-            String[] split = RegexEnum.SEARCH_IMAGE.getValue().split("\\|");
-            for (String s : split) {
-                if(command.startsWith(s)){
-                    matches = true;
-                    break;
-                }
-            }
-            if(!matches){
-                return false;
-            }
-
-            if(cq == null){
-                timeoutMap.put(key,System.currentTimeMillis());
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"图呢！", GocqActionEnum.SEND_MSG,true);
-                return true;
-            }
-            start(message,cq,key);
         }
-        return true;
+        return false;
     }
 
-    private void start(Message message,String cq,String key){
+    private void startSearch(Message message, String cq, String key){
         Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"开始搜图...",GocqActionEnum.SEND_MSG,true);
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(new searchImageTask(message,cq));
         if(key != null){
-            timeoutMap.remove(key);
+            cache.remove(key);
         }
     }
 

@@ -14,22 +14,9 @@ import java.util.UUID;
 
 public class CommonUtil {
     private CommonUtil(){}
-    private static String separator = "-";
-    public static String getKey(String userId,String groupId){
-        return userId + separator + groupId;
-    }
 
-    public static String getUserIdFromKey(String key){
-        return key.split(separator)[0];
-    }
-    public static String getGroupIdFromKey(String key){
-        return key.split(separator)[1];
-    }
-    private static Random random;
-    public synchronized static int randomInt(int start,int end){
-        if(random == null){
-            random = new Random();
-        }
+    private static Random random = new Random();
+    public static int randomInt(int start,int end){
         return random.nextInt(end - start + 1) + start;
     }
     public static ForwardMsg createForwardMsgItem(String context,String uin,String name){

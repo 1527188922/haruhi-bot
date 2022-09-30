@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class WordStripHandler implements IGroupMessageEvent {
 
-    public static Map<String,String> cache = new ConcurrentHashMap<>(10);
+    public static Map<String,String> cache = new ConcurrentHashMap<>();
 
     @Override
     public int weight() {
@@ -28,24 +28,14 @@ public class WordStripHandler implements IGroupMessageEvent {
         return "词条监听";
     }
 
-    private String answer;
-    public boolean matching(final Message message, final String command) {
-        String answer = cache.get(message.getGroup_id() + "-" + command);
-        if(answer != null){
-            this.answer = answer;
-            return true;
-        }
-        this.answer = null;
-        return false;
-    }
-
     @Override
     public boolean onGroup(final Message message,final String command) {
-        if(!matching(message,command)){
+        String answer = cache.get(message.getGroup_id() + "-" + command);
+        if(answer == null){
             return false;
         }
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(()->{
-            Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group,this.answer, GocqActionEnum.SEND_MSG,false);
+            Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, answer, GocqActionEnum.SEND_MSG,false);
         });
         return true;
     }
