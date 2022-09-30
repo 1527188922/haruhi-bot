@@ -57,6 +57,7 @@ public class SearchImageHandler implements IMessageEvent {
         if(Strings.isNotBlank(cq)){
             // 回复式识图
             startSearch(message,cq,null);
+            return true;
         }else{
             KQCodeUtils utils = KQCodeUtils.getInstance();
             cq = utils.getCq(command, CqCodeTypeEnum.image.getType(), 0);
