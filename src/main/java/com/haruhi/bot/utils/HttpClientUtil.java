@@ -5,6 +5,8 @@ import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
@@ -44,32 +46,51 @@ public class HttpClientUtil {
         return httpClient;
     }
 
-
-    public static String doGet(CloseableHttpClient httpClient,String url, Map<String,Object> urlParams){
-
-        CloseableHttpResponse response = null;
+    public static String doPost(CloseableHttpClient httpClient,String url, Map<String,Object> urlParams){
+        String s = encode(getUrl(url, urlParams));
+        HttpPost httpPost = new HttpPost(s);
         try {
-            String uri = "";
-            if(urlParams != null){
-                uri = RestUtil.urlSplicing(url,urlParams);
-            }else{
-                uri = url;
-            }
-            HttpGet httpGet = new HttpGet(encode(uri));
-            response = httpClient.execute(httpGet);
-            HttpEntity entity = response.getEntity();
-            return EntityUtils.toString(entity,"UTF-8");
+            return request(httpClient,httpPost);
         } catch (IOException e) {
-            log.error("HttpClient请求{}异常",url,e);
+            log.error("HttpClient POST请求:{}异常",s,e);
             return null;
         }
+    }
+
+    public static String doGet(CloseableHttpClient httpClient,String url, Map<String,Object> urlParams){
+        String s = encode(getUrl(url, urlParams));
+        HttpGet httpGet = new HttpGet(s);
+        try {
+            return request(httpClient,httpGet);
+        } catch (IOException e) {
+            log.error("HttpClient GET请求:{}异常",s,e);
+            return null;
+        }
+    }
+
+    private static String getUrl(String s,Map<String,Object> urlParams){
+        String url = "";
+        if(urlParams != null){
+            url = RestUtil.urlSplicing(s,urlParams);
+        }else{
+            url = s;
+        }
+        return url;
+    }
+
+    private static String request(CloseableHttpClient httpClient, HttpUriRequest httpUriRequest) throws IOException {
+        CloseableHttpResponse response = null;
+        response = httpClient.execute(httpUriRequest);
+        HttpEntity entity = response.getEntity();
+        return EntityUtils.toString(entity,"UTF-8");
+
     }
 
     public static String encode(String url) {
         return url.replace("\\","%5C")
                 .replace("+","%2B")
                 .replace(" ","%20")
-                .replace("%","%25")
+//                .replace("%","%25")
                 .replace("#","%23")
                 .replace("$","%24")
                 .replace("^","%5E")

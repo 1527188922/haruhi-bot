@@ -20,4 +20,6 @@ public class ThirdPartyURL {
     public static final String AGEFANSTV = "https://www.agemys.cc";
     // 网易新闻
     public static final String NEWS_163 = "http://c.m.163.com/nc/article/headline/T1348647853363/0-40.html";
+    // 网易搜索歌曲
+    public static final String NETEASE_SEARCH_MUSIC = "http://music.163.com/weapi/cloudsearch/get/web";
 }

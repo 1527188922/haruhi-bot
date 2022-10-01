@@ -31,7 +31,8 @@ public enum RegexEnum {
     GROUP_ENABLE_FUNCTION("群开启功能|群启用功能"),
     SEE_TODAY_NEWS("今日新闻"),
     SUBSCRIBE_NEWS("订阅新闻"),
-    UN_SUBSCRIBE_NEWS("取消订阅新闻");
+    UN_SUBSCRIBE_NEWS("取消订阅新闻"),
+    MUSIC_CARD("点歌 ");
 
 
     private String value;
