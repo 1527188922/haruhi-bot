@@ -11,6 +11,12 @@ public class CacheMap<K,V> {
 
     Cache<K,V> cache;
 
+    /**
+     * 有参构造
+     * @param expireTime 过期时间
+     * @param timeUnit 过期时间单位
+     * @param maximumSize 缓存最大容量
+     */
     public CacheMap(long expireTime, TimeUnit timeUnit, long maximumSize){
         cache = Caffeine.newBuilder()
                 .maximumSize(maximumSize)
