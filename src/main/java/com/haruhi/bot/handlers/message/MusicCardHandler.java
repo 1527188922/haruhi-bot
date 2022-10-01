@@ -72,7 +72,7 @@ public class MusicCardHandler implements IMessageEvent {
         }else if(songs != null){
             // 存在缓存 输入了纯数字
             if(index <= 0 || index > songs.size()){
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"不存在序号：" + index + "的歌曲", GocqActionEnum.SEND_MSG,true);
+                Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"不存在序号" + index + "的歌曲", GocqActionEnum.SEND_MSG,true);
                 return true;
             }
             // 若这里删除缓存，那么一次搜索只能点一次歌
@@ -81,8 +81,10 @@ public class MusicCardHandler implements IMessageEvent {
             ThreadPoolFactory.getCommandHandlerThreadPool().execute(new SendMusicCardTask(songs,index,message));
             return true;
         }else{
+            // 不存在缓存
             String songName = getSongName(command);
             if(Strings.isNotBlank(songName)){
+                // 匹配上命令 开始搜索歌曲
                 search(message,songName);
                 return true;
             }
@@ -113,7 +115,7 @@ public class MusicCardHandler implements IMessageEvent {
             try {
                 List<Song> res = MusicServiceFactory.getMusicService(MusicServiceFactory.MusicType.cloudMusic).searchMusic(musicName);
                 if(CollectionUtils.isEmpty(res)){
-                    Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"没有找到歌曲：" + musicName,GocqActionEnum.SEND_MSG,true);
+                    Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"未找到歌曲：" + musicName,GocqActionEnum.SEND_MSG,true);
                     return;
                 }
                 if(res.size() == 1){
@@ -121,6 +123,7 @@ public class MusicCardHandler implements IMessageEvent {
                     SendMusicCard(message,res,0,true);
                     return;
                 }
+                // 将搜索结果保存到缓存
                 cache.put(getKey(message),res);
                 if(MessageEventEnum.group.getType().equals(message.getMessage_type())){
                     sendGroup(message,res,musicName);
@@ -128,7 +131,7 @@ public class MusicCardHandler implements IMessageEvent {
                     sendPrivate(message,res,musicName);
                 }
             } catch (Exception e) {
-                log.error("搜索歌曲发送异常",e);
+                log.error("搜索歌曲发生异常",e);
             }
         }
     }

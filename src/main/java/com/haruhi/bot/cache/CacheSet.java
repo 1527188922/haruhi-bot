@@ -9,6 +9,12 @@ public class CacheSet<K> {
     CacheMap<K,Object> cacheMap;
     private final static Object OBJECT = new Object();
 
+    /**
+     * 有参构造
+     * @param expireTime 过期时间
+     * @param timeUnit 过期时间单位
+     * @param maximumSize 缓存最大容量
+     */
     public CacheSet(long expireTime, TimeUnit timeUnit, long maximumSize){
         cacheMap = new CacheMap<>(expireTime,timeUnit,maximumSize);
     }
