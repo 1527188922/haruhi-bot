@@ -9,7 +9,7 @@
 #### 软件架构
 1. spring boot
 2. spring mvc
-3. mybatis-push
+3. mybatis-plus
 4. dynamic-datasource
 5. maven
 6. mysql
