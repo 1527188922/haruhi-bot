@@ -1,6 +1,7 @@
 package com.haruhi.bot.service;
 
 import com.haruhi.bot.config.BotConfig;
+import com.haruhi.bot.config.SystemConfig;
 import com.haruhi.bot.config.env.IEnvPathConfig;
 import com.haruhi.bot.constant.OSEnum;
 import com.haruhi.bot.dto.gocq.response.SelfInfo;
@@ -23,14 +24,14 @@ public class SystemService {
     private IEnvPathConfig envConfig;
 
     public void writeStopScript(){
-        if(BotConfig.PRO.get()){
+        if(SystemConfig.PRO.get()){
             String s = null;
             String scriptName = null;
-            if(OSEnum.linux.equals(BotConfig.osName)){
-                s = MessageFormat.format("kill -9 {0}",BotConfig.PID);
+            if(OSEnum.linux.equals(SystemConfig.osName)){
+                s = MessageFormat.format("kill -9 {0}",SystemConfig.PID);
                 scriptName = "stop.sh";
-            }else if (OSEnum.windows.equals(BotConfig.osName)){
-                s = MessageFormat.format("taskkill /pid {0} -t -f",BotConfig.PID);
+            }else if (OSEnum.windows.equals(SystemConfig.osName)){
+                s = MessageFormat.format("taskkill /pid {0} -t -f",SystemConfig.PID);
                 scriptName = "stop.bat";
             }
             if (Strings.isNotBlank(s)) {
