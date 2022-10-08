@@ -56,11 +56,11 @@ public class PixivByUidHandler implements IMessageEvent {
             Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"请输入正确的uid...", GocqActionEnum.SEND_MSG,true);
             return true;
         }
-        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new PixivByUidHandler.Task(pixivService,uidTrim,message));
+        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new Task(pixivService,uidTrim,message));
 
         return false;
     }
-    public static class Task implements Runnable{
+    private class Task implements Runnable{
         private PixivService pixivService;
         private String uid;
         private Message message;

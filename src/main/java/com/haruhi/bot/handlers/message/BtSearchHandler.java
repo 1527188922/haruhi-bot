@@ -62,11 +62,11 @@ public class BtSearchHandler implements IMessageEvent {
             return false;
         }
         Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"开始搜索...", GocqActionEnum.SEND_MSG,true);
-        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new BtSearchHandler.Task(message,keyword,page));
+        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new Task(message,keyword,page));
         return true;
     }
 
-    public static class Task implements Runnable{
+    private class Task implements Runnable{
         private Message message;
         private Integer page;
         private String keyword;
@@ -126,15 +126,15 @@ public class BtSearchHandler implements IMessageEvent {
 
         }
     }
-    private static void noData(Message message,String keyword){
+    private void noData(Message message,String keyword){
         Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"没搜到：" + keyword, GocqActionEnum.SEND_MSG,true);
     }
-    private static void sendPrivate(List<String> res,Message message){
+    private void sendPrivate(List<String> res,Message message){
         for (String re : res) {
             Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),re, GocqActionEnum.SEND_MSG,true);
         }
     }
-    private static void sendGroup(List<String> res,Message message){
+    private void sendGroup(List<String> res,Message message){
         List<ForwardMsg> param = new ArrayList<>(res.size());
         for (String re : res) {
             param.add(CommonUtil.createForwardMsgItem(re,message.getSelf_id(),BotConfig.NAME));
@@ -147,7 +147,7 @@ public class BtSearchHandler implements IMessageEvent {
      * @param detailHref
      * @return
      */
-    public static void requestDetail(StringBuilder strBuilder,String detailHref) throws Exception{
+    private void requestDetail(StringBuilder strBuilder,String detailHref) throws Exception{
 
         String html = HttpClientUtil.doGet(HttpClientUtil.getHttpClient(5 * 1000),detailHref, null);
         Document document = Jsoup.parse(html);

@@ -6,7 +6,7 @@ import com.haruhi.bot.constant.ThirdPartyURL;
 import com.haruhi.bot.dto.music.response.Song;
 import com.haruhi.bot.dto.music.response.netease.SearchResp;
 import com.haruhi.bot.service.music.AbstractMusicService;
-import com.haruhi.bot.service.music.MusicServiceFactory;
+import com.haruhi.bot.factory.MusicServiceFactory;
 import com.haruhi.bot.utils.HttpClientUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

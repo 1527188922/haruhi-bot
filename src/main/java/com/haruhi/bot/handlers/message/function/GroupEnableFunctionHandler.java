@@ -47,11 +47,11 @@ public class GroupEnableFunctionHandler implements IGroupMessageEvent {
         if (Strings.isBlank(fun)){
             return false;
         }
-        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new GroupEnableFunctionHandler.Task(message,fun,mapper));
+        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new Task(message,fun,mapper));
         return true;
     }
 
-    private static class Task implements Runnable{
+    private class Task implements Runnable{
 
         private Message message;
         private String fun;

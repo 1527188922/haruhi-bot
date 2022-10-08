@@ -54,13 +54,13 @@ public class PixivByPidHandler implements IMessageEvent {
             Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"请输入正确的pid...", GocqActionEnum.SEND_MSG,true);
             return true;
         }
-        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new PixivByPidHandler.Task(pixivService,trim,message));
+        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new Task(pixivService,trim,message));
 
         return true;
     }
 
     public static String u = "https://pixiv.re/";
-    public static class Task implements Runnable{
+    private class Task implements Runnable{
         private PixivService pixivService;
         private String pid;
         private Message message;

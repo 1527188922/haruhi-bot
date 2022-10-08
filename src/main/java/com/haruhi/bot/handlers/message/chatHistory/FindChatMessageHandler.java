@@ -42,11 +42,11 @@ public class FindChatMessageHandler implements IGroupMessageEvent {
             return false;
         }
 
-        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new FindChatMessageHandler.Task(groupChatHistoryService,message,param));
+        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new Task(groupChatHistoryService,message,param));
         return true;
     }
 
-    public static class Task implements Runnable{
+    private class Task implements Runnable{
         private GroupChatHistoryService service;
         private Message message;
         private FindChatMessageHandler.Param param;

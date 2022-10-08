@@ -58,20 +58,19 @@ public class PixivHandler implements IMessageEvent {
         this.tag = null;
     }
 
-    public static class PixivTask implements Runnable{
+    private class PixivTask implements Runnable{
         private PixivService pixivService;
         private String tag;
         private Message message;
         public PixivTask(PixivService pixivService, String tag, Message message){
-            // 重新new 一个字符串，防止后续tag发生改变会影响线程内的tag
-            this.tag = new String(tag == null ? "" : tag);
+            this.tag = tag;
             this.pixivService = pixivService;
             this.message = message;
         }
 
         @Override
         public void run() {
-            pixivService.roundSend(20,null,this.tag,message);
+            pixivService.roundSend(20,null,tag,message);
         }
 
     }

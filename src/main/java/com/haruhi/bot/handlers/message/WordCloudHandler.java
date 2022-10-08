@@ -61,10 +61,10 @@ public class WordCloudHandler implements IGroupMessageEvent {
         }else{
             lock.put(message.getGroup_id(),1);
         }
-        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new WordCloudHandler.Task(groupChatHistoryService,matching,message));
+        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new Task(groupChatHistoryService,matching,message));
         return true;
     }
-    public static class Task implements Runnable{
+    private class Task implements Runnable{
         private GroupChatHistoryService groupChatHistoryService;
         private RegexEnum regexEnum;
         private Message message;

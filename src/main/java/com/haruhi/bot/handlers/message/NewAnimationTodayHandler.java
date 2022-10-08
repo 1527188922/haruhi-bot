@@ -45,11 +45,11 @@ public class NewAnimationTodayHandler implements IMessageEvent {
         if(!command.matches(RegexEnum.NEW_ANIMATION_TODAY.getValue())){
             return false;
         }
-        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new NewAnimationTodayHandler.Task(message));
+        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new Task(message));
         return true;
     }
 
-    public static class Task implements Runnable{
+    private class Task implements Runnable{
         private Message message;
 
         Task(Message message){
@@ -87,7 +87,7 @@ public class NewAnimationTodayHandler implements IMessageEvent {
         }
     }
 
-    private static void sendGroup(List<NewAnimationTodayResp> data,Message message){
+    private void sendGroup(List<NewAnimationTodayResp> data,Message message){
         ArrayList<ForwardMsg> param = new ArrayList<>(data.size());
         for (NewAnimationTodayResp datum : data) {
             param.add(CommonUtil.createForwardMsgItem(splicingParam(datum),message.getSelf_id(), BotConfig.NAME));
@@ -95,12 +95,12 @@ public class NewAnimationTodayHandler implements IMessageEvent {
         Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,message.getGroup_id(),param);
 
     }
-    private static void sendPrivate(List<NewAnimationTodayResp> data,Message message){
+    private void sendPrivate(List<NewAnimationTodayResp> data,Message message){
         for (NewAnimationTodayResp datum : data) {
             Client.sendMessage(message.getUser_id(),message.getGroup_id(),MessageEventEnum.privat, splicingParam(datum), GocqActionEnum.SEND_MSG,true);
         }
     }
-    private static String splicingParam(NewAnimationTodayResp datum){
+    private String splicingParam(NewAnimationTodayResp datum){
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(datum.getName()).append("\n");
         stringBuilder.append("更新集：").append(datum.getNamefornew()).append("\n");

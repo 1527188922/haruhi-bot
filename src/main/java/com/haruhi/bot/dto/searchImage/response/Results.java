@@ -6,6 +6,6 @@ import java.io.Serializable;
 
 @Data
 public class Results implements Serializable {
-    private Header header;
+    public Header header;
     private com.haruhi.bot.dto.searchImage.response.Data data;
 }
