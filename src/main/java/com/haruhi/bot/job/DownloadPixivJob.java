@@ -57,16 +57,16 @@ public class DownloadPixivJob extends AbstractJob {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         for (int i = 0; i < 2; i++) {
-            ThreadPoolFactory.getDownloadThreadPool().execute(new DownloadPixivJob.downloadTask(pixivService,param));
+            ThreadPoolFactory.getDownloadThreadPool().execute(new DownloadTask(pixivService,param));
         }
-        ThreadPoolFactory.getDownloadThreadPool().execute(new DownloadPixivJob.downloadTask(pixivService,paramR18));
+        ThreadPoolFactory.getDownloadThreadPool().execute(new DownloadTask(pixivService,paramR18));
     }
 
-    public static class downloadTask implements Runnable{
+    private class DownloadTask implements Runnable{
         private Map<String,Object> param;
         private PixivService pixivService;
 
-        downloadTask(PixivService pixivService,Map<String,Object> param){
+        DownloadTask(PixivService pixivService, Map<String,Object> param){
             this.pixivService = pixivService;
             this.param = param;
         }
