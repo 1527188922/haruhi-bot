@@ -47,12 +47,12 @@ public class EnableFunctionHandler implements IMessageEvent {
             return false;
         }
 
-        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new EnableFunctionHandler.Task(message,fun.replace(" ",""),mapper));
+        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new Task(message,fun.replace(" ",""),mapper));
 
         return true;
     }
 
-    public static class Task implements Runnable{
+    private class Task implements Runnable{
         private Message message;
         private String fun;
         private DisableFunctionMapper mapper;

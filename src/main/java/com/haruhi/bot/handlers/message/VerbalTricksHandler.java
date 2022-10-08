@@ -57,11 +57,11 @@ public class VerbalTricksHandler implements IMessageEvent {
         if(answerObj == null){
             return false;
         }
-        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new VerbalTricksHandler.Task(message,answerObj));
+        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new Task(message,answerObj));
         return true;
     }
 
-    public static class Task implements Runnable{
+    private class Task implements Runnable{
         private List<VerbalTricks>  answerObj;
         private Message message;
 

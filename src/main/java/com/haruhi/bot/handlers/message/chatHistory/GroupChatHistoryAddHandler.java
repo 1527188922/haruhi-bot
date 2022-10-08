@@ -35,11 +35,11 @@ public class GroupChatHistoryAddHandler implements IGroupMessageEvent {
      */
     @Override
     public boolean onGroup(final Message message,final String command) {
-        ThreadPoolFactory.getChatHistoryThreadPool().execute(new GroupChatHistoryAddHandler.Task(groupChatHistoryService,message,param));
+        ThreadPoolFactory.getChatHistoryThreadPool().execute(new Task(groupChatHistoryService,message,param));
         return false;
     }
 
-    public static class Task implements Runnable{
+    private class Task implements Runnable{
         private GroupChatHistoryService service;
         private GroupChatHistory param;
         public Task(GroupChatHistoryService service,final Message message,final GroupChatHistory param){

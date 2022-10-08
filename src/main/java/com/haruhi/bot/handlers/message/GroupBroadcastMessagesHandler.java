@@ -41,11 +41,11 @@ public class GroupBroadcastMessagesHandler implements IPrivateMessageEvent {
         if(Strings.isBlank(msg)){
             return false;
         }
-        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new GroupBroadcastMessagesHandler.Task(message,msg));
+        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new Task(message,msg));
         return true;
     }
 
-    public static class Task implements Runnable{
+    private class Task implements Runnable{
         private Message message;
         private String msg;
 

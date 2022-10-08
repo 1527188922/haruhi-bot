@@ -2,6 +2,7 @@ package com.haruhi.bot.service.music;
 
 import com.haruhi.bot.constant.CqCodeTypeEnum;
 import com.haruhi.bot.dto.music.response.Song;
+import com.haruhi.bot.factory.MusicServiceFactory;
 import com.simplerobot.modules.utils.KQCodeUtils;
 
 import java.util.List;

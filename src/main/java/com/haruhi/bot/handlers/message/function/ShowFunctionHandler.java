@@ -39,11 +39,11 @@ public class ShowFunctionHandler implements IMessageEvent {
         if (!command.matches(RegexEnum.SHOW_ALL_FUNCTION.getValue())) {
             return false;
         }
-        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new ShowFunctionHandler.Task(message));
+        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new Task(message));
         return true;
     }
 
-    public static class Task implements Runnable{
+    private class Task implements Runnable{
         private Message message;
         Task(Message message){
             this.message = message;
@@ -75,7 +75,7 @@ public class ShowFunctionHandler implements IMessageEvent {
             send(stringBuilder.toString(),message);
         }
     }
-    private static void send(String msg,Message message){
+    private void send(String msg,Message message){
         if (MessageEventEnum.privat.getType().equals(message.getMessage_type())) {
             Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getSub_type(),msg, GocqActionEnum.SEND_MSG,true);
         }else if(MessageEventEnum.group.getType().equals(message.getMessage_type())){
@@ -84,5 +84,6 @@ public class ShowFunctionHandler implements IMessageEvent {
             Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,message.getGroup_id(),param);
         }
     }
+
 
 }

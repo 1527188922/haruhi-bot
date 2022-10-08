@@ -11,6 +11,7 @@ import com.haruhi.bot.constant.RegexEnum;
 import com.haruhi.bot.dto.gocq.response.HttpResponse;
 import com.haruhi.bot.dto.gocq.response.Message;
 import com.haruhi.bot.dto.gocq.request.ForwardMsg;
+import com.haruhi.bot.dto.searchImage.response.Header;
 import com.haruhi.bot.dto.searchImage.response.Results;
 import com.haruhi.bot.factory.ThreadPoolFactory;
 import com.haruhi.bot.event.message.IMessageEvent;
@@ -27,8 +28,10 @@ import org.springframework.util.LinkedMultiValueMap;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -89,7 +92,7 @@ public class SearchImageHandler implements IMessageEvent {
 
     private void startSearch(Message message, String cq, String key){
         Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"开始搜图...",GocqActionEnum.SEND_MSG,true);
-        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new searchImageTask(message,cq));
+        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new SearchImageTask(message,cq));
         if(key != null){
             cache.remove(key);
         }
@@ -113,11 +116,11 @@ public class SearchImageHandler implements IMessageEvent {
         return null;
     }
 
-    public static class searchImageTask implements Runnable{
+    private class SearchImageTask implements Runnable{
         private Message message;
         private String cq;
 
-        searchImageTask(Message message,String cq){
+        SearchImageTask(Message message, String cq){
             this.message = message;
             this.cq = cq;
         }
@@ -126,7 +129,7 @@ public class SearchImageHandler implements IMessageEvent {
             KQCodeUtils instance = KQCodeUtils.getInstance();
             String imageUrl = instance.getParam(this.cq, "url",CqCodeTypeEnum.image.getType(),0);
 
-            LinkedMultiValueMap<String,Object> param = new LinkedMultiValueMap<>();
+            LinkedMultiValueMap<String,Object> param = new LinkedMultiValueMap<>(6);
             param.add("output_type",2);
             param.add("api_key",BotConfig.SEARCH_IMAGE_KEY);
             param.add("testmode",1);
@@ -144,7 +147,7 @@ public class SearchImageHandler implements IMessageEvent {
                     }else{
                         List<Results> resultList = JSONObject.parseArray(resultsStr, Results.class);
                         sort(resultList);
-                        sendResult(resultList);
+                        sendResult(resultList,cq,message);
                     }
                 }
             }catch (Exception e){
@@ -153,101 +156,103 @@ public class SearchImageHandler implements IMessageEvent {
             }
 
         }
-        private void sort(List<Results> resultList){
-            int size = resultList.size();
-            for (int i = 0; i < size - 1; i++) {
-                boolean flag = false;
-                for (int f = 0; f < size - i - 1; f++) {
-                    if(resultList.get(f).getHeader().getSimilarity() < resultList.get(f + 1).getHeader().getSimilarity()){
-                        Results results = resultList.get(f);
-                        resultList.set(f,resultList.get(f + 1));
-                        resultList.set(f + 1,results);
-                        flag = true;
-                    }
+    }
+
+    private void sort(List<Results> resultList){
+        int size = resultList.size();
+        for (int i = 0; i < size - 1; i++) {
+            boolean flag = false;
+            for (int f = 0; f < size - i - 1; f++) {
+                if(resultList.get(f).getHeader().getSimilarity() < resultList.get(f + 1).getHeader().getSimilarity()){
+                    Results results = resultList.get(f);
+                    resultList.set(f,resultList.get(f + 1));
+                    resultList.set(f + 1,results);
+                    flag = true;
                 }
-                if(!flag){
-                    break;
-                }
+            }
+            if(!flag){
+                break;
             }
         }
-        private void sendResult(List<Results> resultList){
-            ArrayList<ForwardMsg> forwardMsgs = new ArrayList<>(resultList.size() + 1);
-            forwardMsgs.add(CommonUtil.createForwardMsgItem(cq,message.getSelf_id(), BotConfig.NAME));
-            for (Results results : resultList) {
-                forwardMsgs.add(CommonUtil.createForwardMsgItem(getItemMsg(results),message.getSelf_id(), BotConfig.NAME));
-            }
+    }
 
-            if(MessageEventEnum.group.getType().equals(message.getMessage_type())){
-                // 使用合并消息
-                HttpResponse response = Client.sendRestMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG, message.getGroup_id(), forwardMsgs);
-                if(response.getRetcode() != 0){
-                    forwardMsgs.remove(0);
-                    Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG, message.getGroup_id(), forwardMsgs);
-                }
-
-            }else if(MessageEventEnum.privat.getType().equals(message.getMessage_type())){
-                // 私聊
-                for (int i = 1; i < forwardMsgs.size(); i++) {
-                    Client.sendMessage(message.getUser_id(), message.getGroup_id(), MessageEventEnum.privat, forwardMsgs.get(i).getData().getContent(),GocqActionEnum.SEND_MSG,true);
-                }
-            }
+    private void sendResult(List<Results> resultList,String cq,Message message){
+        ArrayList<ForwardMsg> forwardMsgs = new ArrayList<>(resultList.size() + 1);
+        forwardMsgs.add(CommonUtil.createForwardMsgItem(cq,message.getSelf_id(), BotConfig.NAME));
+        for (Results results : resultList) {
+            forwardMsgs.add(CommonUtil.createForwardMsgItem(getItemMsg(results),message.getSelf_id(), BotConfig.NAME));
         }
 
-        private String getItemMsg(Results results){
-            StringBuilder strBui = new StringBuilder();
-            if(results.getHeader().getSimilarity() != null){
-                strBui.append(MessageFormat.format("相似度：{0}\n",results.getHeader().getSimilarity()+"%"));
+        if(MessageEventEnum.group.getType().equals(message.getMessage_type())){
+            // 使用合并消息
+            HttpResponse response = Client.sendRestMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG, message.getGroup_id(), forwardMsgs);
+            if(response.getRetcode() != 0){
+                forwardMsgs.remove(0);
+                Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG, message.getGroup_id(), forwardMsgs);
             }
-            if(results.getData().getTitle() != null){
-                strBui.append(MessageFormat.format("标题：{0}\n",results.getData().getTitle()));
+
+        }else if(MessageEventEnum.privat.getType().equals(message.getMessage_type())){
+            // 私聊
+            for (int i = 1; i < forwardMsgs.size(); i++) {
+                Client.sendMessage(message.getUser_id(), message.getGroup_id(), MessageEventEnum.privat, forwardMsgs.get(i).getData().getContent(),GocqActionEnum.SEND_MSG,true);
             }
-            if(results.getData().getSource() != null){
-                strBui.append(MessageFormat.format("来源：{0}\n",results.getData().getSource()));
-            }
-            if(results.getHeader().getIndex_name() != null){
-                strBui.append(MessageFormat.format("数据来源：{0}\n",results.getHeader().getIndex_name()));
-            }
-            if(results.getData().getJp_name() != null){
-                strBui.append(MessageFormat.format("日语名：{0}\n",results.getData().getJp_name()));
-            }
-            if(results.getData().getMaterial() != null){
-                strBui.append(MessageFormat.format("出处：{0}\n",results.getData().getMaterial()));
-            }
-            String pixivId = results.getData().getPixiv_id();
-            if(pixivId != null){
-                strBui.append(MessageFormat.format("pid：{0}\n",pixivId));
-            }
-            if(results.getData().getMember_name() != null){
-                strBui.append(MessageFormat.format("作者：{0}\n",results.getData().getMember_name()));
-            }
-            String creator = results.getData().getCreator();
-            if(creator != null){
-                List list;
-                try{
-                    list = JSONObject.parseObject(creator, List.class);
-                    if(list.size() > 0){
-                        strBui.append(MessageFormat.format("作者：{0}\n",list.get(0)));
-                    }
-                }catch (Exception e){
-                    strBui.append(MessageFormat.format("作者：{0}\n",creator));
-                }
-            }
-            if(results.getData().getTwitter_user_id() != null){
-                strBui.append(MessageFormat.format("twitter作者id：{0}\n",results.getData().getTwitter_user_id()));
-            }
-            String[] ext_urls = results.getData().getExt_urls();
-            if(ext_urls != null && ext_urls.length > 0){
-                for (String ext_url : ext_urls) {
-                    strBui.append(MessageFormat.format("地址：{0}\n",ext_url));
-                }
-            }
-            if(results.getHeader().getThumbnail() != null){
-                strBui.append(MessageFormat.format("缩略图：{0}\n",results.getHeader().getThumbnail()));
-            }
-            if(pixivId != null){
-                strBui.append(MessageFormat.format("原图链接：{0}{1}.jpg", PixivByPidHandler.u,pixivId));
-            }
-            return strBui.toString();
         }
+    }
+
+    private String getItemMsg(Results results){
+        StringBuilder strBui = new StringBuilder();
+        if(results.getHeader().getSimilarity() != null){
+            strBui.append(MessageFormat.format("相似度：{0}\n",results.getHeader().getSimilarity()+"%"));
+        }
+        if(results.getData().getTitle() != null){
+            strBui.append(MessageFormat.format("标题：{0}\n",results.getData().getTitle()));
+        }
+        if(results.getData().getSource() != null){
+            strBui.append(MessageFormat.format("来源：{0}\n",results.getData().getSource()));
+        }
+        if(results.getHeader().getIndex_name() != null){
+            strBui.append(MessageFormat.format("数据来源：{0}\n",results.getHeader().getIndex_name()));
+        }
+        if(results.getData().getJp_name() != null){
+            strBui.append(MessageFormat.format("日语名：{0}\n",results.getData().getJp_name()));
+        }
+        if(results.getData().getMaterial() != null){
+            strBui.append(MessageFormat.format("出处：{0}\n",results.getData().getMaterial()));
+        }
+        String pixivId = results.getData().getPixiv_id();
+        if(pixivId != null){
+            strBui.append(MessageFormat.format("pid：{0}\n",pixivId));
+        }
+        if(results.getData().getMember_name() != null){
+            strBui.append(MessageFormat.format("作者：{0}\n",results.getData().getMember_name()));
+        }
+        String creator = results.getData().getCreator();
+        if(creator != null){
+            List list;
+            try{
+                list = JSONObject.parseObject(creator, List.class);
+                if(list.size() > 0){
+                    strBui.append(MessageFormat.format("作者：{0}\n",list.get(0)));
+                }
+            }catch (Exception e){
+                strBui.append(MessageFormat.format("作者：{0}\n",creator));
+            }
+        }
+        if(results.getData().getTwitter_user_id() != null){
+            strBui.append(MessageFormat.format("twitter作者id：{0}\n",results.getData().getTwitter_user_id()));
+        }
+        String[] ext_urls = results.getData().getExt_urls();
+        if(ext_urls != null && ext_urls.length > 0){
+            for (String ext_url : ext_urls) {
+                strBui.append(MessageFormat.format("地址：{0}\n",ext_url));
+            }
+        }
+        if(results.getHeader().getThumbnail() != null){
+            strBui.append(MessageFormat.format("缩略图：{0}\n",results.getHeader().getThumbnail()));
+        }
+        if(pixivId != null){
+            strBui.append(MessageFormat.format("原图链接：{0}{1}.jpg", PixivByPidHandler.u,pixivId));
+        }
+        return strBui.toString();
     }
 }

@@ -61,10 +61,10 @@ public class BulletChatWordCloudHandler implements IMessageEvent {
             return false;
         }
 
-        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new BulletChatWordCloudHandler.Task(message,param));
+        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new Task(message,param));
         return true;
     }
-    private static String getBv(String param){
+    private String getBv(String param){
         String bv = null;
         if(param.startsWith("av") || param.startsWith("AV")){
             bv = WordCloudUtil.getBvByAv(param);
@@ -73,7 +73,7 @@ public class BulletChatWordCloudHandler implements IMessageEvent {
         }
         return bv;
     }
-    public static class Task implements Runnable{
+    private class Task implements Runnable{
 
         private Message message;
         private String param;

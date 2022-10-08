@@ -11,7 +11,7 @@ import com.haruhi.bot.dto.music.response.Song;
 import com.haruhi.bot.event.message.IMessageEvent;
 import com.haruhi.bot.factory.ThreadPoolFactory;
 import com.haruhi.bot.service.music.AbstractMusicService;
-import com.haruhi.bot.service.music.MusicServiceFactory;
+import com.haruhi.bot.factory.MusicServiceFactory;
 import com.haruhi.bot.utils.CommonUtil;
 import com.haruhi.bot.ws.Client;
 import lombok.extern.slf4j.Slf4j;
@@ -100,7 +100,7 @@ public class MusicCardHandler implements IMessageEvent {
         return CommonUtil.commandReplaceFirst(command, RegexEnum.MUSIC_CARD);
     }
 
-    public class SearchMusicTask implements Runnable{
+    private class SearchMusicTask implements Runnable{
 
         private Message message;
         private String musicName;
@@ -160,7 +160,7 @@ public class MusicCardHandler implements IMessageEvent {
         Client.sendMessage(message.getUser_id(),message.getGroup_id(),MessageEventEnum.privat,stringBuilder.toString(),GocqActionEnum.SEND_MSG,true);
     }
 
-    public class SendMusicCardTask implements Runnable{
+    private class SendMusicCardTask implements Runnable{
 
         private List<Song> songs;
         private Integer index;

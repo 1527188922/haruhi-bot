@@ -54,12 +54,12 @@ public class FriendSaidHandler implements IGroupMessageEvent {
         if(!matching(command)){
             return false;
         }
-        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new FriendSaidHandler.SayTask(message,this.say));
+        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new SayTask(message,this.say));
         this.say = null;
         return true;
     }
 
-    public static class SayTask implements Runnable{
+    private class SayTask implements Runnable{
         private Message message;
         private String say;
         SayTask(Message message,String say){
@@ -76,7 +76,7 @@ public class FriendSaidHandler implements IGroupMessageEvent {
                 }
                 int i = CommonUtil.randomInt(0, groupMemberList.size() - 1);
                 GroupMember friend = groupMemberList.get(i);
-                send(friend);
+                send(friend,say);
             }catch (Exception e){
                 Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group,"这个朋友不听话...",GocqActionEnum.SEND_MSG,true);
                 log.error("朋友说发生异常",e);
@@ -84,14 +84,14 @@ public class FriendSaidHandler implements IGroupMessageEvent {
 
         }
 
-        /**
-         * 发送合并消息
-         * @param friend
-         */
-        private void send(GroupMember friend){
-            List<ForwardMsg> params = new ArrayList<>(1);
-            params.add(CommonUtil.createForwardMsgItem(this.say,friend.getUser_id(),"朋友"));
-            Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,friend.getGroup_id(),params);
-        }
+    }
+    /**
+     * 发送合并消息
+     * @param friend
+     */
+    private void send(GroupMember friend,String say){
+        List<ForwardMsg> params = new ArrayList<>(1);
+        params.add(CommonUtil.createForwardMsgItem(say,friend.getUser_id(),"朋友"));
+        Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,friend.getGroup_id(),params);
     }
 }

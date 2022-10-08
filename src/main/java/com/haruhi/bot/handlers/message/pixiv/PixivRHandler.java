@@ -41,11 +41,11 @@ public class PixivRHandler implements IMessageEvent {
         if(!flag){
             return false;
         }
-        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new PixivRHandler.PixivRTask(message,tag,pixivService));
+        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new PixivRTask(message,tag,pixivService));
 
         return true;
     }
-    public static class PixivRTask implements Runnable{
+    private class PixivRTask implements Runnable{
         private Message message;
         private String tag;
         private PixivService pixivService;

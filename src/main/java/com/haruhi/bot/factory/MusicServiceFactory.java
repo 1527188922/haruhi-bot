@@ -1,5 +1,6 @@
-package com.haruhi.bot.service.music;
+package com.haruhi.bot.factory;
 
+import com.haruhi.bot.service.music.AbstractMusicService;
 import org.apache.ibatis.javassist.tools.rmi.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
