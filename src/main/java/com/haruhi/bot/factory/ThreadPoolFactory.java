@@ -1,6 +1,7 @@
 package com.haruhi.bot.factory;
 
 
+import com.haruhi.bot.config.SystemConfig;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
 import java.util.concurrent.ArrayBlockingQueue;
@@ -8,14 +9,29 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-
 public class ThreadPoolFactory {
     private ThreadPoolFactory(){}
-    private final static Executor commandHandlerThreadPool = new ThreadPoolExecutor(5,20,36, TimeUnit.HOURS,new ArrayBlockingQueue(120),new CustomizableThreadFactory("pool-command-"),new ThreadPoolExecutor.CallerRunsPolicy());
+    private final static ThreadPoolExecutor commandHandlerThreadPool = new ThreadPoolExecutor(5,20,36, TimeUnit.HOURS,new ArrayBlockingQueue(120),new CustomizableThreadFactory("pool-command-"),new ThreadPoolExecutor.CallerRunsPolicy());
 //    private static ScheduledThreadPoolExecutor scheduledThreadPool = null;
     private static Executor downloadThreadPool = null;
-    private final static Executor chatHistoryThreadPool = new ThreadPoolExecutor(2,10,42, TimeUnit.HOURS,new ArrayBlockingQueue(150),new CustomizableThreadFactory("pool-chat-"),new ThreadPoolExecutor.CallerRunsPolicy());
-    private final static Executor eventThreadPool = new ThreadPoolExecutor(5,16,48, TimeUnit.HOURS,new ArrayBlockingQueue(140),new CustomizableThreadFactory("pool-event-"),new ThreadPoolExecutor.CallerRunsPolicy());
+    private final static ThreadPoolExecutor chatHistoryThreadPool = new ThreadPoolExecutor(2,10,42, TimeUnit.HOURS,new ArrayBlockingQueue(150),new CustomizableThreadFactory("pool-chat-"),new ThreadPoolExecutor.CallerRunsPolicy());
+    private final static ThreadPoolExecutor eventThreadPool = new ThreadPoolExecutor(5,16,48, TimeUnit.HOURS,new ArrayBlockingQueue(140),new CustomizableThreadFactory("pool-event-"),new ThreadPoolExecutor.CallerRunsPolicy());
+
+
+    public static void resetThreadPoolSize(){
+        int availableProcessors = SystemConfig.availableProcessors;
+        if(availableProcessors > 0){
+            commandHandlerThreadPool.setCorePoolSize(availableProcessors + 1);
+            commandHandlerThreadPool.setMaximumPoolSize(availableProcessors * 3);
+
+            chatHistoryThreadPool.setCorePoolSize(availableProcessors + 1);
+            chatHistoryThreadPool.setMaximumPoolSize(availableProcessors * 4);
+
+            eventThreadPool.setCorePoolSize(availableProcessors + 1);
+            eventThreadPool.setMaximumPoolSize(availableProcessors * 4);
+        }
+    }
+
     public static Executor getCommandHandlerThreadPool(){
         return commandHandlerThreadPool;
     }
