@@ -81,7 +81,7 @@ public class SubscribeNewsServiceImpl extends ServiceImpl<SubscribeNewsMapper, S
     private String createNewsItemMessage(NewsBy163Resp e,KQCodeUtils instance){
         StringBuilder stringBuilder = new StringBuilder("【");
         stringBuilder.append(e.getTitle()).append("】\n[");
-        stringBuilder.append(DateTimeUtil.dateTimeFormat(e.getLmodify(),DateTimeUtil.FormatEnum.yyyyMMddHHmmss)).append("]\n");
+        stringBuilder.append(DateTimeUtil.dateTimeFormat(e.getLmodify(), DateTimeUtil.PatternEnum.yyyyMMddHHmmss)).append("]\n");
         stringBuilder.append(e.getDigest()).append("\n");
         if(Strings.isNotBlank(e.getImgsrc())){
             String cq = instance.toCq(CqCodeTypeEnum.image.getType(), "file=" + e.getImgsrc());

@@ -11,7 +11,6 @@ import com.haruhi.bot.constant.RegexEnum;
 import com.haruhi.bot.dto.gocq.response.HttpResponse;
 import com.haruhi.bot.dto.gocq.response.Message;
 import com.haruhi.bot.dto.gocq.request.ForwardMsg;
-import com.haruhi.bot.dto.searchImage.response.Header;
 import com.haruhi.bot.dto.searchImage.response.Results;
 import com.haruhi.bot.factory.ThreadPoolFactory;
 import com.haruhi.bot.event.message.IMessageEvent;
@@ -28,10 +27,8 @@ import org.springframework.util.LinkedMultiValueMap;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
