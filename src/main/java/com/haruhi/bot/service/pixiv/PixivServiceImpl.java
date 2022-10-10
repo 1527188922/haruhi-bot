@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 @Service
@@ -82,35 +84,39 @@ public class PixivServiceImpl extends ServiceImpl<PixivMapper, Pixiv> implements
     @Override
     public void privateSend(Collection<Pixiv> pixivs, Message message) {
         for (Pixiv pixiv : pixivs) {
-            Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), MessageFormat.format("标题：{0}\n作者：{1}\nuid：{2}\npid：{3}\nr18：{4}\n原图：{5}\n原图：{6}", pixiv.getTitle(), pixiv.getAuthor(),pixiv.getUid(), pixiv.getPid(), pixiv.getIsR18() ? "是" : "否", pixiv.getImgUrl(),"https://pixiv.re/" + appendImageP(pixiv.getPid(),pixiv.getImgP()) + ".jpg"), GocqActionEnum.SEND_MSG,true);
+            Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), MessageFormat.format("标题：{0}\n作者：{1}\nuid：{2}\npid：{3}\nr18：{4}\n原图：{5}\n原图：{6}", pixiv.getTitle(), pixiv.getAuthor(),pixiv.getUid(), pixiv.getPid(), pixiv.getIsR18() ? "是" : "否", pixiv.getImgUrl(),"https://pixiv.re/" + appendImageP(pixiv.getPid(),pixiv.getImgUrl()) + ".jpg"), GocqActionEnum.SEND_MSG,true);
         }
     }
 
     @Override
     public void groupSend(Collection<Pixiv> pixivs, List<ForwardMsg> forwardMsgs, Message message) {
         for (Pixiv pixiv : pixivs) {
-            forwardMsgs.add(CommonUtil.createForwardMsgItem(MessageFormat.format("标题：{0}\n作者：{1}\nuid：{2}\npid：{3}\nr18：{4}\n原图：{5}\n原图：{6}", pixiv.getTitle(), pixiv.getAuthor(),pixiv.getUid(), pixiv.getPid(), pixiv.getIsR18() ? "是" : "否", pixiv.getImgUrl(),"https://pixiv.re/" + appendImageP(pixiv.getPid(),pixiv.getImgP()) + ".jpg"),message.getSelf_id(), BotConfig.NAME));
+            forwardMsgs.add(CommonUtil.createForwardMsgItem(MessageFormat.format("标题：{0}\n作者：{1}\nuid：{2}\npid：{3}\nr18：{4}\n原图：{5}\n原图：{6}", pixiv.getTitle(), pixiv.getAuthor(),pixiv.getUid(), pixiv.getPid(), pixiv.getIsR18() ? "是" : "否", pixiv.getImgUrl(),"https://pixiv.re/" + appendImageP(pixiv.getPid(),pixiv.getImgUrl()) + ".jpg"),message.getSelf_id(), BotConfig.NAME));
         }
         Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,message.getGroup_id(),forwardMsgs);
     }
-
-    private String appendImageP(String pid,String imageP){
-        if(Strings.isBlank(imageP)){
+    private static Pattern compile = Pattern.compile("_p(.*?).jpg");
+    private String appendImageP(String pid,String imageUrl){
+        if(Strings.isBlank(imageUrl)){
             return pid;
         }
         int p;
-        String s = imageP.replaceFirst("p|P","");
-        try {
-            p = Integer.parseInt(s);
-            if(p == 0){
+        Matcher matcher = compile.matcher(imageUrl);
+        if (matcher.find()) {
+            String s = matcher.group(1);
+            try {
+                p = Integer.parseInt(s) + 1;
+                if(p == 1){
+                    return pid;
+                }
+
+                return pid + "-" + p;
+            }catch (Exception e){
+                log.error("追加imagep异常,imagep:{}",imageUrl,e);
                 return pid;
             }
-
-            return pid + "-" + p;
-        }catch (Exception e){
-            log.error("追加imagep异常,imagep:{}",imageP,e);
-            return pid;
         }
+        return pid;
     }
 }
 
