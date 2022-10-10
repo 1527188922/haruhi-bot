@@ -9,12 +9,12 @@ import com.haruhi.bot.mapper.system.DataBaseInitMapper;
 import com.haruhi.bot.mapper.TableInitMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
-
-import java.text.MessageFormat;
 
 @Slf4j
 @Component
+@DependsOn("dataSourceConfig")
 public class DataBaseService {
 
     @Autowired
@@ -88,8 +88,7 @@ public class DataBaseService {
         newMaster.setUsername(DataSourceConfig.DATA_BASE_BOT_USERNAME);
         newMaster.setPassword(DataSourceConfig.DATA_BASE_BOT_PASSWORD);
         newMaster.setDriverClassName(DataSourceConfig.DATA_BASE_MASTER_DRIVERCLASSNAME);
-        newMaster.setUrl(MessageFormat.format(DataSourceConfig.jdbcUrlTemplate,
-                DataSourceConfig.DATA_BASE_BOT_HOST,DataSourceConfig.DATA_BASE_BOT_PORT,DataSourceConfig.DATA_BASE_BOT));
+        newMaster.setUrl(DataSourceConfig.JDBC_URL);
         newMaster.setDruid(new DruidConfig());
 
         // 将旧主数据拉出来 下面做替换

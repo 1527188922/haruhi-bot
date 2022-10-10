@@ -1,4 +1,4 @@
-package com.haruhi.bot.config.env;
+package com.haruhi.bot.config.path;
 
 import com.haruhi.bot.config.SystemConfig;
 import lombok.extern.slf4j.Slf4j;
@@ -12,8 +12,8 @@ import java.io.IOException;
 @Slf4j
 @Component
 @ConditionalOnProperty(name = "env.active",havingValue = "dev")
-public class DevEnvPathConfigImpl implements IEnvPathConfig {
-    public DevEnvPathConfigImpl(){
+public class DevPathConfigImpl implements IPathConfig {
+    public DevPathConfigImpl(){
         SystemConfig.PRO.set(false);
         log.info("env active : dev");
     }
@@ -30,7 +30,7 @@ public class DevEnvPathConfigImpl implements IEnvPathConfig {
     }
 
     private static void setHomePath(){
-        ApplicationHome ah = new ApplicationHome(DevEnvPathConfigImpl.class);
+        ApplicationHome ah = new ApplicationHome(DevPathConfigImpl.class);
         homePath = ah.getSource().getParentFile().toString();
     }
     private static void setImagePath(){

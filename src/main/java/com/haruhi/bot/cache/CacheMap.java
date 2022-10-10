@@ -9,7 +9,7 @@ import java.util.function.Function;
 
 public class CacheMap<K,V> {
 
-    Cache<K,V> cache;
+    private transient Cache<K,V> cache;
 
     /**
      * 有参构造
