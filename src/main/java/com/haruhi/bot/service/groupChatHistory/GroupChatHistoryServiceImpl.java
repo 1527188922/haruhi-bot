@@ -2,7 +2,7 @@ package com.haruhi.bot.service.groupChatHistory;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.haruhi.bot.config.env.IEnvPathConfig;
+import com.haruhi.bot.config.path.IPathConfig;
 import com.haruhi.bot.constant.CqCodeTypeEnum;
 import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.event.MessageEventEnum;
@@ -52,7 +52,7 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
     private GroupChatHistoryMapper groupChatHistoryMapper;
 
     @Autowired
-    private IEnvPathConfig envConfig;
+    private IPathConfig envConfig;
 
     private static String basePath;
 
@@ -224,10 +224,10 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
         Date current = new Date();
         switch (regexEnum.getUnit()){
             case YEAR:
-                res = DateTimeUtil.formatToDate(current,DateTimeUtil.FormatEnum.yyyy);
+                res = DateTimeUtil.formatToDate(current, DateTimeUtil.PatternEnum.yyyy);
                 break;
             case MONTH:
-                res = DateTimeUtil.formatToDate(current,DateTimeUtil.FormatEnum.yyyyMM);
+                res = DateTimeUtil.formatToDate(current, DateTimeUtil.PatternEnum.yyyyMM);
                 break;
             case WEEK:
                 // 获取本周第一天日期
@@ -241,7 +241,7 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
                 res = calendar.getTime();
                 break;
             case DAY:
-                res = DateTimeUtil.formatToDate(current,DateTimeUtil.FormatEnum.yyyyMMdd);
+                res = DateTimeUtil.formatToDate(current, DateTimeUtil.PatternEnum.yyyyMMdd);
                 break;
             default:
                 break;

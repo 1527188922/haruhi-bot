@@ -3,7 +3,6 @@ package com.haruhi.bot.utils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 
-import java.beans.Encoder;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,6 +19,11 @@ public class FileUtil {
             deleteFile(new File(path));
         }
     }
+
+    /**
+     * 删除文件或文件夹
+     * @param file
+     */
     public static void deleteFile(File file){
         if(file.exists()){
             file.delete();
@@ -34,6 +38,13 @@ public class FileUtil {
     public static List<File> getDirectoryList(String path){
         return getDirectoryList(new File(path));
     }
+
+    /**
+     * 获取一个路径下所有的文件夹对象
+     * 仅文件夹,不能递归
+     * @param file
+     * @return
+     */
     public static List<File> getDirectoryList(File file){
         File[] allFileList = getAllFileList(file);
         ArrayList<File> res = new ArrayList<>(allFileList.length);
@@ -44,6 +55,13 @@ public class FileUtil {
         }
         return res;
     }
+
+    /**
+     * 获取一个路径下所有的文件对象
+     * 仅文件
+     * @param file
+     * @return
+     */
     public static List<File> getFileList(File file){
         File[] allFileList = getAllFileList(file);
         ArrayList<File> res = new ArrayList<>(allFileList.length);
@@ -54,6 +72,13 @@ public class FileUtil {
         }
         return res;
     }
+
+    /**
+     * 获取一个路径下所有的文件对象和文件夹对象
+     * 不能递归
+     * @param file
+     * @return
+     */
     public static File[] getAllFileList(File file){
         if(file.exists() && file.isDirectory()){
             return file.listFiles();

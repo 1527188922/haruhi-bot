@@ -10,17 +10,17 @@ import java.util.Date;
 @Slf4j
 public class DateTimeUtil {
     private DateTimeUtil(){}
-    public enum FormatEnum{
-        yyyyMMddHHmmssSSS("yyyy-MM-dd HH:mm:ss SSS"),
+    public enum PatternEnum {
+        yyyyMMddHHmmssSSS("yyyy-MM-dd HH:mm:ss.SSS"),
         yyyyMMddHHmmss("yyyy-MM-dd HH:mm:ss"),
         yyyyMMddHH("yyyy-MM-dd HH"),
         yyyyMMdd("yyyy-MM-dd"),
         yyyyMM("yyyy-MM"),
         yyyy("yyyy");
 
-        private String format;
-        FormatEnum(String format){
-            this.format = format;
+        private String pattern;
+        PatternEnum(String pattern){
+            this.pattern = pattern;
         }
     }
 
@@ -83,8 +83,8 @@ public class DateTimeUtil {
      * 再获取Date对象
      * @return
      */
-    public static Date formatToDate(Date date,DateTimeUtil.FormatEnum formatEnum){
-        SimpleDateFormat df = new SimpleDateFormat(formatEnum.format);
+    public static Date formatToDate(Date date, PatternEnum patternEnum){
+        SimpleDateFormat df = new SimpleDateFormat(patternEnum.pattern);
         String time = df.format(date);
         try {
             return df.parse(time);
@@ -93,12 +93,22 @@ public class DateTimeUtil {
             return null;
         }
     }
-    public static String dateTimeFormat(Date date,DateTimeUtil.FormatEnum formatEnum){
-        SimpleDateFormat df = new SimpleDateFormat(formatEnum.format);
+    public static String dateTimeFormat(Date date, PatternEnum patternEnum){
+        SimpleDateFormat df = new SimpleDateFormat(patternEnum.pattern);
         return df.format(date);
     }
-    public static String dateTimeFormat(long timestamp,DateTimeUtil.FormatEnum formatEnum){
-        SimpleDateFormat df = new SimpleDateFormat(formatEnum.format);
+    public static String dateTimeFormat(long timestamp, PatternEnum patternEnum){
+        SimpleDateFormat df = new SimpleDateFormat(patternEnum.pattern);
         return df.format(new Date(timestamp));
+    }
+
+    public static Date parseDate(String dateStr,PatternEnum patternEnum){
+        SimpleDateFormat df = new SimpleDateFormat(patternEnum.pattern);
+        try {
+            return df.parse(dateStr);
+        } catch (ParseException e) {
+            log.error("字符串时间转Date对象异常,date:{},format:{}",dateStr,patternEnum.pattern,e);
+            return null;
+        }
     }
 }

@@ -4,10 +4,10 @@ import com.github.benmanes.caffeine.cache.stats.CacheStats;
 
 import java.util.concurrent.TimeUnit;
 
-public class CacheSet<K> {
+public class CacheSet<E> {
 
-    CacheMap<K,Object> cacheMap;
-    private final static Object OBJECT = new Object();
+    private transient CacheMap<E,Object> cacheMap;
+    private final static Object PRESENT = new Object();
 
     /**
      * 有参构造
@@ -19,16 +19,16 @@ public class CacheSet<K> {
         cacheMap = new CacheMap<>(expireTime,timeUnit,maximumSize);
     }
 
-    public boolean contains(K key) {
-        return cacheMap.get(key) != null;
+    public boolean contains(E e) {
+        return cacheMap.get(e) != null;
     }
 
-    public void add(K key) {
-        cacheMap.put(key, OBJECT);
+    public void add(E e) {
+        cacheMap.put(e, PRESENT);
     }
 
-    public void remove(K key) {
-        cacheMap.remove(key);
+    public void remove(E e) {
+        cacheMap.remove(e);
     }
 
     public void removeAll() {

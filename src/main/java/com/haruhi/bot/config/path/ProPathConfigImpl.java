@@ -1,4 +1,4 @@
-package com.haruhi.bot.config.env;
+package com.haruhi.bot.config.path;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -10,9 +10,9 @@ import java.io.File;
 @Slf4j
 @Component
 @ConditionalOnProperty(name = "env.active",havingValue = "pro")
-public class ProEnvPathConfigImpl implements IEnvPathConfig {
+public class ProPathConfigImpl implements IPathConfig {
 
-    public ProEnvPathConfigImpl(){
+    public ProPathConfigImpl(){
         log.info("env active : pro");
     }
 
@@ -22,7 +22,7 @@ public class ProEnvPathConfigImpl implements IEnvPathConfig {
 
     static {
         // 加载根目录路径
-        ApplicationHome ah = new ApplicationHome(ProEnvPathConfigImpl.class);
+        ApplicationHome ah = new ApplicationHome(ProPathConfigImpl.class);
         homePath = ah.getSource().getParentFile().toString();
 
         // 创建image路径

@@ -26,7 +26,7 @@ public class BotConfig {
     public void setSuperUser(@Value("${bot.super-user}") String superUser) {
         SUPER_USER = superUser;
         if(Strings.isBlank(SUPER_USER)){
-            log.warn("未配置超级用户qq");
+            log.warn("未配置超级用户qq，某些功能将无法使用（比如禁用/开启功能）");
         }
     }
     @Autowired
@@ -44,14 +44,14 @@ public class BotConfig {
     public void setHttpUrl(@Value("${gocq.http}") String httpUrl){
         HTTP_URL = httpUrl;
         if(Strings.isBlank(HTTP_URL)){
-            throw new NullPointerException("未配置gocq.http！");
+            throw new IllegalArgumentException("未配置gocq.http！");
         }
     }
     @Autowired
     public void setGocqWs(@Value("${gocq.ws}") String wsUrl) {
         WS_URL = wsUrl;
         if(Strings.isBlank(WS_URL)){
-            throw new NullPointerException("未配置gocq.ws！");
+            throw new IllegalArgumentException("未配置gocq.ws！");
         }
     }
 

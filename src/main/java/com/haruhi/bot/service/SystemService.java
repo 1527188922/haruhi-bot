@@ -2,7 +2,7 @@ package com.haruhi.bot.service;
 
 import com.haruhi.bot.config.BotConfig;
 import com.haruhi.bot.config.SystemConfig;
-import com.haruhi.bot.config.env.IEnvPathConfig;
+import com.haruhi.bot.config.path.IPathConfig;
 import com.haruhi.bot.constant.OSEnum;
 import com.haruhi.bot.dto.gocq.response.SelfInfo;
 import com.haruhi.bot.utils.FileUtil;
@@ -21,7 +21,7 @@ import java.text.MessageFormat;
 public class SystemService {
 
     @Autowired
-    private IEnvPathConfig envConfig;
+    private IPathConfig envConfig;
 
     public void writeStopScript(){
         if(SystemConfig.PRO.get()){

@@ -1,6 +1,6 @@
 package com.haruhi.bot.handlers.message;
 
-import com.haruhi.bot.config.env.IEnvPathConfig;
+import com.haruhi.bot.config.path.IPathConfig;
 import com.haruhi.bot.constant.CqCodeTypeEnum;
 import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.RegexEnum;
@@ -33,7 +33,7 @@ public class ScoldMeHandler implements IMessageEvent {
     }
 
     @Autowired
-    private IEnvPathConfig envConfig;
+    private IPathConfig envConfig;
     private static List<File> fileList;
 
     @PostConstruct
