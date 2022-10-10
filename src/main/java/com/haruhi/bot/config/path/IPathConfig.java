@@ -1,6 +1,6 @@
-package com.haruhi.bot.config.env;
+package com.haruhi.bot.config.path;
 
-public interface IEnvPathConfig {
+public interface IPathConfig {
     /**
      * 应用jar所在路径
      * 区分dev和pro环境

@@ -45,7 +45,7 @@ public class SystemConfig {
 
     private static int getAvailableProcessors(){
         int i = Runtime.getRuntime().availableProcessors();
-        log.info("cpu线程数:{}",i);
+        log.info("cpu线程数 : {}",i);
         return i;
     }
 
