@@ -95,7 +95,7 @@ public class PixivServiceImpl extends ServiceImpl<PixivMapper, Pixiv> implements
         }
         Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,message.getGroup_id(),forwardMsgs);
     }
-    private static Pattern compile = Pattern.compile("_p(.*?).jpg");
+    private static Pattern compile = Pattern.compile("_p(.*?)(.jpg|.png)");
     private String appendImageP(String pid,String imageUrl){
         if(Strings.isBlank(imageUrl)){
             return pid;
