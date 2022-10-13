@@ -1,6 +1,6 @@
 package com.haruhi.bot.config.path;
 
-import com.haruhi.bot.config.SystemConfig;
+import com.haruhi.bot.utils.system.SystemInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.system.ApplicationHome;
@@ -14,7 +14,7 @@ import java.io.IOException;
 @ConditionalOnProperty(name = "env.active",havingValue = "dev")
 public class DevPathConfigImpl implements IPathConfig {
     public DevPathConfigImpl(){
-        SystemConfig.PRO.set(false);
+        SystemInfo.PRO.set(false);
         log.info("env active : dev");
     }
     // directory 拿到resources目录路径
