@@ -1,8 +1,8 @@
 package com.haruhi.bot.thread;
 
-import com.haruhi.bot.config.SystemConfig;
 import com.haruhi.bot.utils.CommonUtil;
 import com.haruhi.bot.utils.WordCloudUtil;
+import com.haruhi.bot.utils.system.SystemInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 import org.springframework.util.CollectionUtils;
@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 public class WordSlicesTask implements Callable<List<String>> {
-    public static int poolSize = SystemConfig.availableProcessors + 1;
+    public static int poolSize = SystemInfo.AVAILABLE_PROCESSORS + 1;
     public static final ExecutorService pool = new ThreadPoolExecutor(poolSize, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(),new CustomizableThreadFactory("pool-word-slices-"));
     private List<String> data;
 
