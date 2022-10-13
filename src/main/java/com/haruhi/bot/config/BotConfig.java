@@ -11,8 +11,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Slf4j
 @Component
 public class BotConfig {
-    public static AtomicBoolean SLEEP;
 
+    public static AtomicBoolean SLEEP;
     public static String SELF_ID;
     public static String SUPER_USER = "";
     public static String NAME = "";
@@ -56,7 +56,7 @@ public class BotConfig {
     }
 
     public static String toJson(){
-        return "{\"SELF_ID\":\"" + SELF_ID + "\",\"SUPER_USER\":\"" + SUPER_USER + "\",\"NAME\":\"" + NAME + "\",\"SEARCH_IMAGE_KEY\":\"" + SEARCH_IMAGE_KEY +
+        return "{\"SLEEP\":" + SLEEP + ",\"SELF_ID\":\"" + SELF_ID + "\",\"SUPER_USER\":\"" + SUPER_USER + "\",\"NAME\":\"" + NAME + "\",\"SEARCH_IMAGE_KEY\":\"" + SEARCH_IMAGE_KEY +
                 "\",\"HTTP_URL\":\"" + HTTP_URL + "\",\"WS_URL\":\"" + WS_URL + "\"}";
     }
 
