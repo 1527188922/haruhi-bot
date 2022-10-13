@@ -1,7 +1,7 @@
 package com.haruhi.bot.factory;
 
 
-import com.haruhi.bot.config.SystemConfig;
+import com.haruhi.bot.utils.system.SystemInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
@@ -21,7 +21,7 @@ public class ThreadPoolFactory {
 
 
     public static void resetThreadPoolSize(){
-        int availableProcessors = SystemConfig.availableProcessors;
+        int availableProcessors = SystemInfo.AVAILABLE_PROCESSORS;
         if(availableProcessors > 0){
             commandHandlerThreadPool.setCorePoolSize(availableProcessors + 1);
             commandHandlerThreadPool.setMaximumPoolSize(availableProcessors * 3);
