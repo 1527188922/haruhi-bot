@@ -1,7 +1,7 @@
 package com.haruhi.bot.service;
 
 import com.haruhi.bot.config.BotConfig;
-import com.haruhi.bot.config.path.IPathConfig;
+import com.haruhi.bot.config.path.AbstractPathConfig;
 import com.haruhi.bot.dto.gocq.response.SelfInfo;
 import com.haruhi.bot.utils.FileUtil;
 import com.haruhi.bot.utils.GocqRequestUtil;
@@ -21,7 +21,7 @@ import java.text.MessageFormat;
 public class SystemService {
 
     @Autowired
-    private IPathConfig envConfig;
+    private AbstractPathConfig envConfig;
 
     public void writeStopScript(){
         if(SystemInfo.PRO.get()){

@@ -1,6 +1,7 @@
 package com.haruhi.bot.utils.system;
 
 import com.haruhi.bot.factory.ThreadPoolFactory;
+import com.haruhi.bot.ws.Client;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
@@ -49,8 +50,15 @@ public class SystemInfo {
     public static String OS_NAME;
     public static int AVAILABLE_PROCESSORS;
     public static File DISK;
-    private static long TOTAL_SPACE;
-    private static long TOTAL_SPACE_GB;
+    public static double TOTAL_SPACE;
+    public static double TOTAL_SPACE_GB;
+    public static double FREE_SPACE;
+    public static double FREE_SPACE_GB;
+    public static double TOTAL_PHYSICAL_MEMORY_SIZE;
+    public static double TOTAL_PHYSICAL_MEMORY_SIZE_GB;
+    public static double FREE_PHYSICAL_MEMORY_SIZE;
+    public static double FREE_PHYSICAL_MEMORY_SIZE_GB;
+    public static boolean CONNECTED;
 
     static {
         init();
@@ -63,6 +71,7 @@ public class SystemInfo {
         ThreadPoolFactory.resetThreadPoolSize();
         getDisk();
         getTotalSpace();
+        getTotalPhysicalMemorySize();
     }
 
     private static void getPID(){
@@ -92,10 +101,34 @@ public class SystemInfo {
     }
     private static void getTotalSpace(){
         if(DISK != null){
-            TOTAL_SPACE = DISK.getTotalSpace();
-            TOTAL_SPACE_GB = TOTAL_SPACE / 1024L / 1024L / 1024L;
+            TOTAL_SPACE = (double) DISK.getTotalSpace();
+            TOTAL_SPACE_GB = TOTAL_SPACE / 1024 / 1024 / 1024;
             log.info("total space : {}GB",TOTAL_SPACE_GB);
         }
+    }
+
+    private static void getTotalPhysicalMemorySize(){
+        TOTAL_PHYSICAL_MEMORY_SIZE = SystemUtil.osmxb.getTotalPhysicalMemorySize();
+        TOTAL_PHYSICAL_MEMORY_SIZE_GB = TOTAL_PHYSICAL_MEMORY_SIZE / 1024 / 1024 / 1024;
+    }
+
+
+
+    public static String toJson(){
+        String s = "{\"PRO\":" + PRO.get() + ",\"PID\":\"" + PID + "\",\"OS_NAME\":\"" + OS_NAME
+                + "\",\"AVAILABLE_PROCESSORS\":" + AVAILABLE_PROCESSORS
+                + ",\"DISK\":\"" + DISK.toString()
+                + "\",\"TOTAL_SPACE\":" + TOTAL_SPACE
+                + ",\"TOTAL_SPACE_GB\":" + TOTAL_SPACE_GB
+                + ",\"FREE_SPACE\":" + (FREE_SPACE = SystemUtil.getFreeSpace())
+                + ",\"FREE_SPACE_GB\":" + FREE_SPACE_GB
+                + ",\"TOTAL_PHYSICAL_MEMORY_SIZE\":" + TOTAL_PHYSICAL_MEMORY_SIZE
+                + ",\"TOTAL_PHYSICAL_MEMORY_SIZE_GB\":" + TOTAL_PHYSICAL_MEMORY_SIZE_GB
+                + ",\"FREE_PHYSICAL_MEMORY_SIZE\":" + (FREE_PHYSICAL_MEMORY_SIZE = SystemUtil.getFreePhysicalMemorySize())
+                + ",\"FREE_PHYSICAL_MEMORY_SIZE_GB\":" + FREE_PHYSICAL_MEMORY_SIZE_GB
+                + ",\"CONNECTED\":" + (CONNECTED = Client.connected())
+                + "}";
+        return s.replace("\\","/");
     }
 
 }
