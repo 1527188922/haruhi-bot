@@ -3,11 +3,11 @@ package com.haruhi.bot.service;
 import com.haruhi.bot.config.BotConfig;
 import com.haruhi.bot.config.SystemConfig;
 import com.haruhi.bot.config.path.IPathConfig;
-import com.haruhi.bot.constant.OSEnum;
 import com.haruhi.bot.dto.gocq.response.SelfInfo;
 import com.haruhi.bot.utils.FileUtil;
 import com.haruhi.bot.utils.GocqRequestUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,12 +27,15 @@ public class SystemService {
         if(SystemConfig.PRO.get()){
             String s = null;
             String scriptName = null;
-            if(OSEnum.linux.equals(SystemConfig.osName)){
+            if(SystemUtils.IS_OS_LINUX){
                 s = MessageFormat.format("kill -9 {0}",SystemConfig.PID);
                 scriptName = "stop.sh";
-            }else if (OSEnum.windows.equals(SystemConfig.osName)){
+            }else if (SystemUtils.IS_OS_WINDOWS){
                 s = MessageFormat.format("taskkill /pid {0} -t -f",SystemConfig.PID);
                 scriptName = "stop.bat";
+            }else if(SystemUtils.IS_OS_MAC){
+                log.warn("暂不支持macOS生成停止脚本");
+                return;
             }
             if (Strings.isNotBlank(s)) {
                 File file = new File(envConfig.applicationHomePath() + File.separator + scriptName);

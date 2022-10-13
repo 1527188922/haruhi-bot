@@ -2,6 +2,7 @@ package com.haruhi.bot.factory;
 
 
 import com.haruhi.bot.config.SystemConfig;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
 import java.util.concurrent.ArrayBlockingQueue;
@@ -9,6 +10,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 public class ThreadPoolFactory {
     private ThreadPoolFactory(){}
     private final static ThreadPoolExecutor commandHandlerThreadPool = new ThreadPoolExecutor(5,20,36, TimeUnit.HOURS,new ArrayBlockingQueue(120),new CustomizableThreadFactory("pool-command-"),new ThreadPoolExecutor.CallerRunsPolicy());
@@ -29,6 +31,7 @@ public class ThreadPoolFactory {
 
             eventThreadPool.setCorePoolSize(availableProcessors + 1);
             eventThreadPool.setMaximumPoolSize(availableProcessors * 4);
+            log.info("根据cpu线程数重置线程池容量完成");
         }
     }
 
