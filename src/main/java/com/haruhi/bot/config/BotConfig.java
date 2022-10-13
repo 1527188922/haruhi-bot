@@ -55,5 +55,9 @@ public class BotConfig {
         }
     }
 
+    public static String toJson(){
+        return "{\"SELF_ID\":\"" + SELF_ID + "\",\"SUPER_USER\":\"" + SUPER_USER + "\",\"NAME\":\"" + NAME + "\",\"SEARCH_IMAGE_KEY\":\"" + SEARCH_IMAGE_KEY +
+                "\",\"HTTP_URL\":\"" + HTTP_URL + "\",\"WS_URL\":\"" + WS_URL + "\"}";
+    }
 
 }

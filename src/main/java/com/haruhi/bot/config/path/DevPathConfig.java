@@ -12,8 +12,8 @@ import java.io.IOException;
 @Slf4j
 @Component
 @ConditionalOnProperty(name = "env.active",havingValue = "dev")
-public class DevPathConfigImpl implements IPathConfig {
-    public DevPathConfigImpl(){
+public class DevPathConfig extends AbstractPathConfig {
+    public DevPathConfig(){
         SystemInfo.PRO.set(false);
         log.info("env active : dev");
     }
@@ -30,7 +30,7 @@ public class DevPathConfigImpl implements IPathConfig {
     }
 
     private static void setHomePath(){
-        ApplicationHome ah = new ApplicationHome(DevPathConfigImpl.class);
+        ApplicationHome ah = new ApplicationHome(DevPathConfig.class);
         homePath = ah.getSource().getParentFile().toString();
     }
     private static void setImagePath(){
@@ -62,7 +62,7 @@ public class DevPathConfigImpl implements IPathConfig {
     }
 
     @Override
-    public String resourcesAudio() {
+    public String resourcesAudioPath() {
         return audioPath;
     }
 }

@@ -10,9 +10,9 @@ import java.io.File;
 @Slf4j
 @Component
 @ConditionalOnProperty(name = "env.active",havingValue = "pro")
-public class ProPathConfigImpl implements IPathConfig {
+public class ProPathConfig extends AbstractPathConfig {
 
-    public ProPathConfigImpl(){
+    public ProPathConfig(){
         log.info("env active : pro");
     }
 
@@ -22,7 +22,7 @@ public class ProPathConfigImpl implements IPathConfig {
 
     static {
         // 加载根目录路径
-        ApplicationHome ah = new ApplicationHome(ProPathConfigImpl.class);
+        ApplicationHome ah = new ApplicationHome(ProPathConfig.class);
         homePath = ah.getSource().getParentFile().toString();
 
         // 创建image路径
@@ -47,7 +47,7 @@ public class ProPathConfigImpl implements IPathConfig {
     }
 
     @Override
-    public String resourcesAudio() {
+    public String resourcesAudioPath() {
         return audioPath;
     }
 }

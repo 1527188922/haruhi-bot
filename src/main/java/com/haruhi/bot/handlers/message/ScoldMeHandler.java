@@ -1,6 +1,6 @@
 package com.haruhi.bot.handlers.message;
 
-import com.haruhi.bot.config.path.IPathConfig;
+import com.haruhi.bot.config.path.AbstractPathConfig;
 import com.haruhi.bot.constant.CqCodeTypeEnum;
 import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.RegexEnum;
@@ -33,13 +33,13 @@ public class ScoldMeHandler implements IMessageEvent {
     }
 
     @Autowired
-    private IPathConfig envConfig;
+    private AbstractPathConfig envConfig;
     private static List<File> fileList;
 
     @PostConstruct
     private void loadAudioFileList(){
         // 初始化类时加载文件
-        fileList = FileUtil.getFileList(envConfig.resourcesAudio() + File.separator + "dg");
+        fileList = FileUtil.getFileList(envConfig.resourcesAudioPath() + File.separator + "dg");
     }
 
 

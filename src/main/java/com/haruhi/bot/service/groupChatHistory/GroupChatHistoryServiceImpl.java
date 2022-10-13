@@ -2,7 +2,7 @@ package com.haruhi.bot.service.groupChatHistory;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.haruhi.bot.config.path.IPathConfig;
+import com.haruhi.bot.config.path.AbstractPathConfig;
 import com.haruhi.bot.constant.CqCodeTypeEnum;
 import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.event.MessageEventEnum;
@@ -52,7 +52,7 @@ public class GroupChatHistoryServiceImpl extends ServiceImpl<GroupChatHistoryMap
     private GroupChatHistoryMapper groupChatHistoryMapper;
 
     @Autowired
-    private IPathConfig envConfig;
+    private AbstractPathConfig envConfig;
 
     private static String basePath;
 
