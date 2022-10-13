@@ -9,8 +9,8 @@
             `group_id` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
             `day_count` int(11) DEFAULT '0',
             `favorability` int(11) DEFAULT '0',
-            `first_date` datetime DEFAULT CURRENT_TIMESTAMP,
-            `last_date` datetime DEFAULT CURRENT_TIMESTAMP,
+            `first_date` timestamp DEFAULT CURRENT_TIMESTAMP,
+            `last_date` timestamp DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='签到表';
     </update>
@@ -43,7 +43,7 @@
         `tags` text NOT NULL,
         PRIMARY KEY (`id`),
         KEY `index_tags` (`tags`(767))
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='pixiv图库（数据通过程序从真寻库（pgsql）搬来的）';
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='pixiv图库（定时爬虫下载,需要在配置文件开启该爬虫）';
     </update>
     <update id="createWordStrip">
         CREATE TABLE `${tableName}` (
