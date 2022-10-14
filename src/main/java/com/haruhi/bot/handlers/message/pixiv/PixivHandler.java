@@ -5,10 +5,14 @@ import com.haruhi.bot.dto.gocq.response.Message;
 import com.haruhi.bot.factory.ThreadPoolFactory;
 import com.haruhi.bot.event.message.IMessageEvent;
 import com.haruhi.bot.service.pixiv.PixivService;
-import com.haruhi.bot.utils.CommonUtil;
 import com.simplerobot.modules.utils.KQCodeUtils;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 @Component
@@ -26,6 +30,7 @@ public class PixivHandler implements IMessageEvent {
     @Autowired
     private PixivService pixivService;
 
+    private List<String> tags;
     private String tag;
 
     public boolean matching(final String command) {
@@ -39,6 +44,11 @@ public class PixivHandler implements IMessageEvent {
         for (String s : split) {
             if (command.startsWith(s)) {
                 tag = command.replace(s,"");
+                if(Strings.isBlank(tag)){
+                    tags = new ArrayList<>(1);
+                }else{
+                    tags = Arrays.asList(tag.split(",|，"));
+                }
                 return true;
             }
         }
@@ -51,18 +61,21 @@ public class PixivHandler implements IMessageEvent {
         if (!matching(command)){
             return false;
         }
-        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new PixivTask(pixivService,tag,message));
+        ThreadPoolFactory.getCommandHandlerThreadPool().execute(new PixivTask(pixivService,tags,message,tag));
         return true;
     }
     private void after(){
+        this.tags = null;
         this.tag = null;
     }
 
     private class PixivTask implements Runnable{
         private PixivService pixivService;
+        private List<String> tags;
         private String tag;
         private Message message;
-        public PixivTask(PixivService pixivService, String tag, Message message){
+        public PixivTask(PixivService pixivService, List<String> tags, Message message,String tag){
+            this.tags = tags;
             this.tag = tag;
             this.pixivService = pixivService;
             this.message = message;
@@ -70,9 +83,8 @@ public class PixivHandler implements IMessageEvent {
 
         @Override
         public void run() {
-            pixivService.roundSend(20,null,tag,message);
+            pixivService.roundSend(20,null,tags,message,tag);
         }
-
     }
 
 }

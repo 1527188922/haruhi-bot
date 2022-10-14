@@ -30,4 +30,17 @@
             </if>
         </where>
     </select>
+    <select id="roundByTagsAll" resultType="com.haruhi.bot.entity.Pixiv">
+        SELECT <include refid="baseCol"/> FROM `t_pixiv`
+        <where>
+            <if test="isR18 != null">
+                AND is_r18 = #{isR18}
+            </if>
+            <foreach collection="tags" item="item">
+                <if test="item != null and item != ''">
+                    AND tags LIKE CONCAT('%',CONCAT(#{item},'%'))
+                </if>
+            </foreach>
+        </where>
+    </select>
 </mapper>
