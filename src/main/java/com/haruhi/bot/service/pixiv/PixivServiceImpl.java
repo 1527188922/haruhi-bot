@@ -33,14 +33,14 @@ public class PixivServiceImpl extends ServiceImpl<PixivMapper, Pixiv> implements
     private PixivMapper pixivMapper;
 
     @Override
-    public void roundSend(int num, Boolean isR18, String tag, Message message) {
+    public void roundSend(int num, Boolean isR18,List<String> tags, String tag, Message message) {
         List<Pixiv> pixivs = null;
         HashSet<Pixiv> pixivHashSet = null;
-        boolean noTag = Strings.isBlank(tag);
+        boolean noTag = CollectionUtils.isEmpty(tags);
         if (noTag) {
             pixivs = pixivMapper.roundByTagLimit(num, isR18, null);
         } else {
-            pixivs = pixivMapper.roundByTagAll(isR18, tag.trim());
+            pixivs = pixivMapper.roundByTagsAll(isR18,tags);
 
         }
         if (CollectionUtils.isEmpty(pixivs)) {
