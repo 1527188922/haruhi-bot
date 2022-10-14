@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+
 @Component
 public class PixivHandler implements IMessageEvent {
     @Override
@@ -69,8 +71,8 @@ public class PixivHandler implements IMessageEvent {
 
     private class PixivTask implements Runnable{
         private PixivService pixivService;
-        private String tag;
         private List<String> tags;
+        private String tag;
         private Message message;
         public PixivTask(PixivService pixivService, List<String> tags, Message message,String tag){
             this.tags = tags;
@@ -81,9 +83,8 @@ public class PixivHandler implements IMessageEvent {
 
         @Override
         public void run() {
-            pixivService.roundSend(40,null,tags,tag,message);
+            pixivService.roundSend(40,null,tags,message,tag);
         }
-
     }
 
 }

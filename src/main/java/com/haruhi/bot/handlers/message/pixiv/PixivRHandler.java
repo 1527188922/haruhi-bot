@@ -71,7 +71,7 @@ public class PixivRHandler implements IMessageEvent {
 
         @Override
         public void run() {
-            pixivService.roundSend(40,true,tags,tag,message);
+            pixivService.roundSend(40,true,tags,message,tag);
         }
     }
 }

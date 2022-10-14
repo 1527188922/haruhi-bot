@@ -18,11 +18,9 @@ public class Pixiv {
     private Integer height;
     @TableField("`view`")
     private Integer view;
-    @TableField("`bookmarks`")
     private Integer bookmarks;
     private String imgUrl;
     // 图片md5 haruhi库来的
-    @TableField("`img_p`")
     private String imgP;
     private String uid;
     private String author;

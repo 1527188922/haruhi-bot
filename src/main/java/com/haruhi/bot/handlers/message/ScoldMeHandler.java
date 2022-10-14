@@ -1,6 +1,6 @@
 package com.haruhi.bot.handlers.message;
 
-import com.haruhi.bot.config.path.IPathConfig;
+import com.haruhi.bot.config.path.AbstractPathConfig;
 import com.haruhi.bot.constant.CqCodeTypeEnum;
 import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.RegexEnum;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
-import java.util.List;
 
 @Slf4j
 @Component
@@ -33,13 +32,13 @@ public class ScoldMeHandler implements IMessageEvent {
     }
 
     @Autowired
-    private IPathConfig envConfig;
-    private static List<File> fileList;
+    private AbstractPathConfig envConfig;
+    private static File[] fileList;
 
     @PostConstruct
     private void loadAudioFileList(){
         // 初始化类时加载文件
-        fileList = FileUtil.getFileList(envConfig.resourcesAudio() + File.separator + "dg");
+        fileList = FileUtil.getFileList(envConfig.resourcesAudioPath() + File.separator + "dg");
     }
 
 
@@ -55,8 +54,8 @@ public class ScoldMeHandler implements IMessageEvent {
             return false;
         }
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(()->{
-            int i = CommonUtil.randomInt(0, fileList.size() - 1);
-            File file = fileList.get(i);
+            int i = CommonUtil.randomInt(0, fileList.length - 1);
+            File file = fileList[i];
             KQCodeUtils instance = KQCodeUtils.getInstance();
             String cq = instance.toCq(CqCodeTypeEnum.record.getType(), "file=file:///" + file.toString());
             Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),cq, GocqActionEnum.SEND_MSG,false);

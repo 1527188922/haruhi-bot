@@ -21,7 +21,7 @@ import java.util.Map;
 
 @Slf4j
 public class GocqRequestUtil {
-
+    private GocqRequestUtil(){}
     /**
      * 获取消息详情对象
      * @param messageId 消息id

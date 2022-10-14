@@ -1,5 +1,7 @@
 package com.haruhi.bot.config.path;
 
+import com.haruhi.bot.utils.system.SystemInfo;
+import com.haruhi.bot.utils.system.SystemUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.system.ApplicationHome;
@@ -9,11 +11,11 @@ import java.io.File;
 
 @Slf4j
 @Component
-@ConditionalOnProperty(name = "env.active",havingValue = "pro")
-public class ProPathConfigImpl implements IPathConfig {
+@ConditionalOnProperty(name = "env.active",havingValue = SystemUtil.PROFILE_RPO)
+public class ProPathConfig extends AbstractPathConfig {
 
-    public ProPathConfigImpl(){
-        log.info("env active : pro");
+    public ProPathConfig(){
+        log.info("profile active : {}", SystemInfo.PROFILE);
     }
 
     private static String homePath;
@@ -22,7 +24,7 @@ public class ProPathConfigImpl implements IPathConfig {
 
     static {
         // 加载根目录路径
-        ApplicationHome ah = new ApplicationHome(ProPathConfigImpl.class);
+        ApplicationHome ah = new ApplicationHome(ProPathConfig.class);
         homePath = ah.getSource().getParentFile().toString();
 
         // 创建image路径
@@ -47,7 +49,7 @@ public class ProPathConfigImpl implements IPathConfig {
     }
 
     @Override
-    public String resourcesAudio() {
+    public String resourcesAudioPath() {
         return audioPath;
     }
 }

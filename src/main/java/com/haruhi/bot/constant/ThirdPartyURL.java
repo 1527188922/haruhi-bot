@@ -15,7 +15,8 @@ public class ThirdPartyURL {
     // lolicon
     public static final String LOLICON = "https://api.lolicon.app/setu/v2";
     // bt 搜索
-    public static final String BT_SEARCH = "http://www.eclzz.win";
+//    public static final String BT_SEARCH = "http://www.eclzz.win";
+    public static final String BT_SEARCH = "http://www.eclzz.art";
     // agefans.tv 今日新番使用
     public static final String AGEFANSTV = "https://www.agemys.cc";
     // 网易新闻
