@@ -1,5 +1,7 @@
 package com.haruhi.bot.config.path;
 
+import com.haruhi.bot.utils.system.SystemInfo;
+import com.haruhi.bot.utils.system.SystemUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.system.ApplicationHome;
@@ -9,11 +11,11 @@ import java.io.File;
 
 @Slf4j
 @Component
-@ConditionalOnProperty(name = "env.active",havingValue = "pro")
+@ConditionalOnProperty(name = "env.active",havingValue = SystemUtil.PROFILE_RPO)
 public class ProPathConfig extends AbstractPathConfig {
 
     public ProPathConfig(){
-        log.info("env active : pro");
+        log.info("profile active : {}", SystemInfo.PROFILE);
     }
 
     private static String homePath;

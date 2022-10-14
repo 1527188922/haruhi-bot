@@ -1,6 +1,7 @@
 package com.haruhi.bot.config.path;
 
 import com.haruhi.bot.utils.system.SystemInfo;
+import com.haruhi.bot.utils.system.SystemUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.system.ApplicationHome;
@@ -11,11 +12,11 @@ import java.io.IOException;
 
 @Slf4j
 @Component
-@ConditionalOnProperty(name = "env.active",havingValue = "dev")
+@ConditionalOnProperty(name = "env.active",havingValue = SystemUtil.PROFILE_DEV)
 public class DevPathConfig extends AbstractPathConfig {
     public DevPathConfig(){
-        SystemInfo.PRO.set(false);
-        log.info("env active : dev");
+        SystemInfo.PROFILE = SystemUtil.PROFILE_DEV;
+        log.info("profile active : {}",SystemInfo.PROFILE);
     }
     // directory 拿到resources目录路径
     public static File directory = new File("src/main/resources");

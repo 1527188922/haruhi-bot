@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 系统信息以及程序信息
@@ -15,39 +14,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 @Slf4j
 public class SystemInfo {
+    private SystemInfo(){}
 
-    public static final String PROPERTY_SPECIFICATION_NAME = "java.specification.name";
-    public static final String PROPERTY_VERSION = "java.version";
-    public static final String PROPERTY_SPECIFICATION_VERSION = "java.specification.version";
-    public static final String PROPERTY_VENDOR = "java.vendor";
-    public static final String PROPERTY_SPECIFICATION_VENDOR = "java.specification.vendor";
-    public static final String PROPERTY_VENDOR_URL = "java.vendor.url";
-    public static final String PROPERTY_HOME = "java.home";
-    public static final String PROPERTY_LIBRARY_PATH = "java.library.path";
-    public static final String PROPERTY_TMPDIR = "java.io.tmpdir";
-    public static final String PROPERTY_COMPILER = "java.compiler";
-    public static final String PROPERTY_EXT_DIRS = "java.ext.dirs";
-    public static final String PROPERTY_VM_NAME = "java.vm.name";
-    public static final String PROPERTY_VM_SPECIFICATION_NAME = "java.vm.specification.name";
-    public static final String PROPERTY_VM_VERSION = "java.vm.version";
-    public static final String PROPERTY_VM_SPECIFICATION_VERSION = "java.vm.specification.version";
-    public static final String PROPERTY_VM_VENDOR = "java.vm.vendor";
-    public static final String PROPERTY_VM_SPECIFICATION_VENDOR = "java.vm.specification.vendor";
-    public static final String PROPERTY_CLASS_VERSION = "java.class.version";
-    public static final String PROPERTY_CLASS_PATH = "java.class.path";
-    public static final String PROPERTY_OS_NAME = "os.name";
-    public static final String PROPERTY_OS_ARCH = "os.arch";
-    public static final String PROPERTY_OS_VERSION = "os.version";
-    public static final String PROPERTY_FILE_SEPARATOR = "file.separator";
-    public static final String PROPERTY_PATH_SEPARATOR = "path.separator";
-    public static final String PROPERTY_LINE_SEPARATOR = "line.separator";
-    public static final String PROPERTY_USER_NAME = "user.name";
-    public static final String PROPERTY_USER_HOME = "user.home";
-    public static final String PROPERTY_USER_DIR = "user.dir";
 
-    public static AtomicBoolean PRO;
+    public static String PROFILE;
     public static String PID;
     public static String OS_NAME;
+    public static String OS_VERSION;
     public static int AVAILABLE_PROCESSORS;
     public static File DISK;
     public static double TOTAL_SPACE;
@@ -59,14 +32,16 @@ public class SystemInfo {
     public static double FREE_PHYSICAL_MEMORY_SIZE;
     public static double FREE_PHYSICAL_MEMORY_SIZE_GB;
     public static boolean CONNECTED;
+    public static double CPU_LOAD;
 
     static {
         init();
     }
     private static void init(){
-        PRO = new AtomicBoolean(true);
+        PROFILE = SystemUtil.PROFILE_RPO;
         getPID();
         getOsName();
+        getOsVersion();
         getAvailableProcessors();
         ThreadPoolFactory.resetThreadPoolSize();
         getDisk();
@@ -83,6 +58,10 @@ public class SystemInfo {
     private static void getOsName(){
         OS_NAME = SystemUtil.OS_NAME;
         log.info("os name : {}",OS_NAME);
+    }
+    private static void getOsVersion(){
+        OS_VERSION = SystemUtil.OS_VERSION;
+        log.info("os version : {}",OS_VERSION);
     }
 
     private static void getAvailableProcessors(){
@@ -115,7 +94,7 @@ public class SystemInfo {
 
 
     public static String toJson(){
-        String s = "{\"PRO\":" + PRO.get() + ",\"PID\":\"" + PID + "\",\"OS_NAME\":\"" + OS_NAME
+        String s = "{\"PROFILE\":\"" + PROFILE + "\",\"PID\":\"" + PID + "\",\"OS_NAME\":\"" + OS_NAME + "\",\"OS_VERSION\":\"" + OS_VERSION
                 + "\",\"AVAILABLE_PROCESSORS\":" + AVAILABLE_PROCESSORS
                 + ",\"DISK\":\"" + DISK.toString()
                 + "\",\"TOTAL_SPACE\":" + TOTAL_SPACE
@@ -127,8 +106,10 @@ public class SystemInfo {
                 + ",\"FREE_PHYSICAL_MEMORY_SIZE\":" + (FREE_PHYSICAL_MEMORY_SIZE = SystemUtil.getFreePhysicalMemorySize())
                 + ",\"FREE_PHYSICAL_MEMORY_SIZE_GB\":" + FREE_PHYSICAL_MEMORY_SIZE_GB
                 + ",\"CONNECTED\":" + (CONNECTED = Client.connected())
+                + ",\"CPU_LOAD\":" + (CPU_LOAD = SystemUtil.getOperatingSystemMXBeanJson().getDoubleValue(SystemUtil.OSXMB_KEY_SYSTEM_LOAD) * 100.00d)
                 + "}";
         return s.replace("\\","/");
     }
+
 
 }

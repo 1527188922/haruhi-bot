@@ -13,7 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-public class StatusController {
+@RequestMapping("/sys")
+public class SystemController {
 
     @Autowired
     private AbstractPathConfig abstractPathConfig;

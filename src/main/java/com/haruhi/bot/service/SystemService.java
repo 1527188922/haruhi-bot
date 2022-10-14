@@ -24,7 +24,7 @@ public class SystemService {
     private AbstractPathConfig envConfig;
 
     public void writeStopScript(){
-        if(SystemInfo.PRO.get()){
+        if(SystemUtil.PROFILE_RPO.equals(SystemInfo.PROFILE)){
             String s = null;
             String scriptName = null;
             if(SystemUtil.IS_OS_LINUX || SystemUtil.IS_OS_MAC){
