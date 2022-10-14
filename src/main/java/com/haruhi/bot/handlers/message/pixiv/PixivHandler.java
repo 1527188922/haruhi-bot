@@ -70,7 +70,7 @@ public class PixivHandler implements IMessageEvent {
 
         @Override
         public void run() {
-            pixivService.roundSend(20,null,tag,message);
+            pixivService.roundSend(40,null,tag,message);
         }
 
     }

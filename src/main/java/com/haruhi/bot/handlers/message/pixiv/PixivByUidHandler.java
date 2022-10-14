@@ -61,6 +61,7 @@ public class PixivByUidHandler implements IMessageEvent {
         return false;
     }
     private class Task implements Runnable{
+        int num = 40;
         private PixivService pixivService;
         private String uid;
         private Message message;
@@ -80,9 +81,9 @@ public class PixivByUidHandler implements IMessageEvent {
             }
             int size = list.size();
             Set<Pixiv> pixivSet;
-            if(size > 20){
+            if(size > num){
                 pixivSet = new HashSet<>();
-                while (pixivSet.size() < 20){
+                while (pixivSet.size() < num){
                     pixivSet.add(list.get(CommonUtil.randomInt(0,size - 1)));
                 }
             }else{
