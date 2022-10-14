@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface PixivService extends IService<Pixiv> {
 
-    void roundSend(int num,Boolean isR18,String tag, Message message);
+    void roundSend(int num,Boolean isR18,List<String> tags, Message message,String tag);
 
     void privateSend(Collection<Pixiv> pixivs,Message message);
     void groupSend(Collection<Pixiv> pixivs, List<ForwardMsg> forwardMsgs, Message message);
