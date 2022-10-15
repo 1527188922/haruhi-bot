@@ -1,22 +1,17 @@
 package com.haruhi.bot.handlers.message.function;
 
-import com.haruhi.bot.config.BotConfig;
 import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.RegexEnum;
 import com.haruhi.bot.constant.event.MessageEventEnum;
 import com.haruhi.bot.dispenser.MessageDispenser;
-import com.haruhi.bot.dto.gocq.request.ForwardMsg;
 import com.haruhi.bot.dto.gocq.response.Message;
 import com.haruhi.bot.event.message.IMessageEvent;
 import com.haruhi.bot.event.message.IMessageEventType;
 import com.haruhi.bot.factory.ThreadPoolFactory;
-import com.haruhi.bot.utils.CommonUtil;
 import com.haruhi.bot.ws.Client;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.stream.Collectors;
@@ -66,24 +61,15 @@ public class ShowFunctionHandler implements IMessageEvent {
                 stringBuilder.append("名称：").append(eventType.funName()).append("\n");
 
             }
-            stringBuilder.append("可通过命令`禁用功能id`或`禁用功能名称`来禁用功能\n");
-            stringBuilder.append("可通过命令`开启功能id`或`开启功能名称`来开启功能\n");
-            stringBuilder.append("可通过命令`群禁用功能id`或`群禁用功能名称`来针对某个群禁用功能\n");
-            stringBuilder.append("可通过命令`群开启功能id`或`群开启功能名称`来针对某个群开启功能\n");
+            stringBuilder.append("可通过`禁用功能id`或`禁用功能名称`来禁用功能\n");
+            stringBuilder.append("可通过`开启功能id`或`开启功能名称`来开启功能\n");
+            stringBuilder.append("可通过`群禁用功能id`或`群禁用功能名称`来针对某个群禁用功能\n");
+            stringBuilder.append("可通过`群开启功能id`或`群开启功能名称`来针对某个群开启功能\n");
             stringBuilder.append("bot功能文档https://blog.csdn.net/cxy152718/article/details/126539271");
 
-            send(stringBuilder.toString(),message);
-        }
-    }
-    private void send(String msg,Message message){
-        if (MessageEventEnum.privat.getType().equals(message.getMessage_type())) {
-            Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getSub_type(),msg, GocqActionEnum.SEND_MSG,true);
-        }else if(MessageEventEnum.group.getType().equals(message.getMessage_type())){
-            ArrayList<ForwardMsg> param = new ArrayList<>(1);
-            param.add(CommonUtil.createForwardMsgItem(msg,message.getSelf_id(), BotConfig.NAME));
-            Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,message.getGroup_id(),param);
-        }
-    }
+            Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),stringBuilder.toString(), GocqActionEnum.SEND_MSG,true);
 
+        }
+    }
 
 }
