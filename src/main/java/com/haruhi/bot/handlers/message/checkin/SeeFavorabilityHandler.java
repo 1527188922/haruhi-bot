@@ -3,8 +3,8 @@ package com.haruhi.bot.handlers.message.checkin;
 import com.haruhi.bot.constant.GocqActionEnum;
 import com.haruhi.bot.constant.RegexEnum;
 import com.haruhi.bot.dto.gocq.response.Message;
-import com.haruhi.bot.dto.gocq.request.Answer;
-import com.haruhi.bot.dto.gocq.request.AnswerBox;
+import com.haruhi.bot.dto.gocq.request.Params;
+import com.haruhi.bot.dto.gocq.request.RequestBox;
 import com.haruhi.bot.factory.ThreadPoolFactory;
 import com.haruhi.bot.event.message.IGroupMessageEvent;
 import com.haruhi.bot.service.checkin.CheckinService;
@@ -42,8 +42,8 @@ public class SeeFavorabilityHandler implements IGroupMessageEvent {
         }
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(()->{
             try {
-                AnswerBox<Answer> box = new AnswerBox<>();
-                Answer answer = new Answer();
+                RequestBox<Params> box = new RequestBox<>();
+                Params answer = new Params();
                 answer.setGroup_id(message.getGroup_id());
                 answer.setMessage_type(message.getMessage_type());
                 answer.setUser_id(message.getUser_id());

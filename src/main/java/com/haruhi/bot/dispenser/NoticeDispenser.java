@@ -53,7 +53,7 @@ public class NoticeDispenser {
         setMessageType(message);
         String subType = message.getSub_type();
         String noticeType = message.getNotice_type();
-
+        log.info("收到通知类消息：subType：{}，noticeType：{}",subType,noticeType);
         if(NoticeTypeEnum.notify.toString().equals(noticeType) && SubTypeEnum.poke.toString().equals(subType)){
             for (INoticeEventType value : container){
                 if(value instanceof IPokeEvent){

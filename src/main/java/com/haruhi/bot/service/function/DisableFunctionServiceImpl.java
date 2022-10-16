@@ -36,8 +36,9 @@ public class DisableFunctionServiceImpl extends ServiceImpl<DisableFunctionMappe
                     IMessageEventType bean = ApplicationContextProvider.getBean(banFun.getClassName());
                     MessageDispenser.detach(bean.getClass());
                 }
+                log.info("加载全局禁用功能数据到内存成功，数量：{}",banFuns.size());
             }catch (ClassNotFoundException e){
-                log.error("加载禁用功能异常",e);
+                log.error("加载全局禁用功能异常",e);
             }
         }
     }
@@ -63,6 +64,8 @@ public class DisableFunctionServiceImpl extends ServiceImpl<DisableFunctionMappe
                 }
             }
             MessageDispenser.setGroupBanFunction(res);
+
+            log.info("加载群禁用功能完成，数据量：{}，分组后数量：{}",banFuns.size(),res.size());
         }
     }
 }

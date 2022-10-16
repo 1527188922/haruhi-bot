@@ -10,6 +10,7 @@ import com.haruhi.bot.utils.CommonUtil;
 import com.haruhi.bot.ws.Client;
 import com.simplerobot.modules.utils.KQCodeUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 
 
@@ -32,23 +33,29 @@ public class PokeHandler implements IPokeEvent {
         }
 
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(()->{
-            int size = cache.size();
-            if(size > 0){
-                String reply = cache.get(CommonUtil.randomInt(0, size - 1));
-                if(MessageEventEnum.group.getType().equals(message.getMessage_type())){
-                    if("".equals(reply)){
-                        KQCodeUtils instance = KQCodeUtils.getInstance();
-                        String s = instance.toCq(CqCodeTypeEnum.poke.getType(), "qq=" + message.getUser_id());
-                        Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group,s, GocqActionEnum.SEND_MSG,false);
-                    }else{
-                        Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group,reply, GocqActionEnum.SEND_MSG,true);
+            try {
+                int size = cache.size();
+                if(size > 0){
+                    String reply = cache.get(CommonUtil.randomInt(0, size - 1));
+                    if(MessageEventEnum.group.getType().equals(message.getMessage_type())){
+                        if("".equals(reply)){
+                            KQCodeUtils instance = KQCodeUtils.getInstance();
+                            String s = instance.toCq(CqCodeTypeEnum.poke.getType(), "qq=" + message.getUser_id());
+                            Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group,s, GocqActionEnum.SEND_MSG,false);
+                        }else{
+                            Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group,reply, GocqActionEnum.SEND_MSG,true);
+                        }
+                    }else if(MessageEventEnum.privat.getType().equals(message.getMessage_type())){
+                        // gocq私聊不能发送给戳一戳 所以这里只回复文字
+                        while (Strings.isBlank(reply)){
+                            reply = cache.get(CommonUtil.randomInt(0, size - 1));
+                        }
+                        Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.privat,reply, GocqActionEnum.SEND_MSG,true);
                     }
-                }else if(MessageEventEnum.privat.getType().equals(message.getMessage_type())){
-                    // gocq私聊不能发送给戳一戳 所以这里只回复文字
-                    Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.privat,reply, GocqActionEnum.SEND_MSG,true);
                 }
+            }catch (Exception e){
+                log.error("处理戳一戳发生异常",e);
             }
-
         });
     }
 }

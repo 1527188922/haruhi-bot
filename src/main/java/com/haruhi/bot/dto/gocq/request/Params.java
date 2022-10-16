@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Collection;
 
 @Data
-public class Answer {
+public class Params {
     private String message_type;
     private String user_id;
     private String group_id;
