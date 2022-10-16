@@ -36,6 +36,7 @@ public class RestUtil {
             httpHeaders.add("Accept", MediaType.APPLICATION_JSON_VALUE);
             HttpEntity<O> entity = new HttpEntity<>(msgBody, httpHeaders);
             ResponseEntity<String> response = null;
+            log.info("发起rest请求：{}，payload:{}，urlParam:{}",url,JSONObject.toJSONString(msgBody),JSONObject.toJSONString(urlRequestParam));
             if(urlRequestParam != null){
                 response = restTemplate.exchange(urlSplicing(url,urlRequestParam), method, entity, new ParameterizedTypeReference<String>() {
                 });
