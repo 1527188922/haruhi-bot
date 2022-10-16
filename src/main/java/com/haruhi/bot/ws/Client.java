@@ -8,8 +8,8 @@ import com.haruhi.bot.constant.event.PostTypeEnum;
 import com.haruhi.bot.constant.event.MetaEventEnum;
 import com.haruhi.bot.dto.gocq.response.HttpResponse;
 import com.haruhi.bot.dto.gocq.response.Message;
-import com.haruhi.bot.dto.gocq.request.Answer;
-import com.haruhi.bot.dto.gocq.request.AnswerBox;
+import com.haruhi.bot.dto.gocq.request.Params;
+import com.haruhi.bot.dto.gocq.request.RequestBox;
 import com.haruhi.bot.dto.gocq.request.ForwardMsg;
 import com.haruhi.bot.factory.ThreadPoolFactory;
 import com.haruhi.bot.service.SystemService;
@@ -82,16 +82,19 @@ public class Client {
         }
     }
 
-    private static void sendMessage(String msg){
+    public static <T> void sendMessage(T box){
+        String boxJson = null;
         try {
-            INSTANCE.session.getAsyncRemote().sendText(msg);
+            boxJson = JSONObject.toJSONString(box);
+            INSTANCE.session.getAsyncRemote().sendText(boxJson);
+            log.info("bot发送了：{}",boxJson);
         } catch (Exception e){
-            log.error("发送消息时异常,消息:{}",msg,e);
+            log.error("发送消息时异常,消息:{}",boxJson,e);
         }
     }
-    public static <T> void sendMessage(AnswerBox<T> box){
-        sendMessage(JSONObject.toJSONString(box));
-    }
+//    public static <T> void sendMessage(RequestBox<T> box){
+//        sendMessage(box);
+//    }
     /**
      * @param target to
      * @param groupId 群号
@@ -102,8 +105,8 @@ public class Client {
      */
     public static void sendMessage(String target, String groupId , MessageEventEnum type, String message, GocqActionEnum action, boolean autoEscape){
 
-        AnswerBox<Answer> box = new AnswerBox<>();
-        Answer answer = new Answer();
+        RequestBox<Params> box = new RequestBox<>();
+        Params answer = new Params();
         answer.setMessage(message);
         answer.setMessage_type(type.getType());
         answer.setUser_id(target);
@@ -111,37 +114,37 @@ public class Client {
         answer.setGroup_id(groupId);
         box.setParams(answer);
         box.setAction(action.getAction());
-        sendMessage(JSONObject.toJSONString(box));
+        sendMessage(box);
     }
     public static void sendMessage(GocqActionEnum action,String groupId, List<ForwardMsg> params){
-        AnswerBox<Answer> collectionAnswerBox = new AnswerBox<>();
+        RequestBox<Params> collectionAnswerBox = new RequestBox<>();
 
         collectionAnswerBox.setAction(action.getAction());
 
-        Answer answer = new Answer();
-        answer.setGroup_id(groupId);
-        answer.setMessages(params);
-        collectionAnswerBox.setParams(answer);
-        sendMessage(JSONObject.toJSONString(collectionAnswerBox));
+        Params params1 = new Params();
+        params1.setGroup_id(groupId);
+        params1.setMessages(params);
+        collectionAnswerBox.setParams(params1);
+        sendMessage(collectionAnswerBox);
     }
     public static HttpResponse sendRestMessage(GocqActionEnum action,String groupId, List<ForwardMsg> params){
-        Answer answer = new Answer();
-        answer.setGroup_id(groupId);
-        answer.setMessages(params);
-        return RestUtil.sendPostRequest(RestUtil.getRestTemplate(), BotConfig.HTTP_URL + "/" + action.getAction(),answer,null, HttpResponse.class);
+        Params params1 = new Params();
+        params1.setGroup_id(groupId);
+        params1.setMessages(params);
+        return RestUtil.sendPostRequest(RestUtil.getRestTemplate(), BotConfig.HTTP_URL + "/" + action.getAction(),params1,null, HttpResponse.class);
     }
     public static void sendMessage(String target,String groupId ,String type, String message,GocqActionEnum action, boolean autoEscape){
 
-        AnswerBox<Answer> box = new AnswerBox<>();
-        Answer answer = new Answer();
-        answer.setMessage(message);
-        answer.setMessage_type(type);
-        answer.setUser_id(target);
-        answer.setGroup_id(groupId);
-        answer.setAuto_escape(autoEscape);
-        box.setParams(answer);
+        RequestBox<Params> box = new RequestBox<>();
+        Params params = new Params();
+        params.setMessage(message);
+        params.setMessage_type(type);
+        params.setUser_id(target);
+        params.setGroup_id(groupId);
+        params.setAuto_escape(autoEscape);
+        box.setParams(params);
         box.setAction(action.getAction());
-        sendMessage(JSONObject.toJSONString(box));
+        sendMessage(box);
     }
 
     /**
@@ -156,7 +159,7 @@ public class Client {
      * @return
      */
     public static String sendRestMessage(String target,String groupId ,String type, String message,GocqActionEnum action, boolean autoEscape){
-        Answer answer = new Answer();
+        Params answer = new Params();
         answer.setMessage(message);
         answer.setMessage_type(type);
         answer.setUser_id(target);
@@ -165,7 +168,7 @@ public class Client {
         return RestUtil.sendPostRequest(RestUtil.getRestTemplate(), BotConfig.HTTP_URL + "/" + action.getAction(),answer,null, String.class);
     }
     public static String sendRestMessage(String target, String groupId , MessageEventEnum type, String message, GocqActionEnum action, boolean autoEscape){
-        Answer answer = new Answer();
+        Params answer = new Params();
         answer.setMessage(message);
         answer.setMessage_type(type.getType());
         answer.setUser_id(target);
