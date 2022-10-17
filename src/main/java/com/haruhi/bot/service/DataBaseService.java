@@ -27,7 +27,7 @@ public class DataBaseService {
     private DynamicRoutingDataSource dynamicRoutingDataSource;
 
 
-    public void initDataBase(){
+    public synchronized void initDataBase(){
         log.info("开始初始化数据库...");
         try {
             if(dataBaseInitMapper.dataBaseIsExist(DataSourceConfig.DATA_BASE_BOT) == 0){
