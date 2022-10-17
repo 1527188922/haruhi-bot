@@ -3,6 +3,10 @@ package com.haruhi.bot.service;
 import com.haruhi.bot.config.BotConfig;
 import com.haruhi.bot.config.path.AbstractPathConfig;
 import com.haruhi.bot.dto.gocq.response.SelfInfo;
+import com.haruhi.bot.service.function.DisableFunctionService;
+import com.haruhi.bot.service.pokeReply.PokeReplyService;
+import com.haruhi.bot.service.verbalTricks.VerbalTricksService;
+import com.haruhi.bot.service.wordStrip.WordStripService;
 import com.haruhi.bot.utils.FileUtil;
 import com.haruhi.bot.utils.GocqRequestUtil;
 import com.haruhi.bot.utils.system.SystemInfo;
@@ -22,6 +26,15 @@ public class SystemService {
 
     @Autowired
     private AbstractPathConfig envConfig;
+
+    @Autowired
+    private WordStripService wordStripService;
+    @Autowired
+    private VerbalTricksService verbalTricksService;
+    @Autowired
+    private PokeReplyService pokeReplyService;
+    @Autowired
+    private DisableFunctionService disableFunctionService;
 
     public void writeStopScript(){
         if(SystemUtil.PROFILE_RPO.equals(SystemInfo.PROFILE)){
@@ -63,5 +76,23 @@ public class SystemService {
         }catch (Exception e){
             log.error("请求bot信息异常",e);
         }
+    }
+
+    public synchronized void loadCache(){
+       try {
+           // 加载词条到内存
+           wordStripService.loadWordStrip();
+           // 加载话术到内存
+           verbalTricksService.loadVerbalTricks();
+           // 加载戳一戳回复
+           pokeReplyService.loadPokeReply();
+           // 加载全局被禁用的功能
+           disableFunctionService.loadGlobalBanFunction();
+           // 加载群禁用功能
+           disableFunctionService.loadGroupBanFunction();
+           log.info("加载缓存完成");
+       }catch (Exception e){
+           log.error("加载缓存异常",e);
+       }
     }
 }

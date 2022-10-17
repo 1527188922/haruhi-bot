@@ -35,7 +35,7 @@ public class JobManage implements ApplicationContextAware {
         this.applicationContext = applicationContext;
     }
 
-    public void startAllJob(){
+    public synchronized void startAllJob(){
         int count = 0;
         log.info("开始启动定时任务...");
         Scheduler scheduler = schedulerFactoryBean.getScheduler();
