@@ -61,7 +61,7 @@ public class PixivByUidHandler implements IMessageEvent {
         return false;
     }
     private class Task implements Runnable{
-        int num = 40;
+        int num = 99;
         private PixivService pixivService;
         private String uid;
         private Message message;
