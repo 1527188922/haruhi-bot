@@ -32,7 +32,8 @@ public enum RegexEnum {
     SEE_TODAY_NEWS("今日新闻"),
     SUBSCRIBE_NEWS("订阅新闻"),
     UN_SUBSCRIBE_NEWS("取消订阅新闻"),
-    MUSIC_CARD("点歌 ");
+    MUSIC_CARD("点歌 "),
+    FLUSH_CACHE("#刷新缓存");
 
 
     private String value;
