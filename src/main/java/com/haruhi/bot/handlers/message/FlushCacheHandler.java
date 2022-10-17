@@ -37,7 +37,7 @@ public class FlushCacheHandler implements IMessageEvent {
 
     @Override
     public boolean onMessage(final Message message, final String command) {
-        if(!RegexEnum.FLUSH_CACHE.getValue().matches(command)){
+        if(!command.matches(RegexEnum.FLUSH_CACHE.getValue())){
             return false;
         }
         if(!message.getUser_id().equals(BotConfig.SUPER_USER)){
