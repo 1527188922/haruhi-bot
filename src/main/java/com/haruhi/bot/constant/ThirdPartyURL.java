@@ -17,8 +17,9 @@ public class ThirdPartyURL {
     // bt 搜索
 //    public static final String BT_SEARCH = "http://www.eclzz.win";
     public static final String BT_SEARCH = "http://www.eclzz.art";
-    // agefans.tv 今日新番使用
-    public static final String AGEFANSTV = "https://www.agemys.cc";
+    // agefans.tv 今日新番使用 备用：www.age.tv
+//    public static final String AGEFANSTV = "https://www.agemys.cc";
+    public static final String AGEFANSTV = "https://www.agemys.net";
     // 网易新闻
     public static final String NEWS_163 = "http://c.m.163.com/nc/article/headline/T1348647853363/0-40.html";
     // 网易搜索歌曲
