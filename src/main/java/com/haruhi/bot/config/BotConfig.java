@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
@@ -19,6 +20,7 @@ public class BotConfig {
     public static String SEARCH_IMAGE_KEY = "";
     public static String HTTP_URL = "";
     public static String WS_URL = "";
+    public static String ACCESS_TOKEN = "";
     static {
         SLEEP = new AtomicBoolean(false);
     }
@@ -52,6 +54,17 @@ public class BotConfig {
         WS_URL = wsUrl;
         if(Strings.isBlank(WS_URL)){
             throw new IllegalArgumentException("未配置gocq.ws！");
+        }
+    }
+    @Autowired
+    public void setAccessToken(@Value("${gocq.access-token}") String accessToken) {
+        ACCESS_TOKEN = accessToken;
+    }
+
+    @PostConstruct
+    private void postConstruct(){
+        if (!Strings.isBlank(ACCESS_TOKEN)) {
+            WS_URL += "?access_token=" + ACCESS_TOKEN;
         }
     }
 

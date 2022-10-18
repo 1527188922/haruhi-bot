@@ -14,6 +14,8 @@ gocq:
   ws: ws://127.0.0.1:9909
   # go-cqhttp正向http代理地址,与go-cqhttp配置中的保持一致 后面不要带斜杠 必要
   http: http://127.0.0.1:5700
+  # 如果gocq设置了access-token 则此处与gocq的access-token保持一致 否则会连接失败
+  access-token:
 bot:
   # bot程序端口
   port: 8081

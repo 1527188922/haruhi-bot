@@ -28,8 +28,9 @@ public class GocqRequestUtil {
      * @return
      */
     public static Message getMsg(String messageId){
-        Map<String, Object> map = new HashMap<>(1);
+        Map<String, Object> map = new HashMap<>(2);
         map.put("message_id",messageId);
+        map.put("access_token",BotConfig.ACCESS_TOKEN);
         String s = RestUtil.sendGetRequest(RestUtil.getRestTemplate(), BotConfig.HTTP_URL + "/" + GocqActionEnum.GET_MSG.getAction(), map, String.class);
         if (Strings.isNotBlank(s)) {
             JSONObject jsonObject = JSONObject.parseObject(s);
@@ -45,9 +46,10 @@ public class GocqRequestUtil {
      * @return
      */
     public static List<GroupMember> getGroupMemberList(String groupId, String... exclude){
-        Map<String, Object> params = new HashMap<>(1);
+        Map<String, Object> params = new HashMap<>(2);
         params.put("group_id",groupId);
-        String responseStr = RestUtil.sendPostRequest(RestUtil.getRestTemplate(), BotConfig.HTTP_URL + "/" + GocqActionEnum.GET_GROUP_MEMBER_LIST.getAction(), params, null, String.class);
+        params.put("access_token",BotConfig.ACCESS_TOKEN);
+        String responseStr = RestUtil.sendGetRequest(RestUtil.getRestTemplate(), BotConfig.HTTP_URL + "/" + GocqActionEnum.GET_GROUP_MEMBER_LIST.getAction(), params, String.class);
         if (responseStr == null) {
             return null;
         }
@@ -75,9 +77,10 @@ public class GocqRequestUtil {
      * @return
      */
     public static List<String> getWordSlices(String content){
-        Map<String, Object> req = new HashMap<>(1);
+        Map<String, Object> req = new HashMap<>(2);
         req.put("content",content);
-        HttpResponse httpResponse = RestUtil.sendPostRequest(RestUtil.getRestTemplate(10 * 1000), BotConfig.HTTP_URL + "/" + GocqActionEnum.GET_WORD_SLICES.getAction(), req, null, HttpResponse.class);
+        req.put("access_token",BotConfig.ACCESS_TOKEN);
+        HttpResponse httpResponse = RestUtil.sendGetRequest(RestUtil.getRestTemplate(10 * 1000), BotConfig.HTTP_URL + "/" + GocqActionEnum.GET_WORD_SLICES.getAction(), req, HttpResponse.class);
         if(httpResponse != null && httpResponse.getRetcode() == 0 ){
             HttpResponse.RespData data = httpResponse.getData();
             return data != null ? data.getSlices() : null;
@@ -91,7 +94,9 @@ public class GocqRequestUtil {
      * @return
      */
     public static List<GroupInfo> getGroupList(){
-        String responseStr = RestUtil.sendGetRequest(RestUtil.getRestTemplate(),BotConfig.HTTP_URL + "/" + GocqActionEnum.GET_GROUP_LIST.getAction(), null, String.class);
+        Map<String, Object> req = new HashMap<>(1);
+        req.put("access_token",BotConfig.ACCESS_TOKEN);
+        String responseStr = RestUtil.sendGetRequest(RestUtil.getRestTemplate(),BotConfig.HTTP_URL + "/" + GocqActionEnum.GET_GROUP_LIST.getAction(), req, String.class);
         if (Strings.isNotBlank(responseStr)) {
             String listStr = JSONObject.parseObject(responseStr).getString("data");
             if (Strings.isNotBlank(listStr)) {
@@ -102,7 +107,9 @@ public class GocqRequestUtil {
     }
 
     public static SelfInfo getLoginInfo(){
-        String responseStr = RestUtil.sendGetRequest(RestUtil.getRestTemplate(),BotConfig.HTTP_URL + "/" + GocqActionEnum.GET_LOGIN_INGO.getAction(), null, String.class);
+        Map<String, Object> req = new HashMap<>(1);
+        req.put("access_token",BotConfig.ACCESS_TOKEN);
+        String responseStr = RestUtil.sendGetRequest(RestUtil.getRestTemplate(),BotConfig.HTTP_URL + "/" + GocqActionEnum.GET_LOGIN_INGO.getAction(), req, String.class);
         if (Strings.isNotBlank(responseStr)) {
             JSONObject jsonObject = JSONObject.parseObject(responseStr);
             SelfInfo data = JSONObject.parseObject(jsonObject.getString("data"), SelfInfo.class);
