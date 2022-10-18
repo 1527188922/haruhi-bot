@@ -29,7 +29,9 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import java.io.IOException;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * ws正向代理
@@ -60,6 +62,10 @@ public class Client {
     }
     public static boolean connected(){
         return INSTANCE != null && INSTANCE.session != null && INSTANCE.session.isOpen();
+    }
+    private static final Map<String,Object> accessTokenMap = new HashMap<>(1);
+    static {
+        accessTokenMap.put("access_token",BotConfig.ACCESS_TOKEN);
     }
 
     @OnOpen
@@ -131,7 +137,7 @@ public class Client {
         Params params1 = new Params();
         params1.setGroup_id(groupId);
         params1.setMessages(params);
-        return RestUtil.sendPostRequest(RestUtil.getRestTemplate(), BotConfig.HTTP_URL + "/" + action.getAction(),params1,null, HttpResponse.class);
+        return sendRestMessage(params,HttpResponse.class,action);
     }
     public static void sendMessage(String target,String groupId ,String type, String message,GocqActionEnum action, boolean autoEscape){
 
@@ -159,22 +165,27 @@ public class Client {
      * @return
      */
     public static String sendRestMessage(String target,String groupId ,String type, String message,GocqActionEnum action, boolean autoEscape){
-        Params answer = new Params();
-        answer.setMessage(message);
-        answer.setMessage_type(type);
-        answer.setUser_id(target);
-        answer.setGroup_id(groupId);
-        answer.setAuto_escape(autoEscape);
-        return RestUtil.sendPostRequest(RestUtil.getRestTemplate(), BotConfig.HTTP_URL + "/" + action.getAction(),answer,null, String.class);
+        Params params = new Params();
+        params.setMessage(message);
+        params.setMessage_type(type);
+        params.setUser_id(target);
+        params.setGroup_id(groupId);
+        params.setAuto_escape(autoEscape);
+        return sendRestMessage(params,String.class,action);
     }
     public static String sendRestMessage(String target, String groupId , MessageEventEnum type, String message, GocqActionEnum action, boolean autoEscape){
-        Params answer = new Params();
-        answer.setMessage(message);
-        answer.setMessage_type(type.getType());
-        answer.setUser_id(target);
-        answer.setGroup_id(groupId);
-        answer.setAuto_escape(autoEscape);
-        return RestUtil.sendPostRequest(RestUtil.getRestTemplate(), BotConfig.HTTP_URL + "/" + action.getAction(),answer,null, String.class);
+        Params params = new Params();
+        params.setMessage(message);
+        params.setMessage_type(type.getType());
+        params.setUser_id(target);
+        params.setGroup_id(groupId);
+        params.setAuto_escape(autoEscape);
+        return sendRestMessage(params,String.class,action);
+    }
+
+    private static <T,O> T sendRestMessage(O msgBody,Class<T> type,GocqActionEnum action){
+
+        return RestUtil.sendPostRequest(RestUtil.getRestTemplate(), BotConfig.HTTP_URL + "/" + action.getAction(),msgBody,accessTokenMap,type);
     }
 
     @OnClose
