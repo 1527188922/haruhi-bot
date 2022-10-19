@@ -76,12 +76,12 @@ public class DownloadPixivJob extends AbstractJob {
             try {
                 Response response = RestUtil.sendGetRequest(RestUtil.getRestTemplate(11 * 1000), ThirdPartyURL.LOLICON, param, Response.class);
                 if(response == null){
-                    Client.sendMessage(BotConfig.SUPER_USER,null, MessageEventEnum.privat, MessageFormat.format("no data\n本次请求为null\n线程：{0}",Thread.currentThread().getName()), GocqActionEnum.SEND_MSG,true);
+                    log.warn("response = null");
                     return;
                 }
                 List<PixivItem> data = response.getData();
                 if(CollectionUtils.isEmpty(data)){
-                    Client.sendMessage(BotConfig.SUPER_USER,null, MessageEventEnum.privat, MessageFormat.format("no data\n本次请求data为null或者size为0\n线程：{0}",Thread.currentThread().getName()), GocqActionEnum.SEND_MSG,true);
+                    log.warn("response.getData() = null");
                     return;
                 }
                 int total = 0;
@@ -111,7 +111,9 @@ public class DownloadPixivJob extends AbstractJob {
                     }
 
                 }
-                Client.sendMessage(BotConfig.SUPER_USER,null, MessageEventEnum.privat, MessageFormat.format("success\n本次添加{0}条\n线程：{1}",total,Thread.currentThread().getName()), GocqActionEnum.SEND_MSG,true);
+                if(total > 0){
+                    Client.sendMessage(BotConfig.SUPER_USER,null, MessageEventEnum.privat, MessageFormat.format("success\n本次添加{0}条\n线程：{1}",total,Thread.currentThread().getName()), GocqActionEnum.SEND_MSG,true);
+                }
             }catch (Exception e){
                 Client.sendMessage(BotConfig.SUPER_USER,null, MessageEventEnum.privat, MessageFormat.format("exception\n下载发生异常\n线程：{0}\n异常：{1}",Thread.currentThread().getName(),e.getMessage()), GocqActionEnum.SEND_MSG,true);
                 log.error("下载pixiv异常",e);
