@@ -22,7 +22,6 @@ public class GroupChatHistoryAddHandler implements IGroupMessageEvent {
         return "群聊记录入库";
     }
 
-    private final static GroupChatHistory param = new GroupChatHistory();
     @Autowired
     private GroupChatHistoryService groupChatHistoryService;
 
@@ -35,29 +34,30 @@ public class GroupChatHistoryAddHandler implements IGroupMessageEvent {
      */
     @Override
     public boolean onGroup(final Message message,final String command) {
-        ThreadPoolFactory.getChatHistoryThreadPool().execute(new Task(groupChatHistoryService,message,param));
+        ThreadPoolFactory.getChatHistoryThreadPool().execute(new Task(groupChatHistoryService,message));
         return false;
     }
 
     private class Task implements Runnable{
         private GroupChatHistoryService service;
-        private GroupChatHistory param;
-        public Task(GroupChatHistoryService service,final Message message,final GroupChatHistory param){
+        private Message message;
+        public Task(GroupChatHistoryService service,final Message message){
             this.service = service;
-            param.setId(null);
-            param.setCard(message.getSender().getCard());
-            param.setNickname(message.getSender().getNickname());
-            param.setGroupId(message.getGroup_id());
-            param.setUserId(message.getUser_id());
-            param.setContent(message.getMessage());
-            param.setCreateTime(message.getTime() * 1000);
-            param.setMessageId(message.getMessage_id());
-            this.param = param;
+            this.message = message;
         }
 
         @Override
         public void run() {
             try {
+                GroupChatHistory param = new GroupChatHistory();
+                param.setId(null);
+                param.setCard(message.getSender().getCard());
+                param.setNickname(message.getSender().getNickname());
+                param.setGroupId(message.getGroup_id());
+                param.setUserId(message.getUser_id());
+                param.setContent(message.getMessage());
+                param.setCreateTime(message.getTime() * 1000);
+                param.setMessageId(message.getMessage_id());
                 service.save(param);
             }catch (Exception e){
                 log.error("群聊天历史入库异常",e);
