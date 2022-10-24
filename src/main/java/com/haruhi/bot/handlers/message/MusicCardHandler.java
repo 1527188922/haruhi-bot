@@ -120,7 +120,7 @@ public class MusicCardHandler implements IMessageEvent {
                 }
                 if(res.size() == 1){
                     // 搜索结果只有一条，直接发送这个音乐卡片
-                    SendMusicCard(message,res,0,true);
+                    sendMusicCard(message,res,0,true);
                     return;
                 }
                 // 将搜索结果保存到缓存
@@ -175,14 +175,14 @@ public class MusicCardHandler implements IMessageEvent {
         @Override
         public void run() {
             try {
-                SendMusicCard(message,songs,index - 1,true);
+                sendMusicCard(message,songs,index - 1,true);
             } catch (ObjectNotFoundException e) {
                 log.error("发送音乐卡片异常",e);
             }
         }
     }
 
-    private void SendMusicCard(Message message,List<Song> songs,Integer index,boolean checked) throws ObjectNotFoundException {
+    private void sendMusicCard(Message message, List<Song> songs, Integer index, boolean checked) throws ObjectNotFoundException {
         AbstractMusicService musicService = MusicServiceFactory.getMusicService(MusicServiceFactory.MusicType.cloudMusic);
         String musicCq = musicService.createMusicCq(songs, index,checked);
         Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),musicCq, GocqActionEnum.SEND_MSG,false);
