@@ -190,9 +190,8 @@ public class SearchImageHandler implements IMessageEvent {
 
         }else if(MessageEventEnum.privat.getType().equals(message.getMessage_type())){
             // 私聊
-            for (int i = 1; i < forwardMsgs.size(); i++) {
-                Client.sendMessage(message.getUser_id(), message.getGroup_id(), MessageEventEnum.privat, forwardMsgs.get(i).getData().getContent(),GocqActionEnum.SEND_MSG,true);
-            }
+            forwardMsgs.remove(0);
+            Client.sendMessage(GocqActionEnum.SEND_PRIVATE_FORWARD_MSG, message.getUser_id(), forwardMsgs);
         }
     }
 

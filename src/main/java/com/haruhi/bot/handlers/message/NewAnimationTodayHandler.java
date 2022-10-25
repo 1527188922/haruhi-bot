@@ -70,10 +70,15 @@ public class NewAnimationTodayHandler implements IMessageEvent {
                         }
                         data = data.stream().filter(e -> e.getIsnew()).collect(Collectors.toList());
                         if(data.size() > 0){
+                            ArrayList<ForwardMsg> param = new ArrayList<>(data.size());
+                            for (NewAnimationTodayResp datum : data) {
+                                param.add(CommonUtil.createForwardMsgItem(splicingParam(datum),message.getSelf_id(), BotConfig.NAME));
+                            }
+
                             if(MessageEventEnum.privat.getType().equals(message.getMessage_type())){
-                                sendPrivate(data,message);
+                                Client.sendMessage(GocqActionEnum.SEND_PRIVATE_FORWARD_MSG,message.getUser_id(),param);
                             }else if(MessageEventEnum.group.getType().equals(message.getMessage_type())){
-                                sendGroup(data,message);
+                                Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,message.getGroup_id(),param);
                             }
                         }else{
                             Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), "今日还没有新番更新", GocqActionEnum.SEND_MSG,true);
@@ -87,19 +92,6 @@ public class NewAnimationTodayHandler implements IMessageEvent {
         }
     }
 
-    private void sendGroup(List<NewAnimationTodayResp> data,Message message){
-        ArrayList<ForwardMsg> param = new ArrayList<>(data.size());
-        for (NewAnimationTodayResp datum : data) {
-            param.add(CommonUtil.createForwardMsgItem(splicingParam(datum),message.getSelf_id(), BotConfig.NAME));
-        }
-        Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,message.getGroup_id(),param);
-
-    }
-    private void sendPrivate(List<NewAnimationTodayResp> data,Message message){
-        for (NewAnimationTodayResp datum : data) {
-            Client.sendMessage(message.getUser_id(),message.getGroup_id(),MessageEventEnum.privat, splicingParam(datum), GocqActionEnum.SEND_MSG,true);
-        }
-    }
     private String splicingParam(NewAnimationTodayResp datum){
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(datum.getName()).append("\n");
