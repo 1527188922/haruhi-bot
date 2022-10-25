@@ -12,6 +12,6 @@ public interface PixivService extends IService<Pixiv> {
 
     void roundSend(int num,Boolean isR18,List<String> tags, Message message,String tag);
 
-    void privateSend(Collection<Pixiv> pixivs,Message message);
-    void groupSend(Collection<Pixiv> pixivs, List<ForwardMsg> forwardMsgs, Message message);
+    void sendPrivate(Collection<Pixiv> pixivs, Message message);
+    void sendGroup(Collection<Pixiv> pixivs, List<ForwardMsg> forwardMsgs, Message message);
 }

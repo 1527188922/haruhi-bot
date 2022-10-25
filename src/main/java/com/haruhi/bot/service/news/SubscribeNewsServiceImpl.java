@@ -61,14 +61,14 @@ public class SubscribeNewsServiceImpl extends ServiceImpl<SubscribeNewsMapper, S
     @Override
     public void sendGroup(List<NewsBy163Resp> list,String... groupIds) {
         if(groupIds != null){
-            List<ForwardMsg> newsGroupMessage = createNewsGroupMessage(list);
+            List<ForwardMsg> newsMessage = createNewsForwardMessage(list);
             for (String groupId : groupIds) {
-                Client.sendRestMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,groupId,newsGroupMessage);
+                sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,groupId,newsMessage);
             }
         }
     }
 
-    private List<ForwardMsg> createNewsGroupMessage(List<NewsBy163Resp> list){
+    private List<ForwardMsg> createNewsForwardMessage(List<NewsBy163Resp> list){
         List<ForwardMsg> forwardMsgs = new ArrayList<>(list.size() + 1);
         KQCodeUtils instance = KQCodeUtils.getInstance();
         forwardMsgs.add(CommonUtil.createForwardMsgItem("今日新闻",BotConfig.SELF_ID, BotConfig.NAME));
@@ -104,25 +104,18 @@ public class SubscribeNewsServiceImpl extends ServiceImpl<SubscribeNewsMapper, S
         }
         return stringBuilder.toString();
     }
-    private String createNewsPrivateMessage(List<NewsBy163Resp> list){
-        StringBuilder stringBuilder = new StringBuilder();
-        KQCodeUtils instance = KQCodeUtils.getInstance();
-        for (NewsBy163Resp e : list) {
-            stringBuilder.append(createNewsItemMessage(e,instance)).append("\n");
-        }
-        return stringBuilder.toString();
-    }
 
     @Override
     public void sendPrivate(List<NewsBy163Resp> list,String... userIds) {
         if(userIds != null){
-            List<List<NewsBy163Resp>> lists = CommonUtil.averageAssignList(list, 10);
+            List<ForwardMsg> newsMessage = createNewsForwardMessage(list);
             for (String userId : userIds) {
-                for (List<NewsBy163Resp> newsBy163Resps : lists) {
-                    Client.sendMessage(userId,null,MessageEventEnum.privat,createNewsPrivateMessage(newsBy163Resps),GocqActionEnum.SEND_MSG,false);
-                }
+                sendMessage(GocqActionEnum.SEND_PRIVATE_FORWARD_MSG,userId,newsMessage);
             }
         }
+    }
 
+    private void sendMessage(GocqActionEnum actionEnum, String id,List<ForwardMsg> newsMessage){
+        Client.sendMessage(actionEnum,id,newsMessage);
     }
 }
