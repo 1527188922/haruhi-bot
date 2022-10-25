@@ -114,10 +114,14 @@ public class BtSearchHandler implements IMessageEvent {
                     noData(message,keyword);
                     return;
                 }
+                List<ForwardMsg> param = new ArrayList<>(res.size());
+                for (String re : res) {
+                    param.add(CommonUtil.createForwardMsgItem(re,message.getSelf_id(),BotConfig.NAME));
+                }
                 if(MessageEventEnum.group.getType().equals(message.getMessage_type())){
-                    sendGroup(res,message);
+                    Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,message.getGroup_id(),param);
                 }else if(MessageEventEnum.privat.getType().equals(message.getMessage_type())){
-                    sendPrivate(res,message);
+                    Client.sendMessage(GocqActionEnum.SEND_PRIVATE_FORWARD_MSG,message.getUser_id(),param);
                 }
             }catch (Exception e){
                 Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),MessageFormat.format("bt搜索异常:{0}",e.getMessage()), GocqActionEnum.SEND_MSG,true);
@@ -129,18 +133,7 @@ public class BtSearchHandler implements IMessageEvent {
     private void noData(Message message,String keyword){
         Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"没搜到：" + keyword, GocqActionEnum.SEND_MSG,true);
     }
-    private void sendPrivate(List<String> res,Message message){
-        for (String re : res) {
-            Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),re, GocqActionEnum.SEND_MSG,true);
-        }
-    }
-    private void sendGroup(List<String> res,Message message){
-        List<ForwardMsg> param = new ArrayList<>(res.size());
-        for (String re : res) {
-            param.add(CommonUtil.createForwardMsgItem(re,message.getSelf_id(),BotConfig.NAME));
-        }
-        Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,message.getGroup_id(),param);
-    }
+
     /**
      * 获取资源详情
      * @param strBuilder

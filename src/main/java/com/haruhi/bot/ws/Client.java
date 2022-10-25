@@ -122,20 +122,25 @@ public class Client {
         box.setAction(action.getAction());
         sendMessage(box);
     }
-    public static void sendMessage(GocqActionEnum action,String groupId, List<ForwardMsg> params){
+    public static void sendMessage(){
+
+    }
+    public static void sendMessage(GocqActionEnum action,String id, List<ForwardMsg> params){
         RequestBox<Params> collectionAnswerBox = new RequestBox<>();
 
         collectionAnswerBox.setAction(action.getAction());
 
         Params params1 = new Params();
-        params1.setGroup_id(groupId);
+        params1.setGroup_id(id);
+        params1.setUser_id(id);
         params1.setMessages(params);
         collectionAnswerBox.setParams(params1);
         sendMessage(collectionAnswerBox);
     }
-    public static HttpResponse sendRestMessage(GocqActionEnum action,String groupId, List<ForwardMsg> params){
+    public static HttpResponse sendRestMessage(GocqActionEnum action,String id, List<ForwardMsg> params){
         Params params1 = new Params();
-        params1.setGroup_id(groupId);
+        params1.setGroup_id(id);
+        params1.setUser_id(id);
         params1.setMessages(params);
         return sendRestMessage(params,HttpResponse.class,action);
     }

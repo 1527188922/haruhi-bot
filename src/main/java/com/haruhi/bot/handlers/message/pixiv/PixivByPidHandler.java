@@ -78,27 +78,25 @@ public class PixivByPidHandler implements IMessageEvent {
                 if(MessageEventEnum.group.getType().equals(message.getMessage_type())){
                     List<ForwardMsg> params = new ArrayList<>(list.size() + 1);
                     params.add(CommonUtil.createForwardMsgItem(MessageFormat.format("pid：{0}\n※原图链接不需要翻墙，直接点击",pid),message.getSelf_id(), BotConfig.NAME));
-                    pixivService.groupSend(list,params,message);
+                    pixivService.sendGroup(list,params,message);
                 }else if(MessageEventEnum.privat.getType().equals(message.getMessage_type())){
-                    pixivService.privateSend(list,message);
+                    pixivService.sendPrivate(list,message);
                 }
             }else {
                 String temp = "{0}{1}-{2}.jpg";
                 String noImageTip = "本地库没有pid[{0}]的图片\n试试点击下面这些链接吧\n※如果pid只有1p,只需要点第一个链接,后缀带有数字的链接,多p情况下有效";
+
+                ArrayList<ForwardMsg> params = new ArrayList<>(21);
+                params.add(CommonUtil.createForwardMsgItem(MessageFormat.format(noImageTip,pid),message.getSelf_id(),BotConfig.NAME));
+                params.add(CommonUtil.createForwardMsgItem(MessageFormat.format("{0}{1}.jpg",u,pid),message.getSelf_id(),BotConfig.NAME));
+                for (int i = 2; i <= 20; i++) {
+                    params.add(CommonUtil.createForwardMsgItem(MessageFormat.format(temp,u,pid,i),message.getSelf_id(),BotConfig.NAME));
+                }
+
                 if(MessageEventEnum.group.getType().equals(message.getMessage_type())){
-                    ArrayList<ForwardMsg> params = new ArrayList<>(21);
-                    params.add(CommonUtil.createForwardMsgItem(MessageFormat.format(noImageTip,pid),message.getSelf_id(),BotConfig.NAME));
-                    params.add(CommonUtil.createForwardMsgItem(MessageFormat.format("{0}{1}.jpg",u,pid),message.getSelf_id(),BotConfig.NAME));
-                    for (int i = 2; i <= 20; i++) {
-                        params.add(CommonUtil.createForwardMsgItem(MessageFormat.format(temp,u,pid,i),message.getSelf_id(),BotConfig.NAME));
-                    }
                     Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,message.getGroup_id(),params);
                 }else if(MessageEventEnum.privat.getType().equals(message.getMessage_type())){
-                    Client.sendMessage(message.getUser_id(),message.getGroup_id(),MessageEventEnum.privat,MessageFormat.format(noImageTip,pid),GocqActionEnum.SEND_MSG,true);
-                    Client.sendMessage(message.getUser_id(),message.getGroup_id(),MessageEventEnum.privat,MessageFormat.format("{0}{1}.jpg",u,pid),GocqActionEnum.SEND_MSG,true);
-                    for (int i = 2; i <= 20; i++) {
-                        Client.sendMessage(message.getUser_id(),message.getGroup_id(),MessageEventEnum.privat,MessageFormat.format(temp,u,pid,i),GocqActionEnum.SEND_MSG,true);
-                    }
+                    Client.sendMessage(GocqActionEnum.SEND_PRIVATE_FORWARD_MSG,message.getUser_id(),params);
                 }
             }
         }

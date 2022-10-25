@@ -21,7 +21,7 @@ public abstract class AbstractMusicService {
      * 每个子类共同的方法
      * @param songs 歌曲搜索结果
      * @param index 下标 表示从songs中取出哪一条
-     * @param checked 调用者是否以及对参数做了校验 true:是
+     * @param checked 调用者是否已经对参数做了校验 true:是
      * @return
      */
    public String createMusicCq(List<Song> songs, int index,boolean checked){

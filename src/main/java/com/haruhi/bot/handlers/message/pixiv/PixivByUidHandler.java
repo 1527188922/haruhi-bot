@@ -58,7 +58,7 @@ public class PixivByUidHandler implements IMessageEvent {
         }
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(new Task(pixivService,uidTrim,message));
 
-        return false;
+        return true;
     }
     private class Task implements Runnable{
         private PixivService pixivService;
@@ -91,9 +91,9 @@ public class PixivByUidHandler implements IMessageEvent {
             if(MessageEventEnum.group.getType().equals(message.getMessage_type())){
                 ArrayList<ForwardMsg> params = new ArrayList<>(pixivSet.size() + 1);
                 params.add(CommonUtil.createForwardMsgItem(MessageFormat.format("uid：{0}\n※原图链接不需要翻墙，直接点",uid),message.getSelf_id(), BotConfig.NAME));
-                pixivService.groupSend(pixivSet,params,message);
+                pixivService.sendGroup(pixivSet,params,message);
             }else if(MessageEventEnum.privat.getType().equals(message.getMessage_type())){
-                pixivService.privateSend(pixivSet,message);
+                pixivService.sendPrivate(pixivSet,message);
             }
         }
     }
