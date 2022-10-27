@@ -8,7 +8,6 @@ import com.haruhi.bot.event.notice.IGroupDecreaseEvent;
 import com.haruhi.bot.event.notice.IGroupIncreaseEvent;
 import com.haruhi.bot.event.notice.INoticeEventType;
 import com.haruhi.bot.event.notice.IPokeEvent;
-import com.haruhi.bot.utils.ApplicationContextProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +33,6 @@ public class NoticeDispenser {
     }
     private static List<INoticeEventType> container = new ArrayList<>();
 
-    @Autowired
-    private ApplicationContextProvider applicationContextProvider;
     @PostConstruct
     private void loadEvent(){
         log.info("加载通知处理类...");
