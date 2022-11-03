@@ -77,12 +77,7 @@ public class MessageDispenser {
             }
         }
     }
-    /**
-     * 虽没被引用
-     * 但不可删除
-     */
-    @Autowired
-    private ApplicationContextProvider applicationContextProvider;
+
     @PostConstruct
     private void loadEvent(){
         log.info("加载消息处理类...");

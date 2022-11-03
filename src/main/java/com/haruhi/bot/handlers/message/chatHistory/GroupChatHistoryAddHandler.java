@@ -3,11 +3,16 @@ package com.haruhi.bot.handlers.message.chatHistory;
 import com.haruhi.bot.dto.gocq.response.Message;
 import com.haruhi.bot.entity.GroupChatHistory;
 import com.haruhi.bot.event.message.IGroupMessageEvent;
-import com.haruhi.bot.factory.ThreadPoolFactory;
 import com.haruhi.bot.service.groupChatHistory.GroupChatHistoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
@@ -25,6 +30,13 @@ public class GroupChatHistoryAddHandler implements IGroupMessageEvent {
     @Autowired
     private GroupChatHistoryService groupChatHistoryService;
 
+    private static ExecutorService threadPool;
+    public GroupChatHistoryAddHandler(){
+        if (threadPool == null) {
+            threadPool = new ThreadPoolExecutor(1, 1,15L, TimeUnit.MINUTES,
+                    new LinkedBlockingQueue<Runnable>(),new CustomizableThreadFactory("pool-insertRecord-"));
+        }
+    }
     /**
      * 群聊历史聊天入库
      * 不参与命令处理,最终返回false
@@ -34,7 +46,7 @@ public class GroupChatHistoryAddHandler implements IGroupMessageEvent {
      */
     @Override
     public boolean onGroup(final Message message,final String command) {
-        ThreadPoolFactory.getChatHistoryThreadPool().execute(new Task(groupChatHistoryService,message));
+        threadPool.execute(new Task(groupChatHistoryService,message));
         return false;
     }
 
