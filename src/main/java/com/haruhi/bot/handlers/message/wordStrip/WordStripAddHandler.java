@@ -63,18 +63,27 @@ public class WordStripAddHandler implements IGroupMessageEvent {
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(()->{
             LambdaQueryWrapper<WordStrip> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(WordStrip::getGroupId,message.getGroup_id()).eq(WordStrip::getKeyWord,this.keyWord);
-            WordStrip wordStrip = wordStripService.getOne(queryWrapper);
-            if(wordStrip != null){
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group,MessageFormat.format("已存在词条：{0}",this.keyWord), GocqActionEnum.SEND_MSG,true);
-                return;
-            }
+
             try {
+                WordStrip wordStrip = wordStripService.getOne(queryWrapper);
                 WordStrip param = new WordStrip();
-                param.setKeyWord(this.keyWord);
-                param.setAnswer(this.answer);
-                param.setGroupId(message.getGroup_id());
-                param.setUserId(message.getUser_id());
-                if(wordStripService.save(param)){
+                boolean save = false;
+                if(wordStrip != null){
+                    if(wordStrip.getUserId().equals(message.getUser_id())){
+                        param.setAnswer(this.answer);
+                        save = wordStripService.update(param,queryWrapper);
+                    }else {
+                        Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group,MessageFormat.format("已存在词条：{0}",this.keyWord), GocqActionEnum.SEND_MSG,true);
+                        return;
+                    }
+                }else{
+                    param.setKeyWord(this.keyWord);
+                    param.setAnswer(this.answer);
+                    param.setGroupId(message.getGroup_id());
+                    param.setUserId(message.getUser_id());
+                    save = wordStripService.save(param);
+                }
+                if(save){
                     WordStripHandler.cache.put(message.getGroup_id() + "-" + this.keyWord,this.answer);
                     Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group,MessageFormat.format("词条添加成功：{0}",this.keyWord), GocqActionEnum.SEND_MSG,true);
                     return;
