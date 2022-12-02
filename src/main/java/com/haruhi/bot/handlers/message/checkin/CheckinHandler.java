@@ -44,10 +44,10 @@ public class CheckinHandler implements IGroupMessageEvent {
             try {
                 RequestBox<Params> requestBox = new RequestBox<>();
                 Params params = new Params();
-                params.setAuto_escape(true);
-                params.setGroup_id(message.getGroup_id());
-                params.setMessage_type(message.getMessage_type());
-                params.setUser_id(message.getUser_id());
+                params.setAutoEscape(true);
+                params.setGroupId(message.getGroupId());
+                params.setMessageType(message.getMessageType());
+                params.setUserId(message.getUserId());
                 checkinService.checkin(params,message);
                 requestBox.setParams(params);
                 requestBox.setAction(GocqActionEnum.SEND_MSG.getAction());

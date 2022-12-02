@@ -55,11 +55,11 @@ public class WordCloudHandler implements IGroupMessageEvent {
         if (matching == null) {
             return false;
         }
-        if(lock.containsKey(message.getGroup_id())){
-            Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group,"词云正在生成中...莫着急", GocqActionEnum.SEND_MSG,true);
+        if(lock.containsKey(message.getGroupId())){
+            Client.sendMessage(message.getUserId(),message.getGroupId(), MessageEventEnum.group,"词云正在生成中...莫着急", GocqActionEnum.SEND_MSG,true);
             return true;
         }else{
-            lock.put(message.getGroup_id(),1);
+            lock.put(message.getGroupId(),1);
         }
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(new Task(groupChatHistoryService,matching,message));
         return true;

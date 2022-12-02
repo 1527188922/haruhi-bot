@@ -43,7 +43,7 @@ public class MusicCardHandler implements IMessageEvent {
     }
 
     private String getKey(final Message message){
-        return getKey(message.getUser_id(),message.getGroup_id());
+        return getKey(message.getUserId(),message.getGroupId());
     }
 
     private String getKey(String userId, String groupId){
@@ -72,7 +72,7 @@ public class MusicCardHandler implements IMessageEvent {
         }else if(songs != null){
             // 存在缓存 输入了纯数字
             if(index <= 0 || index > songs.size()){
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"不存在序号" + index + "的歌曲", GocqActionEnum.SEND_MSG,true);
+                Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(),"不存在序号" + index + "的歌曲", GocqActionEnum.SEND_MSG,true);
                 return true;
             }
             // 若这里删除缓存，那么一次搜索只能点一次歌
@@ -92,7 +92,7 @@ public class MusicCardHandler implements IMessageEvent {
         return false;
     }
     private void search(Message message,String songName){
-        Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"开始搜索歌曲：" + songName,GocqActionEnum.SEND_MSG,true);
+        Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(),"开始搜索歌曲：" + songName,GocqActionEnum.SEND_MSG,true);
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(new SearchMusicTask(message,songName));
     }
 
@@ -115,7 +115,7 @@ public class MusicCardHandler implements IMessageEvent {
             try {
                 List<Song> res = MusicServiceFactory.getMusicService(MusicServiceFactory.MusicType.cloudMusic).searchMusic(musicName);
                 if(CollectionUtils.isEmpty(res)){
-                    Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"未找到歌曲：" + musicName,GocqActionEnum.SEND_MSG,true);
+                    Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(),"未找到歌曲：" + musicName,GocqActionEnum.SEND_MSG,true);
                     return;
                 }
                 if(res.size() == 1){
@@ -125,9 +125,9 @@ public class MusicCardHandler implements IMessageEvent {
                 }
                 // 将搜索结果保存到缓存
                 cache.put(getKey(message),res);
-                if(MessageEventEnum.group.getType().equals(message.getMessage_type())){
+                if(MessageEventEnum.group.getType().equals(message.getMessageType())){
                     sendGroup(message,res,musicName);
-                }else if(MessageEventEnum.privat.getType().equals(message.getMessage_type())){
+                }else if(MessageEventEnum.privat.getType().equals(message.getMessageType())){
                     sendPrivate(message,res,musicName);
                 }
             } catch (Exception e) {
@@ -140,15 +140,15 @@ public class MusicCardHandler implements IMessageEvent {
         int size = songs.size();
         ArrayList<ForwardMsg> forwardMsgs = new ArrayList<>(size + 1);
         forwardMsgs.add(CommonUtil.createForwardMsgItem(
-                MessageFormat.format("搜索【{0}】成功！接下来请在{1}秒内发送纯数字序号选择歌曲",songName,expireTime),message.getSelf_id(), BotConfig.NAME)
+                MessageFormat.format("搜索【{0}】成功！接下来请在{1}秒内发送纯数字序号选择歌曲",songName,expireTime),message.getSelfId(), BotConfig.NAME)
         );
         for (int i = 0; i < size; i++) {
             Song e = songs.get(i);
             forwardMsgs.add(CommonUtil.createForwardMsgItem(
-                    MessageFormat.format("{0}：{1}\n歌手：{2}\n专辑：{3}",(i + 1),e.getName(),e.getArtists(),e.getAlbumName()),message.getSelf_id(),BotConfig.NAME
+                    MessageFormat.format("{0}：{1}\n歌手：{2}\n专辑：{3}",(i + 1),e.getName(),e.getArtists(),e.getAlbumName()),message.getSelfId(),BotConfig.NAME
             ));
         }
-        Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,message.getGroup_id(),forwardMsgs);
+        Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,message.getGroupId(),forwardMsgs);
     }
     private void sendPrivate(Message message,List<Song> songs,String songName){
         StringBuilder stringBuilder = new StringBuilder(MessageFormat.format("搜索【{0}】成功！接下来请在{1}秒内发送纯数字序号选择歌曲\n\n",songName,expireTime));
@@ -157,7 +157,7 @@ public class MusicCardHandler implements IMessageEvent {
             Song e = songs.get(i);
             stringBuilder.append(MessageFormat.format("{0}：{1}\n歌手：{2}\n专辑：{3}\n\n",(i + 1),e.getName(),e.getArtists(),e.getAlbumName()));
         }
-        Client.sendMessage(message.getUser_id(),message.getGroup_id(),MessageEventEnum.privat,stringBuilder.toString(),GocqActionEnum.SEND_MSG,true);
+        Client.sendMessage(message.getUserId(),message.getGroupId(),MessageEventEnum.privat,stringBuilder.toString(),GocqActionEnum.SEND_MSG,true);
     }
 
     private class SendMusicCardTask implements Runnable{
@@ -185,7 +185,7 @@ public class MusicCardHandler implements IMessageEvent {
     private void sendMusicCard(Message message, List<Song> songs, Integer index, boolean checked) throws ObjectNotFoundException {
         AbstractMusicService musicService = MusicServiceFactory.getMusicService(MusicServiceFactory.MusicType.cloudMusic);
         String musicCq = musicService.createMusicCq(songs, index,checked);
-        Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),musicCq, GocqActionEnum.SEND_MSG,false);
+        Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(),musicCq, GocqActionEnum.SEND_MSG,false);
     }
 
 

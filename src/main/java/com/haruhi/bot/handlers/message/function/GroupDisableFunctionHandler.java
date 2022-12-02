@@ -40,7 +40,7 @@ public class GroupDisableFunctionHandler implements IGroupMessageEvent {
 
     @Override
     public boolean onGroup(final Message message,final String command) {
-        if(!message.getUser_id().equals(BotConfig.SUPER_USER)){
+        if(!message.getUserId().equals(BotConfig.SUPER_USER)){
             return false;
         }
         String fun = CommonUtil.commandReplaceFirst(command, RegexEnum.GROUP_DISABLE_FUNCTION);
@@ -65,26 +65,26 @@ public class GroupDisableFunctionHandler implements IGroupMessageEvent {
             try {
                 IMessageEventType messageEventType = MessageDispenser.findHandler(fun);
                 if (messageEventType == null) {
-                    Client.sendMessage(message.getUser_id(),message.getGroup_id(),MessageEventEnum.group, MessageFormat.format("没有功能:[{0}]",fun), GocqActionEnum.SEND_MSG,true);
+                    Client.sendMessage(message.getUserId(),message.getGroupId(),MessageEventEnum.group, MessageFormat.format("没有功能:[{0}]",fun), GocqActionEnum.SEND_MSG,true);
                     return;
                 }
                 Class<? extends IMessageEventType> aClass = messageEventType.getClass();
-                if (MessageDispenser.isBanFunctionByGroup(aClass, message.getGroup_id())) {
-                    Client.sendMessage(message.getUser_id(),message.getGroup_id(),MessageEventEnum.group, MessageFormat.format("群功能:[{0}]已经被禁用",fun), GocqActionEnum.SEND_MSG,true);
+                if (MessageDispenser.isBanFunctionByGroup(aClass, message.getGroupId())) {
+                    Client.sendMessage(message.getUserId(),message.getGroupId(),MessageEventEnum.group, MessageFormat.format("群功能:[{0}]已经被禁用",fun), GocqActionEnum.SEND_MSG,true);
                     return;
                 }
-                MessageDispenser.setGroupBanFunction(message.getGroup_id(),aClass);
+                MessageDispenser.setGroupBanFunction(message.getGroupId(),aClass);
                 DisableFunction param = new DisableFunction();
                 param.setGlobal(false);
                 param.setDisableTime(new Date());
                 param.setName(messageEventType.funName());
                 param.setWeight(messageEventType.weight());
                 param.setClassName(aClass.getName());
-                param.setGroupId(message.getGroup_id());
+                param.setGroupId(message.getGroupId());
                 mapper.insert(param);
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(),MessageEventEnum.group,MessageFormat.format("群禁用[{0}]成功",fun), GocqActionEnum.SEND_MSG,true);
+                Client.sendMessage(message.getUserId(),message.getGroupId(),MessageEventEnum.group,MessageFormat.format("群禁用[{0}]成功",fun), GocqActionEnum.SEND_MSG,true);
             }catch (Exception e){
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("禁用群功能[{0}]时发生异常:{1}",fun,e.getMessage()), GocqActionEnum.SEND_MSG,true);
+                Client.sendMessage(message.getUserId(),message.getGroupId(), MessageEventEnum.group, MessageFormat.format("禁用群功能[{0}]时发生异常:{1}",fun,e.getMessage()), GocqActionEnum.SEND_MSG,true);
                 log.error("禁用群功能时发生异常",e);
             }
         }

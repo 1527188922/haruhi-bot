@@ -52,15 +52,15 @@ public class PixivServiceImpl extends ServiceImpl<PixivMapper, Pixiv> implements
             pixivHashSet = new HashSet<>(pixivs);
         }
 
-        if (MessageEventEnum.group.getType().equals(message.getMessage_type())) {
+        if (MessageEventEnum.group.getType().equals(message.getMessageType())) {
             List<ForwardMsg> params = new ArrayList<>(pixivHashSet.size() + 1);
-            params.add(CommonUtil.createForwardMsgItem(MessageFormat.format("tag：{0}\n※原图链接不需要翻墙，直接点",tag),message.getSelf_id(), BotConfig.NAME));
+            params.add(CommonUtil.createForwardMsgItem(MessageFormat.format("tag：{0}\n※原图链接不需要翻墙，直接点",tag),message.getSelfId(), BotConfig.NAME));
             if(pixivHashSet.size() > 0){
                 sendGroup(pixivHashSet,params,message);
             }else{
                 sendGroup(pixivs,params,message);
             }
-        } else if (MessageEventEnum.privat.getType().equals(message.getMessage_type())) {
+        } else if (MessageEventEnum.privat.getType().equals(message.getMessageType())) {
             if(pixivHashSet.size() > 0){
                 sendPrivate(pixivHashSet,message);
             }else{
@@ -71,9 +71,9 @@ public class PixivServiceImpl extends ServiceImpl<PixivMapper, Pixiv> implements
     }
     private void empty(boolean noTag, String tag, Message message){
         if(noTag){
-            Client.sendMessage(message.getUser_id(), message.getGroup_id(), message.getMessage_type(),"pix图库还没有图片~", GocqActionEnum.SEND_MSG, true);
+            Client.sendMessage(message.getUserId(), message.getGroupId(), message.getMessageType(),"pix图库还没有图片~", GocqActionEnum.SEND_MSG, true);
         }else{
-            Client.sendMessage(message.getUser_id(), message.getGroup_id(), message.getMessage_type(), MessageFormat.format("没有[{0}]的图片，换一个tag试试吧~", tag), GocqActionEnum.SEND_MSG, true);
+            Client.sendMessage(message.getUserId(), message.getGroupId(), message.getMessageType(), MessageFormat.format("没有[{0}]的图片，换一个tag试试吧~", tag), GocqActionEnum.SEND_MSG, true);
         }
     }
     private List<ForwardMsg> createForwardMessage(Collection<Pixiv> pixivs,List<ForwardMsg> forwardMsgs,Message message){
@@ -81,21 +81,21 @@ public class PixivServiceImpl extends ServiceImpl<PixivMapper, Pixiv> implements
             forwardMsgs = new ArrayList<>();
         }
         for (Pixiv pixiv : pixivs) {
-            forwardMsgs.add(CommonUtil.createForwardMsgItem(MessageFormat.format("标题：{0}\n作者：{1}\nuid：{2}\npid：{3}\nr18：{4}\n原图：{5}", pixiv.getTitle(), pixiv.getAuthor(),pixiv.getUid(), pixiv.getPid(), pixiv.getIsR18() ? "是" : "否", pixiv.getImgUrl()),message.getSelf_id(), BotConfig.NAME));
+            forwardMsgs.add(CommonUtil.createForwardMsgItem(MessageFormat.format("标题：{0}\n作者：{1}\nuid：{2}\npid：{3}\nr18：{4}\n原图：{5}", pixiv.getTitle(), pixiv.getAuthor(),pixiv.getUid(), pixiv.getPid(), pixiv.getIsR18() ? "是" : "否", pixiv.getImgUrl()),message.getSelfId(), BotConfig.NAME));
         }
         return forwardMsgs;
     }
     @Override
     public void sendPrivate(Collection<Pixiv> pixivs, Message message) {
         List<ForwardMsg> forwardMessage = createForwardMessage(pixivs, null, message);
-        Client.sendMessage(GocqActionEnum.SEND_PRIVATE_FORWARD_MSG,message.getUser_id(),forwardMessage);
+        Client.sendMessage(GocqActionEnum.SEND_PRIVATE_FORWARD_MSG,message.getUserId(),forwardMessage);
     }
 
     @Override
     public void sendGroup(Collection<Pixiv> pixivs, List<ForwardMsg> forwardMsgs, Message message) {
 
         List<ForwardMsg> forwardMessage = createForwardMessage(pixivs, forwardMsgs, message);
-        Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,message.getGroup_id(),forwardMessage);
+        Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,message.getGroupId(),forwardMessage);
     }
 }
 

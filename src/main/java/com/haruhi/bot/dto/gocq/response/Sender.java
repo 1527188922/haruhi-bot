@@ -1,5 +1,6 @@
 package com.haruhi.bot.dto.gocq.response;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -14,6 +15,7 @@ public class Sender implements Serializable {
     private String nickname;
     private String sex;
     private String title;
-    private String user_id;
+    @JSONField(name = "user_id")
+    private String userId;
 
 }

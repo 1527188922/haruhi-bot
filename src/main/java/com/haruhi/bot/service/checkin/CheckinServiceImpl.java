@@ -29,13 +29,13 @@ public class CheckinServiceImpl extends ServiceImpl<CheckinMapper, Checkin> impl
     public void checkin(Params params, Message message) {
         try {
             QueryWrapper<Checkin> queryWrapper = new QueryWrapper<>();
-            queryWrapper.lambda().eq(Checkin::getGroupId,message.getGroup_id()).eq(Checkin::getUserId,message.getUser_id());
+            queryWrapper.lambda().eq(Checkin::getGroupId,message.getGroupId()).eq(Checkin::getUserId,message.getUserId());
             Checkin res = checkinMapper.selectOne(queryWrapper);
             Checkin param = new Checkin();
             if(res == null){
                 // 第一次签到
-                param.setGroupId(message.getGroup_id());
-                param.setUserId(message.getUser_id());
+                param.setGroupId(message.getGroupId());
+                param.setUserId(message.getUserId());
                 int favorability = CommonUtil.randomInt(3, 5);
                 param.setFavorability(favorability);
                 param.setDayCount(1);
@@ -65,20 +65,20 @@ public class CheckinServiceImpl extends ServiceImpl<CheckinMapper, Checkin> impl
     public void seeFavorability(Params params, Message message) {
         try {
             LambdaQueryWrapper<Checkin> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(Checkin::getGroupId,message.getGroup_id()).eq(Checkin::getUserId,message.getUser_id());
+            queryWrapper.eq(Checkin::getGroupId,message.getGroupId()).eq(Checkin::getUserId,message.getUserId());
             Checkin checkin = checkinMapper.selectOne(queryWrapper);
             if(checkin == null){
-                params.setAuto_escape(true);
+                params.setAutoEscape(true);
                 params.setMessage("你还没有签到过呢~");
             }else{
                 KQCodeUtils instance = KQCodeUtils.getInstance();
-                String at = instance.toCq(CqCodeTypeEnum.at.getType(), "qq=" + message.getUser_id());
+                String at = instance.toCq(CqCodeTypeEnum.at.getType(), "qq=" + message.getUserId());
                 params.setMessage(MessageFormat.format("{0}当前好感度：{1}，已签到{2}天",at,checkin.getFavorability(),checkin.getDayCount()));
-                params.setAuto_escape(false);
+                params.setAutoEscape(false);
             }
         }catch (Exception e){
             params.setMessage("呜呜签到失败了...");
-            params.setAuto_escape(true);
+            params.setAutoEscape(true);
             log.error("查看好感度业务处理发生异常",e);
         }
 

@@ -40,7 +40,7 @@ public class GroupEnableFunctionHandler implements IGroupMessageEvent {
 
     @Override
     public boolean onGroup(final Message message,final String command) {
-        if(!message.getUser_id().equals(BotConfig.SUPER_USER)){
+        if(!message.getUserId().equals(BotConfig.SUPER_USER)){
             return false;
         }
         String fun = CommonUtil.commandReplaceFirst(command, RegexEnum.GROUP_ENABLE_FUNCTION);
@@ -67,21 +67,21 @@ public class GroupEnableFunctionHandler implements IGroupMessageEvent {
             try {
                 IMessageEventType messageEventType = MessageDispenser.findHandler(fun);
                 if (messageEventType == null) {
-                    Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("没有功能:[{0}]",fun), GocqActionEnum.SEND_MSG,true);
+                    Client.sendMessage(message.getUserId(),message.getGroupId(), MessageEventEnum.group, MessageFormat.format("没有功能:[{0}]",fun), GocqActionEnum.SEND_MSG,true);
                     return;
                 }
                 Class<? extends IMessageEventType> aClass = messageEventType.getClass();
-                if (!MessageDispenser.isBanFunctionByGroup(aClass, message.getGroup_id())) {
-                    Client.sendMessage(message.getUser_id(),message.getGroup_id(),MessageEventEnum.group, MessageFormat.format("群功能:[{0}]已处于开启",fun), GocqActionEnum.SEND_MSG,true);
+                if (!MessageDispenser.isBanFunctionByGroup(aClass, message.getGroupId())) {
+                    Client.sendMessage(message.getUserId(),message.getGroupId(),MessageEventEnum.group, MessageFormat.format("群功能:[{0}]已处于开启",fun), GocqActionEnum.SEND_MSG,true);
                     return;
                 }
-                MessageDispenser.groupUnbanFunction(message.getGroup_id(),messageEventType.getClass());
+                MessageDispenser.groupUnbanFunction(message.getGroupId(),messageEventType.getClass());
                 LambdaQueryWrapper<DisableFunction> queryWrapper = new LambdaQueryWrapper<>();
-                queryWrapper.eq(DisableFunction::getClassName,aClass.getName()).eq(DisableFunction::getWeight,messageEventType.weight()).eq(DisableFunction::getGroupId,message.getGroup_id()).eq(DisableFunction::getGlobal,false);
+                queryWrapper.eq(DisableFunction::getClassName,aClass.getName()).eq(DisableFunction::getWeight,messageEventType.weight()).eq(DisableFunction::getGroupId,message.getGroupId()).eq(DisableFunction::getGlobal,false);
                 mapper.delete(queryWrapper);
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(),MessageEventEnum.group,MessageFormat.format("群开启[{0}]成功",fun), GocqActionEnum.SEND_MSG,true);
+                Client.sendMessage(message.getUserId(),message.getGroupId(),MessageEventEnum.group,MessageFormat.format("群开启[{0}]成功",fun), GocqActionEnum.SEND_MSG,true);
             }catch (Exception e){
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("开启群功能[{0}]时发生异常:{1}",fun,e.getMessage()), GocqActionEnum.SEND_MSG,true);
+                Client.sendMessage(message.getUserId(),message.getGroupId(), MessageEventEnum.group, MessageFormat.format("开启群功能[{0}]时发生异常:{1}",fun,e.getMessage()), GocqActionEnum.SEND_MSG,true);
                 log.error("开启群功能时发生异常",e);
             }
 

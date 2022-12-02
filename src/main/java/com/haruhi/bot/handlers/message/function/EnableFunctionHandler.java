@@ -39,7 +39,7 @@ public class EnableFunctionHandler implements IMessageEvent {
 
     @Override
     public boolean onMessage(final Message message,final String command) {
-        if(!message.getUser_id().equals(BotConfig.SUPER_USER)){
+        if(!message.getUserId().equals(BotConfig.SUPER_USER)){
             return false;
         }
         String fun = CommonUtil.commandReplaceFirst(command, RegexEnum.ENABLE_FUNCTION);
@@ -66,12 +66,12 @@ public class EnableFunctionHandler implements IMessageEvent {
             try {
                 IMessageEventType messageEventType = MessageDispenser.findHandler(fun);
                 if (messageEventType == null) {
-                    Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), MessageFormat.format("没有功能:[{0}]",fun), GocqActionEnum.SEND_MSG,true);
+                    Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(), MessageFormat.format("没有功能:[{0}]",fun), GocqActionEnum.SEND_MSG,true);
                     return;
                 }
                 Class<? extends IMessageEventType> aClass = messageEventType.getClass();
                 if(MessageDispenser.exist(aClass)){
-                    Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), MessageFormat.format("功能:[{0}]已处于开启中",fun), GocqActionEnum.SEND_MSG,true);
+                    Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(), MessageFormat.format("功能:[{0}]已处于开启中",fun), GocqActionEnum.SEND_MSG,true);
                     return;
                 }
                 MessageDispenser.attach(aClass);
@@ -79,9 +79,9 @@ public class EnableFunctionHandler implements IMessageEvent {
                 LambdaQueryWrapper<DisableFunction> queryWrapper = new LambdaQueryWrapper<>();
                 queryWrapper.eq(DisableFunction::getClassName,aClass.getName()).eq(DisableFunction::getWeight,messageEventType.weight()).eq(DisableFunction::getGlobal,true);
                 mapper.delete(queryWrapper);
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),MessageFormat.format("启用[{0}]成功",fun), GocqActionEnum.SEND_MSG,true);
+                Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(),MessageFormat.format("启用[{0}]成功",fun), GocqActionEnum.SEND_MSG,true);
             }catch (Exception e){
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), MessageFormat.format("开启功能[{0}]时发生异常:{1}",fun,e.getMessage()), GocqActionEnum.SEND_MSG,true);
+                Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(), MessageFormat.format("开启功能[{0}]时发生异常:{1}",fun,e.getMessage()), GocqActionEnum.SEND_MSG,true);
                 log.error("开启功能时发生异常",e);
             }
         }

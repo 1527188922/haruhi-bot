@@ -72,21 +72,21 @@ public class NewAnimationTodayHandler implements IMessageEvent {
                         if(data.size() > 0){
                             ArrayList<ForwardMsg> param = new ArrayList<>(data.size());
                             for (NewAnimationTodayResp datum : data) {
-                                param.add(CommonUtil.createForwardMsgItem(splicingParam(datum),message.getSelf_id(), BotConfig.NAME));
+                                param.add(CommonUtil.createForwardMsgItem(splicingParam(datum),message.getSelfId(), BotConfig.NAME));
                             }
 
-                            if(MessageEventEnum.privat.getType().equals(message.getMessage_type())){
-                                Client.sendMessage(GocqActionEnum.SEND_PRIVATE_FORWARD_MSG,message.getUser_id(),param);
-                            }else if(MessageEventEnum.group.getType().equals(message.getMessage_type())){
-                                Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,message.getGroup_id(),param);
+                            if(MessageEventEnum.privat.getType().equals(message.getMessageType())){
+                                Client.sendMessage(GocqActionEnum.SEND_PRIVATE_FORWARD_MSG,message.getUserId(),param);
+                            }else if(MessageEventEnum.group.getType().equals(message.getMessageType())){
+                                Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,message.getGroupId(),param);
                             }
                         }else{
-                            Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), "今日还没有新番更新", GocqActionEnum.SEND_MSG,true);
+                            Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(), "今日还没有新番更新", GocqActionEnum.SEND_MSG,true);
                         }
                     }
                 }
             }catch (Exception e){
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), MessageFormat.format("今日新番异常",e.getMessage()), GocqActionEnum.SEND_MSG,true);
+                Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(), MessageFormat.format("今日新番异常",e.getMessage()), GocqActionEnum.SEND_MSG,true);
             }
 
         }

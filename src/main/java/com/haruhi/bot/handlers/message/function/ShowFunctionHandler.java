@@ -52,8 +52,8 @@ public class ShowFunctionHandler implements IMessageEvent {
                 if (!MessageDispenser.exist(eventType.getClass())) {
                     stringBuilder.append("(全局禁用中)");
                 }
-                if( MessageEventEnum.group.getType().equals(message.getMessage_type())){
-                    if(MessageDispenser.isBanFunctionByGroup(eventType.getClass(),message.getGroup_id())){
+                if( MessageEventEnum.group.getType().equals(message.getMessageType())){
+                    if(MessageDispenser.isBanFunctionByGroup(eventType.getClass(),message.getGroupId())){
                         stringBuilder.append("(该群禁用中)");
                     }
                 }
@@ -67,7 +67,7 @@ public class ShowFunctionHandler implements IMessageEvent {
             stringBuilder.append("可通过`群开启功能id`或`群开启功能名称`来针对某个群开启功能\n");
             stringBuilder.append("bot功能文档https://blog.csdn.net/cxy152718/article/details/126539271");
 
-            Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),stringBuilder.toString(), GocqActionEnum.SEND_MSG,true);
+            Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(),stringBuilder.toString(), GocqActionEnum.SEND_MSG,true);
 
         }
     }

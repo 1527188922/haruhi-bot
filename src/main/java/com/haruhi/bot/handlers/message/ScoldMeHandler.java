@@ -45,7 +45,7 @@ public class ScoldMeHandler implements IMessageEvent {
     @Override
     public boolean onMessage(final Message message,final String command) {
         String cmd;
-        if(CommonUtil.isAt(message.getSelf_id(),command)){
+        if(CommonUtil.isAt(message.getSelfId(),command)){
             cmd = command.replaceAll(RegexEnum.CQ_CODE_REPLACR.getValue(),"");
         }else{
             cmd = command;
@@ -58,7 +58,7 @@ public class ScoldMeHandler implements IMessageEvent {
             File file = fileList[i];
             KQCodeUtils instance = KQCodeUtils.getInstance();
             String cq = instance.toCq(CqCodeTypeEnum.record.getType(), "file=file:///" + file.toString());
-            Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),cq, GocqActionEnum.SEND_MSG,false);
+            Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(),cq, GocqActionEnum.SEND_MSG,false);
         });
 
         return true;
