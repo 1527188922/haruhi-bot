@@ -86,8 +86,7 @@ public class PixivServiceImpl extends ServiceImpl<PixivMapper, Pixiv> implements
             forwardMsgs = new ArrayList<>();
         }
         for (Pixiv pixiv : pixivs) {
-            forwardMsgs.add(CommonUtil.createForwardMsgItem(MessageFormat.format("标题：{0}\n作者：{1}\nuid：{2}\npid：{3}\nr18：{4}\n原图：{5}", pixiv.getTitle(), pixiv.getAuthor(),pixiv.getUid(), pixiv.getPid(), pixiv.getIsR18() ? "是" : "否", pixiv.getImgUrl()),message.getSelfId(), BotConfig.NAME));
-            forwardMsgs.add(CommonUtil.createForwardMsgItem(MessageFormat.format("标题：{0}\n作者：{1}\nuid：{2}\npid：{3}\nr18：{4}\n原图：{5}\n原图：{6}", pixiv.getTitle(), pixiv.getAuthor(),pixiv.getUid(), pixiv.getPid(), pixiv.getIsR18() ? "是" : "否", pixiv.getImgUrl(),"https://pixiv.re/" + appendImageP(pixiv.getPid(), pixiv.getImgUrl()) + ".jpg"),message.getSelf_id(), BotConfig.NAME));
+            forwardMsgs.add(CommonUtil.createForwardMsgItem(MessageFormat.format("标题：{0}\n作者：{1}\nuid：{2}\npid：{3}\nr18：{4}\n原图：{5}\n原图：{6}", pixiv.getTitle(), pixiv.getAuthor(),pixiv.getUid(), pixiv.getPid(), pixiv.getIsR18() ? "是" : "否", pixiv.getImgUrl(),"https://pixiv.re/" + appendImageP(pixiv.getPid(), pixiv.getImgUrl()) + ".jpg"),message.getSelfId(), BotConfig.NAME));
         }
         return forwardMsgs;
     }
