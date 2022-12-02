@@ -44,9 +44,9 @@ public class SeeFavorabilityHandler implements IGroupMessageEvent {
             try {
                 RequestBox<Params> box = new RequestBox<>();
                 Params answer = new Params();
-                answer.setGroup_id(message.getGroup_id());
-                answer.setMessage_type(message.getMessage_type());
-                answer.setUser_id(message.getUser_id());
+                answer.setGroupId(message.getGroupId());
+                answer.setMessageType(message.getMessageType());
+                answer.setUserId(message.getUserId());
                 checkinService.seeFavorability(answer,message);
                 box.setAction(GocqActionEnum.SEND_MSG.getAction());
                 box.setParams(answer);

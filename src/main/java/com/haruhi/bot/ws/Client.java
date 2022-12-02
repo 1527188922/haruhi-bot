@@ -78,7 +78,7 @@ public class Client {
     public void onMessage(final String message){
         try {
             final Message messageBean = JSONObject.parseObject(message, Message.class);
-            if(PostTypeEnum.meta_event.toString().equals(messageBean.getPost_type()) && MetaEventEnum.heartbeat.toString().equals(messageBean.getMeta_event_type())){
+            if(PostTypeEnum.meta_event.toString().equals(messageBean.getPostType()) && MetaEventEnum.heartbeat.toString().equals(messageBean.getMetaEventType())){
                 // 心跳包
                 return;
             }
@@ -114,10 +114,10 @@ public class Client {
         RequestBox<Params> box = new RequestBox<>();
         Params answer = new Params();
         answer.setMessage(message);
-        answer.setMessage_type(type.getType());
-        answer.setUser_id(target);
-        answer.setAuto_escape(autoEscape);
-        answer.setGroup_id(groupId);
+        answer.setMessageType(type.getType());
+        answer.setUserId(target);
+        answer.setAutoEscape(autoEscape);
+        answer.setGroupId(groupId);
         box.setParams(answer);
         box.setAction(action.getAction());
         sendMessage(box);
@@ -131,16 +131,16 @@ public class Client {
         collectionAnswerBox.setAction(action.getAction());
 
         Params params1 = new Params();
-        params1.setGroup_id(id);
-        params1.setUser_id(id);
+        params1.setGroupId(id);
+        params1.setUserId(id);
         params1.setMessages(params);
         collectionAnswerBox.setParams(params1);
         sendMessage(collectionAnswerBox);
     }
     public static HttpResponse sendRestMessage(GocqActionEnum action,String id, List<ForwardMsg> params){
         Params params1 = new Params();
-        params1.setGroup_id(id);
-        params1.setUser_id(id);
+        params1.setGroupId(id);
+        params1.setUserId(id);
         params1.setMessages(params);
         return sendRestMessage(params,HttpResponse.class,action);
     }
@@ -149,10 +149,10 @@ public class Client {
         RequestBox<Params> box = new RequestBox<>();
         Params params = new Params();
         params.setMessage(message);
-        params.setMessage_type(type);
-        params.setUser_id(target);
-        params.setGroup_id(groupId);
-        params.setAuto_escape(autoEscape);
+        params.setMessageType(type);
+        params.setUserId(target);
+        params.setGroupId(groupId);
+        params.setAutoEscape(autoEscape);
         box.setParams(params);
         box.setAction(action.getAction());
         sendMessage(box);
@@ -172,19 +172,19 @@ public class Client {
     public static String sendRestMessage(String target,String groupId ,String type, String message,GocqActionEnum action, boolean autoEscape){
         Params params = new Params();
         params.setMessage(message);
-        params.setMessage_type(type);
-        params.setUser_id(target);
-        params.setGroup_id(groupId);
-        params.setAuto_escape(autoEscape);
+        params.setMessageType(type);
+        params.setUserId(target);
+        params.setGroupId(groupId);
+        params.setAutoEscape(autoEscape);
         return sendRestMessage(params,String.class,action);
     }
     public static String sendRestMessage(String target, String groupId , MessageEventEnum type, String message, GocqActionEnum action, boolean autoEscape){
         Params params = new Params();
         params.setMessage(message);
-        params.setMessage_type(type.getType());
-        params.setUser_id(target);
-        params.setGroup_id(groupId);
-        params.setAuto_escape(autoEscape);
+        params.setMessageType(type.getType());
+        params.setUserId(target);
+        params.setGroupId(groupId);
+        params.setAutoEscape(autoEscape);
         return sendRestMessage(params,String.class,action);
     }
 

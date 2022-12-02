@@ -137,13 +137,13 @@ public class MessageDispenser {
 
 
     public static void onEvent(final Message message,final String command){
-        String messageType = message.getMessage_type();
+        String messageType = message.getMessageType();
 
         if(MessageEventEnum.group.getType().equals(messageType)){
             for (IMessageEventType element : container){
                 if(element instanceof IMessageEvent){
                     IMessageEvent event = (IMessageEvent) element;
-                    if(isBanFunctionByGroup(event,message.getGroup_id())){
+                    if(isBanFunctionByGroup(event,message.getGroupId())){
                         continue;
                     }
                     if(event.onMessage(message,command)){
@@ -151,7 +151,7 @@ public class MessageDispenser {
                     }
                 }else if(element instanceof IGroupMessageEvent){
                     IGroupMessageEvent event = (IGroupMessageEvent) element;
-                    if(isBanFunctionByGroup(event,message.getGroup_id())){
+                    if(isBanFunctionByGroup(event,message.getGroupId())){
                         continue;
                     }
                     if(event.onGroup(message,command)){

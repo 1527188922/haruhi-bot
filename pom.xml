@@ -137,7 +137,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.haruhi.bot.HaruhiBotRun</mainClass>
+                            <mainClass>com.haruhi.bot.Application</mainClass>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
                         </manifest>

@@ -39,7 +39,7 @@ public class DisableFunctionHandler implements IMessageEvent {
 
     @Override
     public boolean onMessage(final Message message,final String command) {
-        if(!message.getUser_id().equals(BotConfig.SUPER_USER)){
+        if(!message.getUserId().equals(BotConfig.SUPER_USER)){
             return false;
         }
         String fun = CommonUtil.commandReplaceFirst(command, RegexEnum.DISABLE_FUNCTION);
@@ -65,12 +65,12 @@ public class DisableFunctionHandler implements IMessageEvent {
             try {
                 IMessageEventType messageEventType = MessageDispenser.findHandler(fun);
                 if (messageEventType == null) {
-                    Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), MessageFormat.format("没有功能:[{0}]",fun), GocqActionEnum.SEND_MSG,true);
+                    Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(), MessageFormat.format("没有功能:[{0}]",fun), GocqActionEnum.SEND_MSG,true);
                     return;
                 }
                 Class<? extends IMessageEventType> aClass = messageEventType.getClass();
                 if(!MessageDispenser.exist(aClass)){
-                    Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), MessageFormat.format("功能:[{0}]已经被禁用",fun), GocqActionEnum.SEND_MSG,true);
+                    Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(), MessageFormat.format("功能:[{0}]已经被禁用",fun), GocqActionEnum.SEND_MSG,true);
                     return;
                 }
                 MessageDispenser.detach(aClass);
@@ -81,9 +81,9 @@ public class DisableFunctionHandler implements IMessageEvent {
                 param.setName(messageEventType.funName());
                 param.setGlobal(true);
                 mapper.insert(param);
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),MessageFormat.format("禁用[{0}]成功",fun), GocqActionEnum.SEND_MSG,true);
+                Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(),MessageFormat.format("禁用[{0}]成功",fun), GocqActionEnum.SEND_MSG,true);
             }catch (Exception e){
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), MessageFormat.format("禁用功能[{0}]时发生异常:{1}",fun,e.getMessage()), GocqActionEnum.SEND_MSG,true);
+                Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(), MessageFormat.format("禁用功能[{0}]时发生异常:{1}",fun,e.getMessage()), GocqActionEnum.SEND_MSG,true);
                 log.error("禁用功能时发生异常",e);
             }
         }

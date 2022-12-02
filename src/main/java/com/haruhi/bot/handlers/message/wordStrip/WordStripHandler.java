@@ -30,12 +30,12 @@ public class WordStripHandler implements IGroupMessageEvent {
 
     @Override
     public boolean onGroup(final Message message,final String command) {
-        String answer = cache.get(message.getGroup_id() + "-" + command);
+        String answer = cache.get(message.getGroupId() + "-" + command);
         if(answer == null){
             return false;
         }
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(()->{
-            Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, answer, GocqActionEnum.SEND_MSG,false);
+            Client.sendMessage(message.getUserId(),message.getGroupId(), MessageEventEnum.group, answer, GocqActionEnum.SEND_MSG,false);
         });
         return true;
     }

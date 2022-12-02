@@ -53,7 +53,7 @@ public class PixivByUidHandler implements IMessageEvent {
             uidTrim = uid.trim();
             Integer.valueOf(uidTrim);
         }catch (Exception e){
-            Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"请输入正确的uid...", GocqActionEnum.SEND_MSG,true);
+            Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(),"请输入正确的uid...", GocqActionEnum.SEND_MSG,true);
             return true;
         }
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(new Task(pixivService,uidTrim,message));
@@ -76,7 +76,7 @@ public class PixivByUidHandler implements IMessageEvent {
             queryWrapper.eq(Pixiv::getUid,uid);
             List<Pixiv> list = pixivService.list(queryWrapper);
             if(CollectionUtils.isEmpty(list)){
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), MessageFormat.format("没有uid[{0}]的图片...",uid), GocqActionEnum.SEND_MSG,true);
+                Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(), MessageFormat.format("没有uid[{0}]的图片...",uid), GocqActionEnum.SEND_MSG,true);
                 return;
             }
             int size = list.size();
@@ -89,11 +89,11 @@ public class PixivByUidHandler implements IMessageEvent {
             }else{
                 pixivSet = list.stream().collect(Collectors.toSet());
             }
-            if(MessageEventEnum.group.getType().equals(message.getMessage_type())){
+            if(MessageEventEnum.group.getType().equals(message.getMessageType())){
                 ArrayList<ForwardMsg> params = new ArrayList<>(pixivSet.size() + 1);
-                params.add(CommonUtil.createForwardMsgItem(MessageFormat.format("uid：{0}\n※原图链接不需要翻墙，直接点",uid),message.getSelf_id(), BotConfig.NAME));
+                params.add(CommonUtil.createForwardMsgItem(MessageFormat.format("uid：{0}\n※原图链接不需要翻墙，直接点",uid),message.getSelfId(), BotConfig.NAME));
                 pixivService.sendGroup(pixivSet,params,message);
-            }else if(MessageEventEnum.privat.getType().equals(message.getMessage_type())){
+            }else if(MessageEventEnum.privat.getType().equals(message.getMessageType())){
                 pixivService.sendPrivate(pixivSet,message);
             }
         }

@@ -8,9 +8,9 @@ import javax.annotation.PreDestroy;
 
 @Slf4j
 @SpringBootApplication
-public class HaruhiBotRun {
+public class Application {
     public static void main(String[] args) {
-        SpringApplication.run(HaruhiBotRun.class,args);
+        SpringApplication.run(Application.class,args);
     }
 
     @PreDestroy

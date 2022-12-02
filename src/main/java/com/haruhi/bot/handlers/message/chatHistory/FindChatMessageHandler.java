@@ -73,7 +73,7 @@ public class FindChatMessageHandler implements IGroupMessageEvent {
                     args = matcher.group(1);
                     num = Integer.valueOf(args);
                 }catch (Exception e){
-                    Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("错误的参数[{0}],请输入整数...",args),GocqActionEnum.SEND_MSG,true);
+                    Client.sendMessage(message.getUserId(),message.getGroupId(), MessageEventEnum.group, MessageFormat.format("错误的参数[{0}],请输入整数...",args),GocqActionEnum.SEND_MSG,true);
                     return null;
                 }
                 return new Param(num,item.timeUnit,item.messageType);

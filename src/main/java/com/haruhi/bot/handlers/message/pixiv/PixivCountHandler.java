@@ -43,7 +43,7 @@ public class PixivCountHandler implements IMessageEvent {
             queryWrapperR18.lambda().eq(Pixiv::getIsR18,true);
             int count = pixivService.count(queryWrapper);
             int countR18 = pixivService.count(queryWrapperR18);
-            Client.sendMessage(message.getUser_id(), message.getGroup_id(),message.getMessage_type(), MessageFormat.format("pixiv库：\n非r18：{0}\nr18：{1}\n总计：{2}",count,countR18,count + countR18), GocqActionEnum.SEND_MSG,true);
+            Client.sendMessage(message.getUserId(), message.getGroupId(),message.getMessageType(), MessageFormat.format("pixiv库：\n非r18：{0}\nr18：{1}\n总计：{2}",count,countR18,count + countR18), GocqActionEnum.SEND_MSG,true);
         });
 
         return true;
