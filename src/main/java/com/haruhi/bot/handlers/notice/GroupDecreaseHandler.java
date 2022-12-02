@@ -19,7 +19,7 @@ public class GroupDecreaseHandler implements IGroupDecreaseEvent {
     @Override
     public void onGroupDecrease(final Message message) {
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(()->{
-            Client.sendMessage(null,message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("{0} 离开了本群。",message.getUser_id()), GocqActionEnum.SEND_MSG,true);
+            Client.sendMessage(null,message.getGroupId(), MessageEventEnum.group, MessageFormat.format("{0} 离开了本群。",message.getUserId()), GocqActionEnum.SEND_MSG,true);
         });
     }
 }

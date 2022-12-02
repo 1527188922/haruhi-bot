@@ -40,11 +40,11 @@ public class UnSubscribeNewsHandler implements IMessageEvent {
             try {
                 LambdaQueryWrapper<SubscribeNews> queryWrapper = new LambdaQueryWrapper<>();
                 boolean isGroup = false;
-                if (MessageEventEnum.group.getType().equals(message.getMessage_type())) {
+                if (MessageEventEnum.group.getType().equals(message.getMessageType())) {
                     isGroup = true;
-                    queryWrapper.eq(SubscribeNews::getGroupId,message.getGroup_id()).eq(SubscribeNews::getType,1);
-                }else if (MessageEventEnum.privat.getType().equals(message.getMessage_type())){
-                    queryWrapper.eq(SubscribeNews::getSubscriber,message.getUser_id()).eq(SubscribeNews::getType,2);
+                    queryWrapper.eq(SubscribeNews::getGroupId,message.getGroupId()).eq(SubscribeNews::getType,1);
+                }else if (MessageEventEnum.privat.getType().equals(message.getMessageType())){
+                    queryWrapper.eq(SubscribeNews::getSubscriber,message.getUserId()).eq(SubscribeNews::getType,2);
                 }
                 int count = subscribeNewsService.count(queryWrapper);
                 if(count == 0){
@@ -54,12 +54,12 @@ public class UnSubscribeNewsHandler implements IMessageEvent {
                     }else{
                         tip = "你还未订阅新闻";
                     }
-                    Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),tip, GocqActionEnum.SEND_MSG,true);
+                    Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(),tip, GocqActionEnum.SEND_MSG,true);
                     return;
                 }
 
                 subscribeNewsService.remove(queryWrapper);
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"取消订阅成功", GocqActionEnum.SEND_MSG,true);
+                Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(),"取消订阅成功", GocqActionEnum.SEND_MSG,true);
 
             }catch (Exception e){
                 log.error("取消订阅新闻异常",e);

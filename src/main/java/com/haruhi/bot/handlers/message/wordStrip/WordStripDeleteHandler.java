@@ -54,23 +54,23 @@ public class WordStripDeleteHandler implements IGroupMessageEvent {
         }
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(()->{
             LambdaQueryWrapper<WordStrip> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(WordStrip::getGroupId,message.getGroup_id()).eq(WordStrip::getKeyWord,this.keyWord);
+            queryWrapper.eq(WordStrip::getGroupId,message.getGroupId()).eq(WordStrip::getKeyWord,this.keyWord);
             WordStrip one = wordStripService.getOne(queryWrapper);
             if(one == null){
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("词条不存在：{0}",this.keyWord), GocqActionEnum.SEND_MSG,true);
+                Client.sendMessage(message.getUserId(),message.getGroupId(), MessageEventEnum.group, MessageFormat.format("词条不存在：{0}",this.keyWord), GocqActionEnum.SEND_MSG,true);
                 return;
             }
-            if(!one.getUserId().equals(message.getUser_id())){
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("你不是该词条的创建人，不可删除：{0}",this.keyWord), GocqActionEnum.SEND_MSG,true);
+            if(!one.getUserId().equals(message.getUserId())){
+                Client.sendMessage(message.getUserId(),message.getGroupId(), MessageEventEnum.group, MessageFormat.format("你不是该词条的创建人，不可删除：{0}",this.keyWord), GocqActionEnum.SEND_MSG,true);
                 return;
             }
             try {
                 if (wordStripService.removeById(one.getId())) {
-                    WordStripHandler.cache.remove(message.getGroup_id() + "-" + this.keyWord);
-                    Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("删除词条成功：{0}",this.keyWord), GocqActionEnum.SEND_MSG,true);
+                    WordStripHandler.cache.remove(message.getGroupId() + "-" + this.keyWord);
+                    Client.sendMessage(message.getUserId(),message.getGroupId(), MessageEventEnum.group, MessageFormat.format("删除词条成功：{0}",this.keyWord), GocqActionEnum.SEND_MSG,true);
                 }
             }catch (Exception e){
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("删除词条异常：{0}",e.getMessage()), GocqActionEnum.SEND_MSG,true);
+                Client.sendMessage(message.getUserId(),message.getGroupId(), MessageEventEnum.group, MessageFormat.format("删除词条异常：{0}",e.getMessage()), GocqActionEnum.SEND_MSG,true);
                 log.error("删除词条异常",e);
             }
 

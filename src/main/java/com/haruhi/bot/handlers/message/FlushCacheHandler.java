@@ -40,18 +40,18 @@ public class FlushCacheHandler implements IMessageEvent {
         if(!command.matches(RegexEnum.FLUSH_CACHE.getValue())){
             return false;
         }
-        if(!message.getUser_id().equals(BotConfig.SUPER_USER)){
+        if(!message.getUserId().equals(BotConfig.SUPER_USER)){
             log.info("非bot管理员使用了`{}`命令,管理员qq:{}",RegexEnum.FLUSH_CACHE.getValue(),BotConfig.SUPER_USER);
             return true;
         }
         synchronized (LOCK){
             if(LOCK.contains(FlushCacheHandler.class.getSimpleName())){
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), MessageFormat.format("请勿频繁刷新,每次刷新需间隔{0}秒",period), GocqActionEnum.SEND_MSG,true);
+                Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(), MessageFormat.format("请勿频繁刷新,每次刷新需间隔{0}秒",period), GocqActionEnum.SEND_MSG,true);
                 return true;
             }
             ThreadPoolFactory.getCommandHandlerThreadPool().execute(()->{
                 systemService.loadCache();
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"刷新完成", GocqActionEnum.SEND_MSG,true);
+                Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(),"刷新完成", GocqActionEnum.SEND_MSG,true);
             });
             LOCK.add(FlushCacheHandler.class.getSimpleName());
         }

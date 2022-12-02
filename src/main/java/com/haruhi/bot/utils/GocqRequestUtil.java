@@ -59,7 +59,7 @@ public class GocqRequestUtil {
             List<GroupMember> excludeList = new ArrayList<>(exclude.length);
             for (GroupMember datum : data) {
                 for (String s : exclude) {
-                    if(datum != null && s.equals(datum.getUser_id())){
+                    if(datum != null && s.equals(datum.getUserId())){
                         excludeList.add(datum);
                     }
                 }

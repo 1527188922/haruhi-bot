@@ -17,17 +17,17 @@ public class OnEventTask implements Runnable{
     @Override
     public void run() {
         try {
-            if(PostTypeEnum.message.toString().equals(messageBean.getPost_type())){
+            if(PostTypeEnum.message.toString().equals(messageBean.getPostType())){
                 // 普通消息
                 final String command = messageBean.getMessage();
-                log.info("[{}]收到来自用户[{}]的消息:{}",messageBean.getMessage_type(),messageBean.getUser_id(),command);
+                log.info("[{}]收到来自用户[{}]的消息:{}",messageBean.getMessageType(),messageBean.getUserId(),command);
                 if(command != null){
                     MessageDispenser.onEvent(messageBean,command);
                 }
-            }else if(PostTypeEnum.notice.toString().equals(messageBean.getPost_type())){
+            }else if(PostTypeEnum.notice.toString().equals(messageBean.getPostType())){
                 // bot通知
                 NoticeDispenser.onEvent(messageBean);
-            } else if(PostTypeEnum.meta_event.toString().equals(messageBean.getPost_type())){
+            } else if(PostTypeEnum.meta_event.toString().equals(messageBean.getPostType())){
                 // 系统消息
             }else{
 

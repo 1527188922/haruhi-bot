@@ -61,7 +61,7 @@ public class BtSearchHandler implements IMessageEvent {
         if(Strings.isBlank(keyword)){
             return false;
         }
-        Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"开始搜索...", GocqActionEnum.SEND_MSG,true);
+        Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(),"开始搜索...", GocqActionEnum.SEND_MSG,true);
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(new Task(message,keyword,page));
         return true;
     }
@@ -80,7 +80,7 @@ public class BtSearchHandler implements IMessageEvent {
             try {
                 String htmlStr = HttpClientUtil.doGet(HttpClientUtil.getHttpClient(10 * 1000),MessageFormat.format(ThirdPartyURL.BT_SEARCH + "/s/{0}_rel_{1}.html", keyword, page), null);
                 if(Strings.isBlank(htmlStr)){
-                    Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"bt搜索请求发生异常", GocqActionEnum.SEND_MSG,true);
+                    Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(),"bt搜索请求发生异常", GocqActionEnum.SEND_MSG,true);
                     return;
                 }
                 Document document = Jsoup.parse(htmlStr);
@@ -116,22 +116,22 @@ public class BtSearchHandler implements IMessageEvent {
                 }
                 List<ForwardMsg> param = new ArrayList<>(res.size());
                 for (String re : res) {
-                    param.add(CommonUtil.createForwardMsgItem(re,message.getSelf_id(),BotConfig.NAME));
+                    param.add(CommonUtil.createForwardMsgItem(re,message.getSelfId(),BotConfig.NAME));
                 }
-                if(MessageEventEnum.group.getType().equals(message.getMessage_type())){
-                    Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,message.getGroup_id(),param);
-                }else if(MessageEventEnum.privat.getType().equals(message.getMessage_type())){
-                    Client.sendMessage(GocqActionEnum.SEND_PRIVATE_FORWARD_MSG,message.getUser_id(),param);
+                if(MessageEventEnum.group.getType().equals(message.getMessageType())){
+                    Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,message.getGroupId(),param);
+                }else if(MessageEventEnum.privat.getType().equals(message.getMessageType())){
+                    Client.sendMessage(GocqActionEnum.SEND_PRIVATE_FORWARD_MSG,message.getUserId(),param);
                 }
             }catch (Exception e){
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),MessageFormat.format("bt搜索异常:{0}",e.getMessage()), GocqActionEnum.SEND_MSG,true);
+                Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(),MessageFormat.format("bt搜索异常:{0}",e.getMessage()), GocqActionEnum.SEND_MSG,true);
                 log.error("bt搜图异常",e);
             }
 
         }
     }
     private void noData(Message message,String keyword){
-        Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"没搜到：" + keyword, GocqActionEnum.SEND_MSG,true);
+        Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(),"没搜到：" + keyword, GocqActionEnum.SEND_MSG,true);
     }
 
     /**

@@ -34,7 +34,7 @@ public class GroupBroadcastMessagesHandler implements IPrivateMessageEvent {
 
     @Override
     public boolean onPrivate(final Message message,final String command) {
-        if(!message.getUser_id().equals(BotConfig.SUPER_USER)){
+        if(!message.getUserId().equals(BotConfig.SUPER_USER)){
             return false;
         }
         String msg = CommonUtil.commandReplaceFirst(command,RegexEnum.GROUP_BROADCAST_MESSAGES);
@@ -57,13 +57,13 @@ public class GroupBroadcastMessagesHandler implements IPrivateMessageEvent {
         public void run() {
             List<GroupInfo> groupList = GocqRequestUtil.getGroupList();
             if(CollectionUtils.isEmpty(groupList)){
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.privat, MessageFormat.format("{0}还没有加任何群。。",BotConfig.NAME), GocqActionEnum.SEND_MSG,true);
+                Client.sendMessage(message.getUserId(),message.getGroupId(), MessageEventEnum.privat, MessageFormat.format("{0}还没有加任何群。。",BotConfig.NAME), GocqActionEnum.SEND_MSG,true);
                 return;
             }
             for (GroupInfo groupInfo : groupList) {
-                Client.sendMessage(message.getUser_id(),groupInfo.getGroup_id(), MessageEventEnum.group, MessageFormat.format("※来自bot管理员的群广播消息：\n{1}",message.getUser_id(),msg), GocqActionEnum.SEND_MSG,false);
+                Client.sendMessage(message.getUserId(),groupInfo.getGroupId(), MessageEventEnum.group, MessageFormat.format("※来自bot管理员的群广播消息：\n{1}",message.getUserId(),msg), GocqActionEnum.SEND_MSG,false);
             }
-            Client.sendMessage(message.getUser_id(),null, MessageEventEnum.privat, "发送完成", GocqActionEnum.SEND_MSG,false);
+            Client.sendMessage(message.getUserId(),null, MessageEventEnum.privat, "发送完成", GocqActionEnum.SEND_MSG,false);
         }
     }
 }

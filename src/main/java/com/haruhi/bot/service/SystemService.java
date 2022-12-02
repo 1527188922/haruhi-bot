@@ -71,7 +71,7 @@ public class SystemService {
     public synchronized static void loadLoginInfo(){
         try {
             SelfInfo loginInfo = GocqRequestUtil.getLoginInfo();
-            BotConfig.SELF_ID = loginInfo.getUser_id();
+            BotConfig.SELF_ID = loginInfo.getUserId();
             log.info("self_id:{}",BotConfig.SELF_ID);
         }catch (Exception e){
             log.error("请求bot信息异常",e);

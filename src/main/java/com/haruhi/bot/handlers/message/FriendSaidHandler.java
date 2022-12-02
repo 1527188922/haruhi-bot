@@ -69,16 +69,16 @@ public class FriendSaidHandler implements IGroupMessageEvent {
         @Override
         public void run() {
             try {
-                List<GroupMember> groupMemberList = GocqRequestUtil.getGroupMemberList(message.getGroup_id(), message.getUser_id(), message.getSelf_id());
+                List<GroupMember> groupMemberList = GocqRequestUtil.getGroupMemberList(message.getGroupId(), message.getUserId(), message.getSelfId());
                 if(CollectionUtils.isEmpty(groupMemberList)){
-                    Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group,"你哪来的朋友？",GocqActionEnum.SEND_MSG,true);
+                    Client.sendMessage(message.getUserId(),message.getGroupId(), MessageEventEnum.group,"你哪来的朋友？",GocqActionEnum.SEND_MSG,true);
                     return;
                 }
                 int i = CommonUtil.randomInt(0, groupMemberList.size() - 1);
                 GroupMember friend = groupMemberList.get(i);
                 send(friend,say);
             }catch (Exception e){
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group,"这个朋友不听话...",GocqActionEnum.SEND_MSG,true);
+                Client.sendMessage(message.getUserId(),message.getGroupId(), MessageEventEnum.group,"这个朋友不听话...",GocqActionEnum.SEND_MSG,true);
                 log.error("朋友说发生异常",e);
             }
 
@@ -91,7 +91,7 @@ public class FriendSaidHandler implements IGroupMessageEvent {
      */
     private void send(GroupMember friend,String say){
         List<ForwardMsg> params = new ArrayList<>(1);
-        params.add(CommonUtil.createForwardMsgItem(say,friend.getUser_id(),"朋友"));
-        Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,friend.getGroup_id(),params);
+        params.add(CommonUtil.createForwardMsgItem(say,friend.getUserId(),"朋友"));
+        Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG,friend.getGroupId(),params);
     }
 }

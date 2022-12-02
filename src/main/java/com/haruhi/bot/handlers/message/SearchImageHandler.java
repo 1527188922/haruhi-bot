@@ -61,7 +61,7 @@ public class SearchImageHandler implements IMessageEvent {
         }else{
             KQCodeUtils utils = KQCodeUtils.getInstance();
             cq = utils.getCq(command, CqCodeTypeEnum.image.getType(), 0);
-            key = getKey(message.getUser_id(), message.getGroup_id());
+            key = getKey(message.getUserId(), message.getGroupId());
             boolean matches = false;
             if(cache.contains(key) && cq != null){
                 // 存在缓存 并且 图片cq码不为空
@@ -76,7 +76,7 @@ public class SearchImageHandler implements IMessageEvent {
                 }
                 if(matches && cq == null){
                     cache.add(key);
-                    Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"图呢！", GocqActionEnum.SEND_MSG,true);
+                    Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(),"图呢！", GocqActionEnum.SEND_MSG,true);
                     return true;
                 }else if(matches){
                     startSearch(message,cq,key);
@@ -88,7 +88,7 @@ public class SearchImageHandler implements IMessageEvent {
     }
 
     private void startSearch(Message message, String cq, String key){
-        Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),"开始搜图...",GocqActionEnum.SEND_MSG,true);
+        Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(),"开始搜图...",GocqActionEnum.SEND_MSG,true);
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(new SearchImageTask(message,cq));
         if(key != null){
             cache.remove(key);
@@ -96,7 +96,7 @@ public class SearchImageHandler implements IMessageEvent {
     }
 
     private String replySearch(final Message message){
-        if (MessageEventEnum.group.getType().equals(message.getMessage_type())) {
+        if (MessageEventEnum.group.getType().equals(message.getMessageType())) {
             KQCodeUtils instance = KQCodeUtils.getInstance();
             String s = message.getMessage().replaceAll(RegexEnum.CQ_CODE_REPLACR.getValue(), "").trim();
             if (s.matches(RegexEnum.SEARCH_IMAGE.getValue())) {
@@ -140,7 +140,7 @@ public class SearchImageHandler implements IMessageEvent {
                     JSONObject jsonObject = JSONObject.parseObject(response);
                     String resultsStr = jsonObject.getString("results");
                     if(Strings.isBlank(resultsStr)){
-                        Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), "搜索结果为空",GocqActionEnum.SEND_MSG,true);
+                        Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(), "搜索结果为空",GocqActionEnum.SEND_MSG,true);
                     }else{
                         List<Results> resultList = JSONObject.parseArray(resultsStr, Results.class);
                         sort(resultList);
@@ -148,7 +148,7 @@ public class SearchImageHandler implements IMessageEvent {
                     }
                 }
             }catch (Exception e){
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), "搜图异常："+e.getMessage(),GocqActionEnum.SEND_MSG,true);
+                Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(), "搜图异常："+e.getMessage(),GocqActionEnum.SEND_MSG,true);
                 log.error("搜图异常",e);
             }
 
@@ -175,23 +175,23 @@ public class SearchImageHandler implements IMessageEvent {
 
     private void sendResult(List<Results> resultList,String cq,Message message){
         ArrayList<ForwardMsg> forwardMsgs = new ArrayList<>(resultList.size() + 1);
-        forwardMsgs.add(CommonUtil.createForwardMsgItem(cq,message.getSelf_id(), BotConfig.NAME));
+        forwardMsgs.add(CommonUtil.createForwardMsgItem(cq,message.getSelfId(), BotConfig.NAME));
         for (Results results : resultList) {
-            forwardMsgs.add(CommonUtil.createForwardMsgItem(getItemMsg(results),message.getSelf_id(), BotConfig.NAME));
+            forwardMsgs.add(CommonUtil.createForwardMsgItem(getItemMsg(results),message.getSelfId(), BotConfig.NAME));
         }
 
-        if(MessageEventEnum.group.getType().equals(message.getMessage_type())){
+        if(MessageEventEnum.group.getType().equals(message.getMessageType())){
             // 使用合并消息
-            HttpResponse response = Client.sendRestMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG, message.getGroup_id(), forwardMsgs);
+            HttpResponse response = Client.sendRestMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG, message.getGroupId(), forwardMsgs);
             if(response.getRetcode() != 0){
                 forwardMsgs.remove(0);
-                Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG, message.getGroup_id(), forwardMsgs);
+                Client.sendMessage(GocqActionEnum.SEND_GROUP_FORWARD_MSG, message.getGroupId(), forwardMsgs);
             }
 
-        }else if(MessageEventEnum.privat.getType().equals(message.getMessage_type())){
+        }else if(MessageEventEnum.privat.getType().equals(message.getMessageType())){
             // 私聊
             forwardMsgs.remove(0);
-            Client.sendMessage(GocqActionEnum.SEND_PRIVATE_FORWARD_MSG, message.getUser_id(), forwardMsgs);
+            Client.sendMessage(GocqActionEnum.SEND_PRIVATE_FORWARD_MSG, message.getUserId(), forwardMsgs);
         }
     }
 

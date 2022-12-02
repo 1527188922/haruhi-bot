@@ -93,12 +93,12 @@ public class BulletChatWordCloudHandler implements IMessageEvent {
                 }
                 PlayerInfoResp playerInfoResp = WordCloudUtil.getPlayerInfo(bv);
                 if(playerInfoResp == null || Strings.isBlank(playerInfoResp.getCid())){
-                    Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), "视频cid获取失败", GocqActionEnum.SEND_MSG,true);
+                    Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(), "视频cid获取失败", GocqActionEnum.SEND_MSG,true);
                     return;
                 }
                 List<String> chatList = WordCloudUtil.getChatList(playerInfoResp.getCid());
                 if(CollectionUtils.isEmpty(chatList)){
-                    Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), "弹幕数为0，不生成", GocqActionEnum.SEND_MSG,true);
+                    Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(), "弹幕数为0，不生成", GocqActionEnum.SEND_MSG,true);
                     return;
                 }
                 KQCodeUtils instance = KQCodeUtils.getInstance();
@@ -107,11 +107,11 @@ public class BulletChatWordCloudHandler implements IMessageEvent {
                     cq = instance.toCq(CqCodeTypeEnum.image.getType(), "url=" + playerInfoResp.getFirst_frame(),"file="+CommonUtil.uuid()+".jpg");
                     cq = "\n"+cq;
                 }
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), MessageFormat.format("获取弹幕成功，数量：{0}\n开始生成...\n标题：{1}{2}",chatList.size(),playerInfoResp.getPart(),cq), GocqActionEnum.SEND_MSG,false);
+                Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(), MessageFormat.format("获取弹幕成功，数量：{0}\n开始生成...\n标题：{1}{2}",chatList.size(),playerInfoResp.getPart(),cq), GocqActionEnum.SEND_MSG,false);
                 List<String> list = WordSlicesTask.execute(chatList);
                 Map<String, Integer> map = WordCloudUtil.exclusionsWord(WordCloudUtil.setFrequency(list));
                 if(CollectionUtils.isEmpty(map)){
-                    Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), "有效词料为0，不生成", GocqActionEnum.SEND_MSG,true);
+                    Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(), "有效词料为0，不生成", GocqActionEnum.SEND_MSG,true);
                     return;
                 }
                 String fileName = bv + "-" + CommonUtil.uuid() + ".png";
@@ -119,9 +119,9 @@ public class BulletChatWordCloudHandler implements IMessageEvent {
                 WordCloudUtil.generateWordCloudImage(map,outPutPath);
 
                 String imageCq = instance.toCq(CqCodeTypeEnum.image.getType(), "file=file:///" + outPutPath);
-                Client.sendRestMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(),imageCq, GocqActionEnum.SEND_MSG,false);
+                Client.sendRestMessage(message.getUserId(),message.getGroupId(),message.getMessageType(),imageCq, GocqActionEnum.SEND_MSG,false);
             }catch (Exception e){
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(),message.getMessage_type(), MessageFormat.format("弹幕词云生成异常:{0}",e.getMessage()), GocqActionEnum.SEND_MSG,true);
+                Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(), MessageFormat.format("弹幕词云生成异常:{0}",e.getMessage()), GocqActionEnum.SEND_MSG,true);
                 log.error("弹幕词云异常",e);
             }finally {
                 FileUtil.deleteFile(outPutPath);

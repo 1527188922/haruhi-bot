@@ -62,33 +62,33 @@ public class WordStripAddHandler implements IGroupMessageEvent {
         }
         ThreadPoolFactory.getCommandHandlerThreadPool().execute(()->{
             LambdaQueryWrapper<WordStrip> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(WordStrip::getGroupId,message.getGroup_id()).eq(WordStrip::getKeyWord,this.keyWord);
+            queryWrapper.eq(WordStrip::getGroupId,message.getGroupId()).eq(WordStrip::getKeyWord,this.keyWord);
 
             try {
                 WordStrip wordStrip = wordStripService.getOne(queryWrapper);
                 WordStrip param = new WordStrip();
                 boolean save = false;
                 if(wordStrip != null){
-                    if(wordStrip.getUserId().equals(message.getUser_id())){
+                    if(wordStrip.getUserId().equals(message.getUserId())){
                         param.setAnswer(this.answer);
                         save = wordStripService.update(param,queryWrapper);
                     }else {
-                        Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group,MessageFormat.format("已存在词条：{0}",this.keyWord), GocqActionEnum.SEND_MSG,true);
+                        Client.sendMessage(message.getUserId(),message.getGroupId(), MessageEventEnum.group,MessageFormat.format("已存在词条：{0}",this.keyWord), GocqActionEnum.SEND_MSG,true);
                         return;
                     }
                 }else{
                     param.setKeyWord(this.keyWord);
                     param.setAnswer(this.answer);
-                    param.setGroupId(message.getGroup_id());
-                    param.setUserId(message.getUser_id());
+                    param.setGroupId(message.getGroupId());
+                    param.setUserId(message.getUserId());
                     save = wordStripService.save(param);
                 }
                 if(save){
-                    WordStripHandler.cache.put(message.getGroup_id() + "-" + this.keyWord,this.answer);
-                    Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group,MessageFormat.format("词条添加成功：{0}",this.keyWord), GocqActionEnum.SEND_MSG,true);
+                    WordStripHandler.cache.put(message.getGroupId() + "-" + this.keyWord,this.answer);
+                    Client.sendMessage(message.getUserId(),message.getGroupId(), MessageEventEnum.group,MessageFormat.format("词条添加成功：{0}",this.keyWord), GocqActionEnum.SEND_MSG,true);
                     return;
                 }
-                Client.sendMessage(message.getUser_id(),message.getGroup_id(), MessageEventEnum.group, MessageFormat.format("词条添加失败：{0}-->0",this.keyWord), GocqActionEnum.SEND_MSG,true);
+                Client.sendMessage(message.getUserId(),message.getGroupId(), MessageEventEnum.group, MessageFormat.format("词条添加失败：{0}-->0",this.keyWord), GocqActionEnum.SEND_MSG,true);
             }catch (Exception e){
                 log.error("添加词条异常",e);
             }
