@@ -21,6 +21,7 @@ public class BotConfig {
     public static String HTTP_URL = "";
     public static String WS_URL = "";
     public static String ACCESS_TOKEN = "";
+    public static String BT_SEARCH;
     static {
         SLEEP = new AtomicBoolean(false);
     }
@@ -59,6 +60,11 @@ public class BotConfig {
     @Autowired
     public void setAccessToken(@Value("${gocq.access-token}") String accessToken) {
         ACCESS_TOKEN = accessToken;
+    }
+
+    @Autowired
+    private void setBtSearch(@Value("${bot.bt-search}") String btSearch){
+        BT_SEARCH = btSearch;
     }
 
     @PostConstruct
