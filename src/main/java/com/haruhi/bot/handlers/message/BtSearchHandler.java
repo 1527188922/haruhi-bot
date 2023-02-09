@@ -78,7 +78,7 @@ public class BtSearchHandler implements IMessageEvent {
         @Override
         public void run() {
             try {
-                String htmlStr = HttpClientUtil.doGet(HttpClientUtil.getHttpClient(10 * 1000),MessageFormat.format(ThirdPartyURL.BT_SEARCH + "/s/{0}_rel_{1}.html", keyword, page), null);
+                String htmlStr = HttpClientUtil.doGet(HttpClientUtil.getHttpClient(10 * 1000),MessageFormat.format(BotConfig.BT_SEARCH + "/s/{0}_rel_{1}.html", keyword, page), null);
                 if(Strings.isBlank(htmlStr)){
                     Client.sendMessage(message.getUserId(),message.getGroupId(),message.getMessageType(),"bt搜索请求发生异常", GocqActionEnum.SEND_MSG,true);
                     return;
@@ -100,7 +100,7 @@ public class BtSearchHandler implements IMessageEvent {
                     String detailHref = title.attr("href");
                     // 追加标题
                     strBuilder.append(title.text()).append("\n");
-                    String s = ThirdPartyURL.BT_SEARCH + detailHref;
+                    String s = BotConfig.BT_SEARCH + detailHref;
                     try {
                         // 请求详情链接
                         requestDetail(strBuilder,s);
