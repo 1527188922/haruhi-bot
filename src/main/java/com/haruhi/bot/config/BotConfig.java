@@ -22,6 +22,7 @@ public class BotConfig {
     public static String WS_URL = "";
     public static String ACCESS_TOKEN = "";
     public static String BT_SEARCH;
+    public static String AGEFANS;
     static {
         SLEEP = new AtomicBoolean(false);
     }
@@ -65,6 +66,10 @@ public class BotConfig {
     @Autowired
     private void setBtSearch(@Value("${bot.bt-search}") String btSearch){
         BT_SEARCH = btSearch;
+    }
+    @Autowired
+    private void setAGEFANS(@Value("${bot.agefans}") String agefans){
+        AGEFANS = agefans;
     }
 
     @PostConstruct

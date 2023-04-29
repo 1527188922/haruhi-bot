@@ -26,6 +26,7 @@ bot:
   # 搜图/识图功能需要配置这个项 Saucenao的API_KEY，通过 https://saucenao.com/user.php?page=search-api 注册获取 免费的
   search-image-key:
   bt-search: http://www.eclzz.guru
+  agefans: https://www.agemys.vip
 job:
   # 下载色图的定时爬虫 每15秒 enable是否开启这个定时任务 0非 1是
   downloadPixiv:

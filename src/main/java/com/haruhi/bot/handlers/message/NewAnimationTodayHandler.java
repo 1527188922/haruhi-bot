@@ -58,7 +58,7 @@ public class NewAnimationTodayHandler implements IMessageEvent {
         @Override
         public void run() {
             try {
-                String responseHtml = HttpClientUtil.doGet(HttpClientUtil.getHttpClient(10 * 1000),ThirdPartyURL.AGEFANSTV, null);
+                String responseHtml = HttpClientUtil.doGet(HttpClientUtil.getHttpClient(10 * 1000),BotConfig.AGEFANS, null);
                 if (Strings.isNotBlank(responseHtml)) {
                     Pattern compile = Pattern.compile("var new_anime_list = (.*?);");
                     Matcher matcher = compile.matcher(responseHtml);
@@ -96,7 +96,7 @@ public class NewAnimationTodayHandler implements IMessageEvent {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(datum.getName()).append("\n");
         stringBuilder.append("更新集：").append(datum.getNamefornew()).append("\n");
-        stringBuilder.append(MessageFormat.format("链接：{0}/detail/{1}",ThirdPartyURL.AGEFANSTV,datum.getId()));
+        stringBuilder.append(MessageFormat.format("链接：{0}/detail/{1}",BotConfig.AGEFANS,datum.getId()));
         return stringBuilder.toString();
     }
 
