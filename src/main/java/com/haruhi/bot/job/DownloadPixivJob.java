@@ -38,6 +38,8 @@ public class DownloadPixivJob extends AbstractJob {
 
     @Value("${job.downloadPixiv.cron}")
     private String cron;
+    @Value("${job.downloadPixiv.notice}")
+    private String notice;
 
     @Override
     public String cronExpression() {
@@ -123,11 +125,16 @@ public class DownloadPixivJob extends AbstractJob {
                     }
 
                 }
-                if(total > 0){
-                    Client.sendMessage(BotConfig.SUPER_USER,null, MessageEventEnum.privat, MessageFormat.format("success\n本次添加{0}条\n线程：{1}",total,Thread.currentThread().getName()), GocqActionEnum.SEND_MSG,true);
+                if(total > 0 && "1".equals(notice)){
+                    Client.sendMessage(BotConfig.SUPER_USER,null, MessageEventEnum.privat, 
+                            MessageFormat.format("success\n本次添加{0}条\n线程：{1}",total,Thread.currentThread().getName()), GocqActionEnum.SEND_MSG,true);
                 }
             }catch (Exception e){
-                Client.sendMessage(BotConfig.SUPER_USER,null, MessageEventEnum.privat, MessageFormat.format("exception\n下载发生异常\n线程：{0}\n异常：{1}",Thread.currentThread().getName(),e.getMessage()), GocqActionEnum.SEND_MSG,true);
+                if("1".equals(notice) || "2".equals(notice)){
+                    Client.sendMessage(BotConfig.SUPER_USER,null, MessageEventEnum.privat, 
+                            MessageFormat.format("exception\n下载发生异常\n线程：{0}\n异常：{1}",Thread.currentThread().getName(),e.getMessage()), 
+                            GocqActionEnum.SEND_MSG,true);    
+                }
                 log.error("下载pixiv异常",e);
             }
         }

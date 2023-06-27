@@ -32,6 +32,7 @@ job:
   downloadPixiv:
     cron: 0/15 * * * * ?
     enable: 0
+    notice: 0
   # 订阅新闻job 每天7点 注意：如果关闭这个job，即使订阅了新闻也不会定时发新闻了
   news:
     cron: 0 0 7 * * ?
